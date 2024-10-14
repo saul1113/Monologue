@@ -10,7 +10,7 @@ import SwiftUI
 struct PostView: View {
     var body: some View {
         ZStack {
-            Color(.accent)
+            Color(.background)
                 .ignoresSafeArea()
             
             Text("PostView")

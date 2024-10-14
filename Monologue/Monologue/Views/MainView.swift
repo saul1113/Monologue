@@ -34,7 +34,7 @@ struct MainView: View {
                     }
                 }
         }
-        .accentColor(.primary)
+        .accentColor(.accent)
     }
 }
 
