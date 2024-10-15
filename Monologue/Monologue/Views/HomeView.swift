@@ -103,7 +103,7 @@ struct HomeView: View {
                         // 메모 뷰
                         MemoView(filteredMemos: filteredMemos)
                     } else {
-                        // 칼럼 뷰
+                        HomeColumn(filteredColumns: filteredColumns)
                     }
                 }
                 .navigationBarHidden(true)
