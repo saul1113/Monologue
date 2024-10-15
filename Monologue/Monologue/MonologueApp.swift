@@ -19,6 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct MonologueApp: App {
     @StateObject private var authStore = AuthManager()
+    @StateObject private var userInfoStore  = UserInfoStore()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
@@ -27,6 +28,7 @@ struct MonologueApp: App {
 //            MainView()
             LoginView()
                 .environmentObject(authStore)
+                .environmentObject(userInfoStore)
         }
     }
 }
