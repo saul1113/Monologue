@@ -18,6 +18,7 @@
  날짜 -> Date
  */
 
+
 import SwiftUI
 
 struct MemoWritingView: View {
@@ -27,6 +28,9 @@ struct MemoWritingView: View {
     @State private var selectedFont: String = "기본서체"
     @State private var selectedMemoCategory: String = "오늘의 주제" // 선택된 카테고리
     @State private var selectedBackgroundColor: Color = .white // 기본 배경색
+    
+    @StateObject private var memoStore = MemoStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
 
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
@@ -36,20 +40,22 @@ struct MemoWritingView: View {
 
     var body: some View {
         ZStack {
-            Color(.background)
+            Color(.systemBackground)
                 .ignoresSafeArea()
             
             VStack {
                 TextEditor(text: $text)
                     .font(.system(.title2, design: .default, weight: .regular))
-                    .frame(height: 370)
+                    .padding() // 내부 패딩 추가
                     .scrollContentBackground(.hidden)
                     .background(selectedBackgroundColor) // 선택된 배경색으로 설정
+                    .cornerRadius(8) // 모서리 둥글게
+                    .frame(height: 400) // 프레임 높이 지정
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundColor(text.isEmpty ? .gray : .clear)
-                            .padding(.top, -170)
-                            .padding(.leading, -175)
+                            .padding(.top, -170) // 상단 패딩 조정
+                            .padding(.leading, -170) // 좌측 패딩 조정
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color(.systemGray4))
                     }
@@ -58,13 +64,14 @@ struct MemoWritingView: View {
                             text = String(newValue.prefix(textLimit))
                         }
                     }
-                
+
                 HStack {
                     Spacer()
                     Text("\(text.count)/\(textLimit)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .padding(.bottom, 10)
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
@@ -76,7 +83,6 @@ struct MemoWritingView: View {
                         Text("글꼴")
                             .font(.system(size: 15, weight: .light))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(fontOptions, id: \.self) { font in
                             FontButton(title: font, isSelected: selectedFont == font) {
                                 selectedFont = font
@@ -94,11 +100,9 @@ struct MemoWritingView: View {
                             .resizable()
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color.accent)
-                        
                         Text("배경")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(0..<backgroundColors.count, id: \.self) { index in
                             BackgroundButton(color: backgroundColors[index], colorName: backgroundColorNames[index]) {
                                 selectedBackgroundColor = backgroundColors[index] // 선택된 배경색으로 변경
@@ -116,11 +120,9 @@ struct MemoWritingView: View {
                             .resizable()
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color.accent)
-                        
                         Text("카테고리")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(categoryOptions, id: \.self) { category in
                             CategoryMemoButton(title: category, isSelected: selectedMemoCategory == category) {
                                 selectedMemoCategory = category
@@ -131,7 +133,9 @@ struct MemoWritingView: View {
                 }
                 
             }
+            .padding(.top, -120)
             .padding(.horizontal, 16)
+            
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -151,6 +155,15 @@ struct MemoWritingView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     // 발행 버튼 액션
+                    let newMemo = Memo(content: text, userNickname: memoStore.memos.first?.userNickname ?? "", font: selectedFont, backgroundImageName: "", categories: [selectedMemoCategory], likes: [], comments: [], date: Date())
+                    memoStore.addMemo(memo: newMemo) { error in
+                        if let error = error {
+                            // Handle error (e.g., show an alert)
+                            print("Error adding memo: \(error)")
+                        } else {
+                            dismiss() // Close the view after successfully adding the memo
+                        }
+                    }
                 }) {
                     Text("발행")
                         .foregroundColor(.accentColor)

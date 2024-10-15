@@ -28,18 +28,20 @@ struct ColumnWritingView: View {
     
     var body: some View {
         ZStack {
-            Color(.background)
+            Color(.systemBackground)
                 .ignoresSafeArea()
             
             VStack {
                 TextEditor(text: $text)
                     .font(.system(.title2, design: .default, weight: .regular))
+                    .padding()
+                    .cornerRadius(8)
                     .frame(height: 540)
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundStyle(text.isEmpty ? .gray : .clear)
-                            .padding(.top, -260)
-                            .padding(.leading, -175)
+                            .padding(.top, -240)
+                            .padding(.leading, -170)
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color(.systemGray4))
                     }
@@ -57,10 +59,9 @@ struct ColumnWritingView: View {
                 }
                 
                 // Add spacing here
-                Spacer(minLength: 10)
                 
                 ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
+                    HStack(spacing: 13) {
                         Image(systemName: "tag")
                             .resizable()
                             .frame(width: 20, height: 20)
@@ -69,19 +70,20 @@ struct ColumnWritingView: View {
                         Text("카테고리")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(categoryOptions, id: \.self) { category in
                             CategoryColumnButton(title: category, isSelected: selectedColumnCategory == category) {
                                 selectedColumnCategory = category
                             }
                         }
                     }
-                    .padding()
+                    .padding(.bottom, 10) // 아래쪽 여백을 줄임
+                    .padding(.top, 10) // 위쪽 여백을 추가
                 }
-                .frame(height: 50) // Set a fixed height for the ScrollView
+                
                 Divider()
                 
             }
+            .padding(.top, -100)
             .padding(.horizontal, 16)
         }
         .navigationBarBackButtonHidden(true)
@@ -121,7 +123,7 @@ struct CategoryColumnButton: View {
             Text(title)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(isSelected ? .white : .brown)
-                .frame(width: 70, height: 30)
+                .frame(width: 80, height: 30)
                 .background(isSelected ? Color.accentColor : Color.clear)
                 .cornerRadius(10)
                 .overlay(
