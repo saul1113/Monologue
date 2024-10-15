@@ -124,8 +124,8 @@ extension AuthManager {
             
             self.email = firebaseUser.email ?? ""  // 구글 로그인하면 이메일 설정
             
-//            authenticationState = .authenticated
-//            return true
+            //            authenticationState = .authenticated
+            //            return true
             
             return await checkNicknameExists(email: self.email)
         }
@@ -136,7 +136,7 @@ extension AuthManager {
         }
     }
     
-    // 닉네임 존재 여부 확인 메서드 추가
+    // 처음 가입할 때 닉네임 존재 여부 확인 메서드 추가 -> 있다면 바로 로그인, 없다면 가입으로
     func checkNicknameExists(email: String) async -> Bool {
         let db = Firestore.firestore()
         let docRef = db.collection("User").document(email)
@@ -149,8 +149,21 @@ extension AuthManager {
         } catch {
             print("Error checking nickname: \(error)")
         }
-        
         return false
+    }
+    
+    // 가입할 때, 닉네임 입력 시 중복된 것이 있는 지 확인 -> 중복이라면 다른 닉네임 입력
+    func NicknameDuplicate(nickname: String) async -> Bool {
+        let db = Firestore.firestore()
+        let query = db.collection("User").whereField("nickname", isEqualTo: nickname)
+        
+        do {
+            let snapshot = try await query.getDocuments()
+            return !snapshot.documents.isEmpty // 중복된 닉네임이 있으면 true
+        } catch {
+            print("Error checking nickname: \(error)")
+            return false
+        }
     }
 }
 

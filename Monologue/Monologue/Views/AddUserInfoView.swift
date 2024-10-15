@@ -12,7 +12,8 @@ struct AddUserInfoView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject private var userInfoStroe: UserInfoStore
     
-    @State private var showNicknameWarning: Bool = false // 닉네임 확인
+    @State private var nicknameCheckWarning: Bool = false // 닉네임 확인
+    @State private var nicknameDuplicateWarning: Bool = false // 닉네임 중복 경고
     
     @State private var nicknameText: String = ""
     
@@ -50,9 +51,16 @@ struct AddUserInfoView: View {
                         .cornerRadius(10)
                         .padding(.bottom, 5)
                     
-                    // 닉네임이 비어 있을 때 빨간색 경고 메시지
-                    if showNicknameWarning && nicknameText.isEmpty {
+                    // 닉네임 비어 있음 경고
+                    if nicknameCheckWarning && nicknameText.isEmpty {
                         Text("닉네임을 입력해주세요.")
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                    
+                    // 닉네임 중복 경고
+                    if nicknameDuplicateWarning {
+                        Text("이미 존재하는 닉네임입니다.")
                             .foregroundColor(.red)
                             .font(.caption)
                     }
@@ -69,18 +77,38 @@ struct AddUserInfoView: View {
                 Spacer()
                 
                 Button {
-                    // 닉네임 확인
+                    // 닉네임 비어 있음 확인
                     if nicknameText.isEmpty {
-                        showNicknameWarning = true // 닉네임이 비어 있을 때
+                        nicknameCheckWarning = true
+                        nicknameDuplicateWarning = false
                     } else {
-                        showNicknameWarning = false // 닉네임이 있을 때
-                        isPresented = false
-                        isNextView = true
+                        nicknameCheckWarning = false
                         
+                        // 닉네임 중복 확인
                         Task {
-                            let newUserInfo = UserInfo(nickname: nicknameText, registrationDate: Date(), preferredCategories: [], profileImageName: "", introduction: "", following: [], followers: [], blocked: [], likes: [])
+                            let nicknameExists = await authManager.NicknameDuplicate(nickname: nicknameText)
                             
-                            await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                            if nicknameExists {
+                                nicknameDuplicateWarning = true // 닉네임 중복 경고
+                            } else {
+                                nicknameDuplicateWarning = false
+                                isPresented = false
+                                isNextView = true
+                                
+                                let newUserInfo = UserInfo(
+                                    nickname: nicknameText,
+                                    registrationDate: Date(),
+                                    preferredCategories: [],
+                                    profileImageName: "",
+                                    introduction: "",
+                                    following: [],
+                                    followers: [],
+                                    blocked: [],
+                                    likes: []
+                                )
+                                
+                                await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                            }
                         }
                     }
                 } label: {
