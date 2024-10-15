@@ -95,10 +95,15 @@ struct AddUserInfoView: View {
                                 isPresented = false
                                 isNextView = true
                                 
+                                // 선택된 카테고리 가져오기
+                                let selectedCategories = dict
+                                    .filter { $0.value } // 선택된 항목만 필터링
+                                    .map { $0.key } // 선택된 항목의 키를 배열로 변환
+                                
                                 let newUserInfo = UserInfo(
                                     nickname: nicknameText,
                                     registrationDate: Date(),
-                                    preferredCategories: [],
+                                    preferredCategories: selectedCategories,
                                     profileImageName: "",
                                     introduction: "",
                                     following: [],
