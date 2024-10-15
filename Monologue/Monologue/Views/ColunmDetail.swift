@@ -58,8 +58,8 @@ struct ColunmDetail: View {
                         }) {
                             HStack(spacing: 4) {
                                 Image(systemName: "bubble.right")
-                                Text("\(column comments.count)")  // 댓글 개수 표시
-                                    .font(.subheadline)
+//                                Text("\(column comments.count)")  // 댓글 개수 표시
+//                                    .font(.subheadline)
                             }
                         }
                         
@@ -89,8 +89,8 @@ struct ColunmDetail: View {
                 // 댓글 영역
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
-                        Text("댓글 \(comments.count)")
-                            .font(.headline)
+//                        Text("댓글 \(comments.count)")
+//                            .font(.headline)
                         Spacer()
                         Text("등록순")
                             .foregroundColor(.gray)
@@ -102,23 +102,23 @@ struct ColunmDetail: View {
                     .padding(.horizontal)
                     
                     // 댓글 리스트 (2개까지만 표시)
-                    ForEach(comments.prefix(2)) { comment in
-                        CommentView(comment: comment)
-                    }
+//                    ForEach(comments.prefix(2)) { comment in
+//                        CommentView(comment: comment)
+//                    }
                     
                     // 댓글 더보기 버튼
-                    if comments.count > 2 {
-                        Button(action: {
-                            showAllComments.toggle()  // 전체 댓글 보기 시트 열기
-                        }) {
-                            Text("댓글 더 보기")
-                                .foregroundColor(.blue)
-                        }
-                        .sheet(isPresented: $showAllComments) {
-                            // 전체 댓글을 보여주는 시트
-                            CommentsSheetView(comments: $comments, newComment: $newComment)
-                        }
-                    }
+//                    if comments.count > 2 {
+//                        Button(action: {
+//                            showAllComments.toggle()  // 전체 댓글 보기 시트 열기
+//                        }) {
+//                            Text("댓글 더 보기")
+//                                .foregroundColor(.blue)
+//                        }
+//                        .sheet(isPresented: $showAllComments) {
+//                            // 전체 댓글을 보여주는 시트
+//                            CommentsSheetView(comments: $comments, newComment: $newComment)
+//                        }
+//                    }
                 }
                 .padding()
                 .cornerRadius(10)  // 모서리를 둥글게 처리

@@ -9,7 +9,7 @@ import SwiftUI
 import OrderedCollections
 
 struct HomeView: View {
-    @State var homeviewModel = HomeViewDummy()
+    @EnvironmentObject private var memoStore: MemoStore
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State private var selectedPickerIndex: Int = 0
@@ -30,9 +30,14 @@ struct HomeView: View {
     ]
     var filteredMemos: [Memo] {
         if selectedCategories == ["전체"] {
-            return homeviewModel.memos
+            var tempMemos: [Memo] = []
+            memoStore.loadMemos { memos, error in
+                tempMemos = memos ?? []
+            }
+            return tempMemos
         } else {
-            return homeviewModel.memos.filter { memo in
+//            print(self.filteredMemos[0].id)
+            return memoStore.memos.filter { memo in
                 memo.categories.contains { selectedCategories.contains($0) }
             }
         }
@@ -96,7 +101,7 @@ struct HomeView: View {
                     //MARK: - Grid
                     if selectedPickerIndex == 0 {
                         // 메모 뷰
-                        MemoView(homeviewModel: homeviewModel, filteredMemos: filteredMemos)
+                        MemoView(filteredMemos: filteredMemos)
                     } else {
                         // 칼럼 뷰
                     }
@@ -104,9 +109,7 @@ struct HomeView: View {
                 .navigationBarHidden(true)
             }
         }
-        
     }
-
 }
 
 

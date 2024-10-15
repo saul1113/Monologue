@@ -118,10 +118,10 @@ struct HomeColunm: View {
 
                         // 선택된 카테고리에 맞춘 리스트
                         List {
-                            ForEach(filteredColumns) { post in
-                                PostRow(post: post)
-                                    .listRowBackground(Color(UIColor(red: 255/255, green: 248/255, blue: 237/255, alpha: 1))) // 각 리스트의 배경색 설정
-                            }
+//                            ForEach(filteredColumns) { post in
+//                                PostRow(post: post)
+//                                    .listRowBackground(Color(UIColor(red: 255/255, green: 248/255, blue: 237/255, alpha: 1))) // 각 리스트의 배경색 설정
+//                            }
                             // 광고 배너 위치 예시 (간단한 텍스트 배너)
                             Text("배너 광고")
                                 .frame(maxWidth: .infinity, minHeight: 100)
@@ -153,16 +153,16 @@ struct PostRow: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text(column.timeAgo)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+//                Text(column.timeAgo)
+//                    .font(.subheadline)
+//                    .foregroundColor(.gray)
                 Spacer()
-                Text(column.category)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .padding(4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(5)
+//                Text(column.category)
+//                    .font(.subheadline)
+//                    .foregroundColor(.gray)
+//                    .padding(4)
+//                    .background(Color.gray.opacity(0.2))
+//                    .cornerRadius(5)
             }
         }
         .padding()
