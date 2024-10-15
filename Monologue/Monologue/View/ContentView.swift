@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         if isLogout {
-            LoginView(isNextView: .constant(false))
+            LoginView()
         } else {
             VStack {
                 Text("\(authManager.email)")

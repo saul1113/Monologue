@@ -33,6 +33,7 @@
 		EAC7D7C02CBD2902008A8074 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7BF2CBD2902008A8074 /* GoogleSignIn */; };
 		EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */; };
 		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
+		EAC7D8692CBE2BC8008A8074 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EAC7D8682CBE2BC8008A8074 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +58,7 @@
 		8EF50D712CBE0467000CABAA /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		8EF50D732CBE0479000CABAA /* Complain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complain.swift; sourceTree = "<group>"; };
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
+		EAC7D8682CBE2BC8008A8074 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 		8E52D90D2CBD100A00E5D42A /* Monologue */ = {
 			isa = PBXGroup;
 			children = (
+				EAC7D8682CBE2BC8008A8074 /* GoogleService-Info.plist */,
 				8E91AEBF2CBE27D8009889D4 /* GoogleService-Info.plist */,
 				8EF50D512CBDFD01000CABAA /* Auth */,
 				8EF50D532CBDFD01000CABAA /* Model */,
@@ -227,6 +230,7 @@
 			files = (
 				8E52D93C2CBD215600E5D42A /* Assets.xcassets in Resources */,
 				8E91AEC02CBE27D8009889D4 /* GoogleService-Info.plist in Resources */,
+				EAC7D8692CBE2BC8008A8074 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
