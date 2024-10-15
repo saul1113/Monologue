@@ -16,6 +16,11 @@
 		8EF50D652CBDFD01000CABAA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EF50D542CBDFD01000CABAA /* Preview Assets.xcassets */; };
 		8EF50D662CBDFD01000CABAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EF50D5A2CBDFD01000CABAA /* Assets.xcassets */; };
 		8EF50D672CBDFD01000CABAA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8EF50D5B2CBDFD01000CABAA /* GoogleService-Info.plist */; };
+		8EF50D6C2CBE0402000CABAA /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D6B2CBE0402000CABAA /* UserInfo.swift */; };
+		8EF50D6E2CBE0432000CABAA /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D6D2CBE0432000CABAA /* Memo.swift */; };
+		8EF50D702CBE0453000CABAA /* Column.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D6F2CBE0453000CABAA /* Column.swift */; };
+		8EF50D722CBE0467000CABAA /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D712CBE0467000CABAA /* Comment.swift */; };
+		8EF50D742CBE0479000CABAA /* Complain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D732CBE0479000CABAA /* Complain.swift */; };
 		EAC7D7A12CBD23E0008A8074 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A02CBD23E0008A8074 /* FirebaseAuth */; };
 		EAC7D7A32CBD23E0008A8074 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A22CBD23E0008A8074 /* FirebaseDatabase */; };
 		EAC7D7A52CBD23E0008A8074 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A42CBD23E0008A8074 /* FirebaseFirestore */; };
@@ -36,6 +41,11 @@
 		8EF50D5B2CBDFD01000CABAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8EF50D5C2CBDFD01000CABAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonologueApp.swift; sourceTree = "<group>"; };
+		8EF50D6B2CBE0402000CABAA /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
+		8EF50D6D2CBE0432000CABAA /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
+		8EF50D6F2CBE0453000CABAA /* Column.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Column.swift; sourceTree = "<group>"; };
+		8EF50D712CBE0467000CABAA /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		8EF50D732CBE0479000CABAA /* Complain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complain.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +93,11 @@
 			isa = PBXGroup;
 			children = (
 				8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */,
+				8EF50D6B2CBE0402000CABAA /* UserInfo.swift */,
+				8EF50D6D2CBE0432000CABAA /* Memo.swift */,
+				8EF50D6F2CBE0453000CABAA /* Column.swift */,
+				8EF50D712CBE0467000CABAA /* Comment.swift */,
+				8EF50D732CBE0479000CABAA /* Complain.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -205,11 +220,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
+				8EF50D742CBE0479000CABAA /* Complain.swift in Sources */,
 				8EF50D602CBDFD01000CABAA /* ProfileInfo.swift in Sources */,
+				8EF50D702CBE0453000CABAA /* Column.swift in Sources */,
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
+				8EF50D6E2CBE0432000CABAA /* Memo.swift in Sources */,
+				8EF50D722CBE0467000CABAA /* Comment.swift in Sources */,
 				8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */,
 				8EF50D632CBDFD01000CABAA /* LoginView.swift in Sources */,
 				8EF50D642CBDFD01000CABAA /* MonologueApp.swift in Sources */,
+				8EF50D6C2CBE0402000CABAA /* UserInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
