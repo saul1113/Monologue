@@ -64,6 +64,9 @@ struct ColumnDetail: View {
                                 Text("\(displayedComments.count)")  // 댓글 개수 표시
                                     .font(.subheadline)
                             }
+                            .sheet(isPresented: $showAllComments) {
+                                CommentsSheetView(comments: $displayedComments, newComment: $newComment)
+                            }
                         }
                         
                         // 좋아요 버튼
@@ -124,7 +127,6 @@ struct ColumnDetail: View {
                                 .foregroundColor(.blue)
                         }
                         .sheet(isPresented: $showAllComments) {
-                            // 전체 댓글을 보여주는 시트
                             CommentsSheetView(comments: $displayedComments, newComment: $newComment)
                         }
                     }
@@ -259,6 +261,6 @@ extension Color {
 }
 
 #Preview {
-    ColumnDetail(column: Column(content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2", "댓글 3"], date: Date()))
+    ColumnDetail(column: Column(content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2"], date: Date()))
         .environmentObject(ColumnStore())
 }

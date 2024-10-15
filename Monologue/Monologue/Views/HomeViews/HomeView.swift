@@ -10,6 +10,7 @@ import OrderedCollections
 
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
+    @EnvironmentObject private var columnStore: ColumnStore
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State private var selectedPickerIndex: Int = 0
@@ -41,6 +42,19 @@ struct HomeView: View {
             }
         }
     }
+    
+    var filteredColumns: [Column] {
+            if selectedCategories == ["전체"] {
+                columnStore.loadColumn { columns, error in
+                    columnStore.columns = columns ?? []
+                }
+                return columnStore.columns
+            } else {
+                return columnStore.columns.filter { column in
+                    column.categories.contains { selectedCategories.contains($0) }
+                }
+            }
+        }
     
     var body: some View {
         NavigationView {
@@ -102,7 +116,7 @@ struct HomeView: View {
                         // 메모 뷰
                         MemoView(filteredMemos: filteredMemos)
                     } else {
-                       // HomeColumn(filteredColumns: filteredColumns)
+                        ColumnView(filteredColumns: filteredColumns)
                     }
                 }
                 .navigationBarHidden(true)
