@@ -41,8 +41,6 @@ class AuthManager: ObservableObject {
     @Published var displayName: String = ""
     @Published var photoURL: URL?
     @Published var userID: String = ""
-    
-    @Published var profileInfo: ProfileInfo = ProfileInfo(nickname: "", registrationDate: Date())
 
     init() {
              registerAuthStateHandler()
@@ -65,57 +63,6 @@ class AuthManager: ObservableObject {
 }
 
 extension AuthManager {
-    // 처음 로그인 시 파베에 이메일 바로 저장
-    func createProfile(nickname: String) async {
-        do {
-            let db = Firestore.firestore()
-            
-            try await db.collection("User").document(email).collection("profileInfo").document("profileDoc").setData([
-                "nickname": nickname,
-                "registrationDate": profileInfo.registrationDate,
-            ])
-        } catch {
-            print(error)
-        }
-    }
-    
-    func loadUserProfile(email: String) async {
-        do {
-            let db = Firestore.firestore()
-            let snapshots = try await db.collection("User").document(email).collection("profileInfo").getDocuments()
-            
-            for document in snapshots.documents {
-                let docData = document.data()
-                let nickname: String = email
-                
-                let registrationTimestamp = docData["registrationDate"] as? Timestamp
-                let registrationDate: Date = registrationTimestamp?.dateValue() ?? Date()
-                
-                self.profileInfo = ProfileInfo(
-                    nickname: nickname,
-                    registrationDate: registrationDate
-                )
-            }
-        } catch{
-            print("\(error)")
-        }
-    }
-    
-//    func signInWithEmailPassword() async -> Bool {
-//        authenticationState = .authenticating
-//        do {
-//            // 로그인 시 이메일 설정
-//            self.email = try await Auth.auth().signIn(withEmail: self.email, password: self.password).user.email ?? ""
-//            return true
-//        }
-//        catch  {
-//            print(error)
-//            errorMessage = error.localizedDescription
-//            authenticationState = .unauthenticated
-//            return false
-//        }
-//    }
-
     func signOut() {
         do {
             try Auth.auth().signOut()
@@ -176,10 +123,6 @@ extension AuthManager {
             self.userID = firebaseUser.uid
 
             self.email = firebaseUser.email ?? ""  // 구글 로그인하면 이메일 설정
-            
-            await loadUserProfile(email: email)
-            
-            await createProfile(nickname: email)
             
             authenticationState = .authenticated
             return true

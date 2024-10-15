@@ -11,7 +11,7 @@ struct LoginView: View {
     @State private var isPresented: Bool = false
     @EnvironmentObject var authManager: AuthManager
     
-    @Binding var isNextView: Bool
+    @State private var isNextView: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -40,38 +40,38 @@ struct LoginView: View {
             }
         }
         .sheet(isPresented: $isPresented) {
-            SignUpDetailView(isPresented: $isPresented, isNextView: $isNextView)
+            AddUserInfoView(isPresented: $isPresented, isNextView: $isNextView)
                 .presentationDetents([.medium])
         }
     }
 }
 
 #Preview {
-    LoginView(isNextView: .constant(false))
+    LoginView()
         .environmentObject(AuthManager())
 }
 
 
 // SignUpDetailView.swift
 
-import SwiftUI
-
-struct SignUpDetailView: View {
-    @Binding var isPresented: Bool
-    @Binding var isNextView: Bool
-    
-    var body: some View {
-        NavigationStack {
-            Button {
-                isPresented = false
-                isNextView = true
-            } label: {
-                Text("다음")
-            }
-        }
-    }
-}
-
-#Preview {
-    SignUpDetailView(isPresented: .constant(false), isNextView: .constant(false))
-}
+//import SwiftUI
+//
+//struct SignUpDetailView: View {
+//    @Binding var isPresented: Bool
+//    @Binding var isNextView: Bool
+//    
+//    var body: some View {
+//        NavigationStack {
+//            Button {
+//                isPresented = false
+//                isNextView = true
+//            } label: {
+//                Text("다음")
+//            }
+//        }
+//    }
+//}
+//
+//#Preview {
+//    SignUpDetailView(isPresented: .constant(false), isNextView: .constant(false))
+//}
