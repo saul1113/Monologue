@@ -10,12 +10,6 @@ struct ColunmDetail: View {
     @State private var isLiked: Bool = false
     @State private var likeCount: Int = 5
     @State private var showAllComments = false  // 시트를 열기 위한 상태
-    @State private var comments: [Comment] = [
-        Comment(author: "김작가", text: "글에 대한 의견 및 감상...", time: "10분 전"),
-        Comment(author: "홍작가", text: "좋은 글입니다.", time: "3분 전"),
-        Comment(author: "신작가", text: "좋은 글입니다.", time: "3분 전"),
-        Comment(author: "이작가", text: "좋은 글입니다.", time: "3분 전")
-    ]
     @State private var newComment = ""  // 새 댓글을 저장할 상태
     
     var body: some View {
@@ -248,14 +242,6 @@ struct CommentsSheetView: View {
             .padding()
         }
     }
-}
-
-// 댓글 구조체
-struct Comment: Identifiable {
-    let id = UUID()
-    let author: String
-    let text: String
-    let time: String
 }
 
 // 확장 함수: HEX 색상 코드를 SwiftUI에서 사용 가능하게 하는 방법

@@ -18,19 +18,7 @@
  날짜 -> Date
  */
 
-struct Memo {
-    var memoID: String = UUID().uuidString // 메모 ID
-    var memoContent: String // 메모 내용
-    var memoFont: String // 글꼴
-    var memoBackgroundImage: String? // 배경 사진명 (옵셔널)
-    var memoCategory: [String]
-    var memoDate: Date // 날짜
-}
-
-
 import SwiftUI
-
-
 
 struct MemoWritingView: View {
     @Environment(\.dismiss) var dismiss

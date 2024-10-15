@@ -15,14 +15,6 @@
  Comment -> 코멘트 ID String 배열
  날짜 -> Date
  */
-
-struct Column {
-    var columnID: String = UUID().uuidString
-    var columnContent: String
-    var columnCategory: [String]
-    var columnDate: Date
-}
-
 import SwiftUI
 
 struct ColumnWritingView: View {
