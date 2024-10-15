@@ -9,7 +9,7 @@ import Foundation
 
 struct UserInfo: Codable {
     var nickname: String // 닉네임
-    var registrationDate: Date              // 가입날짜
+    var registrationDate: Date  // 가입날짜
     var preferredCategories: [String] // 선호 카테고리
     var profileImageName: String // 프로필 사진명
     var introduction: String // 자기소개
