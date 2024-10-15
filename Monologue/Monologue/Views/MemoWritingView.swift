@@ -56,7 +56,7 @@ struct MemoWritingView: View {
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundColor(text.isEmpty ? .gray : .clear)
-                            .padding(.top, -175)
+                            .padding(.top, -170)
                             .padding(.leading, -175)
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color(.systemGray4))
@@ -130,7 +130,7 @@ struct MemoWritingView: View {
                             .foregroundStyle(Color.accent)
                         
                         ForEach(categoryOptions, id: \.self) { category in
-                            CategoryButton(title: category, isSelected: selectedMemoCategory == category) {
+                            CategoryMemoButton(title: category, isSelected: selectedMemoCategory == category) {
                                 selectedMemoCategory = category
                             }
                         }
@@ -206,7 +206,7 @@ struct BackgroundButton: View {
     }
 }
 
-struct CategoryButton: View {
+struct CategoryMemoButton: View {
     var title: String
     var isSelected: Bool
     var action: () -> Void
