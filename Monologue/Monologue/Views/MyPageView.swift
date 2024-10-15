@@ -98,6 +98,7 @@ struct MyPageView: View {
                     }
                 }
                 
+                // 메모, 칼럼 뷰 얹을 예정
             }
             .padding(.horizontal, 16)
             .foregroundStyle(.accent)
