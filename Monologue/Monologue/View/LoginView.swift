@@ -9,33 +9,69 @@ import SwiftUI
 
 struct LoginView: View {
     @State private var isPresented: Bool = false
-    @State private var authState: AuthenticationState = .unauthenticated
     @EnvironmentObject var authManager: AuthManager
+    
+    @Binding var isNextView: Bool
+    
     var body: some View {
         NavigationStack {
-            if isPresented {
+            if isNextView {
                 ContentView()
-            }else {
-                  VStack {
-                    Button {
-                        Task {
-                            isPresented  = await authManager.signInWithGoogle()
-                        }
-                    } label: {
-                        Text("Login Button")
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .foregroundStyle(.white)
-                            .background(.indigo.gradient, in: RoundedRectangle(cornerRadius: 10))
+            } else {
+                ZStack {
+                    Color(red: 255 / 255, green: 248 / 255, blue: 237 / 255).ignoresSafeArea()
+                    
+                    VStack {
+                        Text("MONOLOGUE")
+                            .padding(40)
+                            .font(.system(size: 42))
+                            .foregroundStyle(Color(red: 120 / 255, green: 88 / 255, blue: 79 / 255))
+                            .bold()
+                        
+                        GoogleButtonView(isPresented: $isPresented)
+                            .environmentObject(authManager)
+                            .shadow(color: .gray, radius: 2, x: 0, y: 2)
+                            .padding()
+                        
+                        AppleButtonView(isPresented: $isPresented)
+                            .environmentObject(authManager)
                     }
                 }
-                .padding(.horizontal, 20)
+            }
+        }
+        .sheet(isPresented: $isPresented) {
+            SignUpDetailView(isPresented: $isPresented, isNextView: $isNextView)
+                .presentationDetents([.medium])
+        }
+    }
+}
+
+#Preview {
+    LoginView(isNextView: .constant(false))
+        .environmentObject(AuthManager())
+}
+
+
+// SignUpDetailView.swift
+
+import SwiftUI
+
+struct SignUpDetailView: View {
+    @Binding var isPresented: Bool
+    @Binding var isNextView: Bool
+    
+    var body: some View {
+        NavigationStack {
+            Button {
+                isPresented = false
+                isNextView = true
+            } label: {
+                Text("다음")
             }
         }
     }
 }
 
 #Preview {
-    LoginView()
-        .environmentObject(AuthManager())
+    SignUpDetailView(isPresented: .constant(false), isNextView: .constant(false))
 }

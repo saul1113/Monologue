@@ -22,6 +22,7 @@
 		EAC7D7A72CBD24CC008A8074 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A62CBD24CC008A8074 /* FirebaseFirestoreCombine-Community */; };
 		EAC7D7C02CBD2902008A8074 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7BF2CBD2902008A8074 /* GoogleSignIn */; };
 		EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */; };
+		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		8EF50D5B2CBDFD01000CABAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8EF50D5C2CBDFD01000CABAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonologueApp.swift; sourceTree = "<group>"; };
+		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */,
 				8EF50D572CBDFD01000CABAA /* ContentView.swift */,
 				8EF50D582CBDFD01000CABAA /* LoginView.swift */,
+				EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
 				8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */,
 				8EF50D632CBDFD01000CABAA /* LoginView.swift in Sources */,
+				EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */,
 				8EF50D642CBDFD01000CABAA /* MonologueApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
