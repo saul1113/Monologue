@@ -12,6 +12,8 @@ struct AddUserInfoView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject private var userInfoStroe: UserInfoStore
     
+    @State private var showNicknameWarning: Bool = false // 닉네임 확인
+    
     @State private var nicknameText: String = ""
     
     @State var dict: OrderedDictionary = [
@@ -37,16 +39,25 @@ struct AddUserInfoView: View {
             VStack(alignment: .leading) {
                 Spacer()
                     .frame(height: 100)
-                
-                TextField("사용하실 닉네임을 입력해주세요.", text: $nicknameText)
-                    .padding(.horizontal, 10)
-                    .frame(height: 45)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.gray, lineWidth: 2).opacity(0.2)
-                    )
-                    .cornerRadius(10)
-                    .padding(.bottom, 30)
+                VStack(alignment: .leading) {
+                    TextField("사용하실 닉네임을 입력해주세요.", text: $nicknameText)
+                        .padding(.horizontal, 10)
+                        .frame(height: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(.gray, lineWidth: 2).opacity(0.2)
+                        )
+                        .cornerRadius(10)
+                        .padding(.bottom, 5)
+                    
+                    // 닉네임이 비어 있을 때 빨간색 경고 메시지
+                    if showNicknameWarning && nicknameText.isEmpty {
+                        Text("닉네임을 입력해주세요.")
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                }
+                .padding(.bottom, 30)
                 
                 VStack(alignment: .leading, spacing: 5) {
                     Text("카테고리")
@@ -58,14 +69,19 @@ struct AddUserInfoView: View {
                 Spacer()
                 
                 Button {
-                    isPresented = false
-                    isNextView = true
-                    
-                    Task {
-                        let newUserInfo = UserInfo(nickname: nicknameText, registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", following: [""], followers: [""], blocked: [""], likes: [""])
+                    // 닉네임 확인
+                    if nicknameText.isEmpty {
+                        showNicknameWarning = true // 닉네임이 비어 있을 때
+                    } else {
+                        showNicknameWarning = false // 닉네임이 있을 때
+                        isPresented = false
+                        isNextView = true
                         
-                        await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
-                        
+                        Task {
+                            let newUserInfo = UserInfo(nickname: nicknameText, registrationDate: Date(), preferredCategories: [], profileImageName: "", introduction: "", following: [], followers: [], blocked: [], likes: [])
+                            
+                            await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                        }
                     }
                 } label: {
                     Text("등록")

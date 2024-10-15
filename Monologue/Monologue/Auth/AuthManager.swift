@@ -27,7 +27,7 @@ enum AuthenticationFlow {
 
 @MainActor
 class AuthManager: ObservableObject {
-    @Published var name: String = "unkown"
+    @Published var name: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
@@ -41,9 +41,9 @@ class AuthManager: ObservableObject {
     @Published var displayName: String = ""
     @Published var photoURL: URL?
     @Published var userID: String = ""
-
+    
     init() {
-             registerAuthStateHandler()
+        registerAuthStateHandler()
     }
     
     private var authStateHandler: AuthStateDidChangeListenerHandle?
@@ -102,7 +102,7 @@ extension AuthManager {
               let window = windowScene.windows.first,
               let rootViewController = window.rootViewController else {
             print("There is no root view controller!")
-
+            
             return false
         }
         
@@ -121,17 +121,36 @@ extension AuthManager {
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
             
             self.userID = firebaseUser.uid
-
+            
             self.email = firebaseUser.email ?? ""  // 구글 로그인하면 이메일 설정
             
-            authenticationState = .authenticated
-            return true
+//            authenticationState = .authenticated
+//            return true
+            
+            return await checkNicknameExists(email: self.email)
         }
         catch {
             print(error.localizedDescription)
             self.errorMessage = error.localizedDescription
             return false
         }
+    }
+    
+    // 닉네임 존재 여부 확인 메서드 추가
+    func checkNicknameExists(email: String) async -> Bool {
+        let db = Firestore.firestore()
+        let docRef = db.collection("User").document(email)
+        
+        do {
+            let document = try await docRef.getDocument()
+            if let data = document.data(), let nickname = data["nickname"] as? String, !nickname.isEmpty {
+                return true
+            }
+        } catch {
+            print("Error checking nickname: \(error)")
+        }
+        
+        return false
     }
 }
 

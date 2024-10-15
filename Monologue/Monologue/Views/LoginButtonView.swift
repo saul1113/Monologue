@@ -10,11 +10,18 @@ import SwiftUI
 struct GoogleButtonView: View {
     @EnvironmentObject var authManager: AuthManager
     @Binding var isPresented: Bool
+    @Binding var isNextView: Bool
     
     var body: some View {
         Button(action: {
             Task {
-                isPresented = await authManager.signInWithGoogle()
+                let nicknameExists = await authManager.signInWithGoogle()
+                
+                if nicknameExists {
+                    isNextView = true  // 닉네임이 있으면 ContentView로
+                } else {
+                    isPresented = true  // 닉네임이 없으면 Sheet 띄움
+                }
             }
         }) {
             HStack {
