@@ -15,8 +15,21 @@ struct BlockedUsersListView: View {
             Color(.background)
                 .ignoresSafeArea()
             
-            VStack {
-                Text("BlockedUsersListView")
+            ScrollView {
+                // ForEach로 변경 예정
+                VStack {
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                }
+                .padding(.top, 25)
+                .padding(.horizontal, 16)
+                .foregroundStyle(.accent)
+                .frame(maxHeight: .infinity, alignment: .top)
             }
         }
         .navigationTitle("차단 유저 목록")
