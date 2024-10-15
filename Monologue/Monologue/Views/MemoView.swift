@@ -9,7 +9,7 @@ import SwiftUI
 import OrderedCollections
 
 struct MemoView: View {
-    @Bindable var homeviewModel = HomeViewModel()
+    @Bindable var homeviewModel = HomeViewDummy()
     var filteredMemos: [Memo]
     
     var body: some View {

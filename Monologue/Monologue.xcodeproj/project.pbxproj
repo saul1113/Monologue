@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		8B71225F2CBE009B00734578 /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B71225E2CBE009600734578 /* MemoView.swift */; };
 		8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122602CBE00CE00734578 /* MemoDetailView.swift */; };
-		8B7122632CBE295400734578 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122622CBE295000734578 /* HomeViewModel.swift */; };
+		8B7122632CBE295400734578 /* HomeViewDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122622CBE295000734578 /* HomeViewDummy.swift */; };
 		8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122642CBE509D00734578 /* MasonryLayout.swift */; };
 		8E52D9382CBD215600E5D42A /* MonologueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9322CBD215600E5D42A /* MonologueApp.swift */; };
 		8E52D93C2CBD215600E5D42A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E52D92F2CBD215600E5D42A /* Assets.xcassets */; };
@@ -24,7 +24,7 @@
 /* Begin PBXFileReference section */
 		8B71225E2CBE009600734578 /* MemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoView.swift; sourceTree = "<group>"; };
 		8B7122602CBE00CE00734578 /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
-		8B7122622CBE295000734578 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		8B7122622CBE295000734578 /* HomeViewDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewDummy.swift; sourceTree = "<group>"; };
 		8B7122642CBE509D00734578 /* MasonryLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasonryLayout.swift; sourceTree = "<group>"; };
 		8E52D9162CBD100A00E5D42A /* Monologue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monologue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E52D92F2CBD215600E5D42A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
-				8B7122622CBE295000734578 /* HomeViewModel.swift */,
+				8B7122622CBE295000734578 /* HomeViewDummy.swift */,
 				8B71225E2CBE009600734578 /* MemoView.swift */,
 				8B7122602CBE00CE00734578 /* MemoDetailView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
@@ -176,7 +176,7 @@
 			files = (
 				8E52D9382CBD215600E5D42A /* MonologueApp.swift in Sources */,
 				8B71225F2CBE009B00734578 /* MemoView.swift in Sources */,
-				8B7122632CBE295400734578 /* HomeViewModel.swift in Sources */,
+				8B7122632CBE295400734578 /* HomeViewDummy.swift in Sources */,
 				8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */,
 				8E52D9432CBD216C00E5D42A /* HomeView.swift in Sources */,
 				8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */,

@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  HomeViewDummy.swift
 //  Monologue
 //
 //  Created by 홍지수 on 10/15/24.
@@ -9,7 +9,7 @@ import SwiftUI
 
 
 @Observable
-class HomeViewModel {
+class HomeViewDummy {
     let memos: [Memo]
     // 각 메모에 따라 생성된 image 이름 스트링 저장하는 Dictionary
     var imagesDic: [Memo.ID : String]

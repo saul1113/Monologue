@@ -9,7 +9,7 @@ import SwiftUI
 import OrderedCollections
 
 struct HomeView: View {
-    @State var homeviewModel = HomeViewModel()
+    @State var homeviewModel = HomeViewDummy()
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State private var selectedPickerIndex: Int = 0
