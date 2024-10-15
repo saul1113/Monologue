@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct MyPageView: View {
+    
+    var sharedString: String = "MONOLOG" // 변경 예정
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -88,9 +91,7 @@ struct MyPageView: View {
                                 )
                         }
                         
-                        Button {
-                            // 프로필 공유 시트
-                        } label: {
+                        ShareLink(item: sharedString) {
                             Text("프로필 공유")
                                 .font(.system(size: 15))
                                 .frame(maxWidth: .infinity, minHeight: 30)
