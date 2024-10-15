@@ -14,12 +14,6 @@ struct FollowListView: View {
     @State var selectedSegment: String // 마이페이지뷰에서 받음
     private let segments = ["팔로워", "팔로잉"] // 세그먼트 버튼
     
-    // 샘플 데이터임 지워야 댐
-    @State private var users: [User] = [
-        User(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5, isActionActive: true),
-        User(profileImageName: "", nickname: "은하수", memoCount: 2, columnCount: 4, isActionActive: true)
-    ]
-    
     var body: some View {
         ZStack {
             Color(.background)

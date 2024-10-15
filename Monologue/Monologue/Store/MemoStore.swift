@@ -12,9 +12,7 @@ import FirebaseFirestore
 
 class MemoStore: ObservableObject {
     var memos: [Memo] = []
-    
-    // 메모 추가, 메모 삭제, 메모 변경, 메모 읽기, 댓글 달기, 좋아요 누른 사람 등록
-    
+        
     // MARK: - 메모 전체 추가, 수정
     func addMemo(memo: Memo, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()

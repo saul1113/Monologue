@@ -11,12 +11,6 @@ struct BlockedUsersListView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isActionActive = true // 차단 상태 관리
     
-    // 샘플 데이터임 지워야 댐
-    @State private var users: [User] = [
-        User(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5, isActionActive: true),
-        User(profileImageName: "", nickname: "은하수", memoCount: 2, columnCount: 4, isActionActive: true)
-    ]
-    
     var body: some View {
         ZStack {
             Color(.background)
@@ -71,14 +65,3 @@ struct BlockedUsersListView: View {
         BlockedUsersListView()
     }
 }
-
-// 샘플임 지워야 댐
-struct User: Identifiable {
-    let id = UUID() // 각 유저를 구분하기 위한 고유 ID
-    let profileImageName: String
-    let nickname: String
-    let memoCount: Int
-    let columnCount: Int
-    var isActionActive: Bool // 차단 또는 팔로우 상태
-}
-
