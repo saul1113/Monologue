@@ -87,7 +87,7 @@ struct MyPageView: View {
                                     .bold()
                             }
                             .padding(.horizontal, 2)
-                        }
+                        } 
                     }
                     .font(.system(size: 14))
                     .frame(height: 22)
@@ -188,6 +188,5 @@ struct MyPageView: View {
             .environmentObject(UserInfoStore())
             .environmentObject(MemoStore())
             .environmentObject(ColumnStore())
-            .environmentObject(CommentStore())
     }
 }

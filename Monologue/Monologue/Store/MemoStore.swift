@@ -12,6 +12,7 @@ import FirebaseFirestore
 
 class MemoStore: ObservableObject {
     @Published var memos: [Memo] = []
+    @Published var filterMemos: [Memo] = []
         
     // MARK: - 메모 전체 추가, 수정
     func addMemo(memo: Memo, completion: @escaping (Error?) -> Void) {

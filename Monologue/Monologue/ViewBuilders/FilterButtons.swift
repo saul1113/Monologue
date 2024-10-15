@@ -20,6 +20,10 @@ func categoryView(dict: Binding<OrderedDictionary<String, Bool>>) -> some View {
                         }
                         dict.wrappedValue[dict.wrappedValue.elements[index].key]?.toggle()
                     } else {
+                        if dict.wrappedValue[dict.wrappedValue.elements[0].key]! {
+                            dict.wrappedValue[dict.wrappedValue.elements[0].key]? = false
+                        }
+                        
                         if let firstValue = dict.wrappedValue[dict.wrappedValue.elements[0].key], !firstValue {
                             dict.wrappedValue[dict.wrappedValue.elements[index].key]?.toggle()
                         }
@@ -32,11 +36,13 @@ func categoryView(dict: Binding<OrderedDictionary<String, Bool>>) -> some View {
                         .background(
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(dict.wrappedValue.elements[index].value ? .accent : .white)
-                                .stroke(.accent, lineWidth: 1)
+                                .stroke(.accent.opacity(0.5), lineWidth: 1)
                         )
                 }
-                .padding(.leading, 10)
+                .padding(.trailing, 10)
             }
         }
+        .frame(minHeight: 50)
+        .padding(.leading, 16)
     }
 }

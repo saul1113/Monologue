@@ -30,11 +30,10 @@ struct HomeView: View {
     ]
     var filteredMemos: [Memo] {
         if selectedCategories == ["전체"] {
-            var tempMemos: [Memo] = []
             memoStore.loadMemos { memos, error in
-                tempMemos = memos ?? []
+                memoStore.memos = memos ?? []
             }
-            return tempMemos
+            return memoStore.memos
         } else {
 //            print(self.filteredMemos[0].id)
             return memoStore.memos.filter { memo in
@@ -103,7 +102,7 @@ struct HomeView: View {
                         // 메모 뷰
                         MemoView(filteredMemos: filteredMemos)
                     } else {
-                        HomeColumn(filteredColumns: filteredColumns)
+                       // HomeColumn(filteredColumns: filteredColumns)
                     }
                 }
                 .navigationBarHidden(true)

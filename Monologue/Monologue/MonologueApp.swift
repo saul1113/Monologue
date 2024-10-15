@@ -28,8 +28,8 @@ struct MonologueApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-//            LoginView()
+            //HomeView()
+            LoginView()
                 .environmentObject(authStore)
                 .environmentObject(userInfoStore)
                 .environmentObject(memoStore)
