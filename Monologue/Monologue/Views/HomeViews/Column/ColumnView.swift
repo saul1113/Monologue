@@ -41,7 +41,7 @@ struct PostRow: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
                 Spacer()
-                Text(column.categories.first ?? "카테고리 없음")
+                Text(column.categories.first ?? "카테고리 없음.")
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .padding(4)
