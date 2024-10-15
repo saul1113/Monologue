@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D502CBDFD01000CABAA /* AuthManager.swift */; };
+		8EF50D602CBDFD01000CABAA /* ProfileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */; };
+		8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */; };
+		8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D572CBDFD01000CABAA /* ContentView.swift */; };
+		8EF50D632CBDFD01000CABAA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D582CBDFD01000CABAA /* LoginView.swift */; };
+		8EF50D642CBDFD01000CABAA /* MonologueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */; };
+		8EF50D652CBDFD01000CABAA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EF50D542CBDFD01000CABAA /* Preview Assets.xcassets */; };
+		8EF50D662CBDFD01000CABAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EF50D5A2CBDFD01000CABAA /* Assets.xcassets */; };
+		8EF50D672CBDFD01000CABAA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8EF50D5B2CBDFD01000CABAA /* GoogleService-Info.plist */; };
 		EAC7D7A12CBD23E0008A8074 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A02CBD23E0008A8074 /* FirebaseAuth */; };
 		EAC7D7A32CBD23E0008A8074 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A22CBD23E0008A8074 /* FirebaseDatabase */; };
 		EAC7D7A52CBD23E0008A8074 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A42CBD23E0008A8074 /* FirebaseFirestore */; };
@@ -17,28 +26,17 @@
 
 /* Begin PBXFileReference section */
 		8E52D9162CBD100A00E5D42A /* Monologue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monologue.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EF50D502CBDFD01000CABAA /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfo.swift; sourceTree = "<group>"; };
+		8EF50D542CBDFD01000CABAA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUserInfoView.swift; sourceTree = "<group>"; };
+		8EF50D572CBDFD01000CABAA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8EF50D582CBDFD01000CABAA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		8EF50D5A2CBDFD01000CABAA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8EF50D5B2CBDFD01000CABAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8EF50D5C2CBDFD01000CABAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonologueApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EAC7D7AD2CBD270C008A8074 /* Exceptions for "Monologue" folder in "Monologue" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 8E52D9152CBD100A00E5D42A /* Monologue */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		8E52D9182CBD100A00E5D42A /* Monologue */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				EAC7D7AD2CBD270C008A8074 /* Exceptions for "Monologue" folder in "Monologue" target */,
-			);
-			path = Monologue;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8E52D9132CBD100A00E5D42A /* Frameworks */ = {
@@ -60,7 +58,7 @@
 		8E52D90D2CBD100A00E5D42A = {
 			isa = PBXGroup;
 			children = (
-				8E52D9182CBD100A00E5D42A /* Monologue */,
+				8EF50D5E2CBDFD01000CABAA /* Monologue */,
 				8E52D9172CBD100A00E5D42A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +69,55 @@
 				8E52D9162CBD100A00E5D42A /* Monologue.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8EF50D512CBDFD01000CABAA /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				8EF50D502CBDFD01000CABAA /* AuthManager.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		8EF50D532CBDFD01000CABAA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		8EF50D552CBDFD01000CABAA /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				8EF50D542CBDFD01000CABAA /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8EF50D592CBDFD01000CABAA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */,
+				8EF50D572CBDFD01000CABAA /* ContentView.swift */,
+				8EF50D582CBDFD01000CABAA /* LoginView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8EF50D5E2CBDFD01000CABAA /* Monologue */ = {
+			isa = PBXGroup;
+			children = (
+				8EF50D512CBDFD01000CABAA /* Auth */,
+				8EF50D532CBDFD01000CABAA /* Model */,
+				8EF50D552CBDFD01000CABAA /* Preview Content */,
+				8EF50D592CBDFD01000CABAA /* View */,
+				8EF50D5A2CBDFD01000CABAA /* Assets.xcassets */,
+				8EF50D5B2CBDFD01000CABAA /* GoogleService-Info.plist */,
+				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
+				8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */,
+			);
+			path = Monologue;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -87,9 +134,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				8E52D9182CBD100A00E5D42A /* Monologue */,
 			);
 			name = Monologue;
 			packageProductDependencies = (
@@ -147,6 +191,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EF50D652CBDFD01000CABAA /* Preview Assets.xcassets in Resources */,
+				8EF50D662CBDFD01000CABAA /* Assets.xcassets in Resources */,
+				8EF50D672CBDFD01000CABAA /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +204,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
+				8EF50D602CBDFD01000CABAA /* ProfileInfo.swift in Sources */,
+				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
+				8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */,
+				8EF50D632CBDFD01000CABAA /* LoginView.swift in Sources */,
+				8EF50D642CBDFD01000CABAA /* MonologueApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
