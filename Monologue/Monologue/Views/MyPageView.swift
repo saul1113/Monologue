@@ -129,7 +129,7 @@ struct MyPageView: View {
                 // 설정 버튼
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        // 설정 페이지
+                        SettingView()
                     } label: {
                         Image(systemName: "line.3.horizontal")
                     }
