@@ -121,10 +121,13 @@ struct MyPageView: View {
                     
                     if selectedSegment == "메모" {
                         // 메모 뷰
-//                        MemoView(homeviewModel: HomeViewDummy(), filteredMemos: userMemos)
+                        MemoView(filteredMemos: userMemos)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
                     } else if selectedSegment == "칼럼" {
                         // 칼럼 뷰
                         Text("칼럼 뷰")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
                 .padding(.horizontal, 16)
