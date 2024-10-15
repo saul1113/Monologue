@@ -50,6 +50,7 @@
 		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
 		EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */; };
 		EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */; };
+		EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB84EC52CBEE06700AC006A /* ColumnView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,7 +92,7 @@
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
 		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
-		EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeColumn.swift; sourceTree = "<group>"; };
+		EBB84EC52CBEE06700AC006A /* ColumnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,7 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */,
-				EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */,
+				EBB84EC52CBEE06700AC006A /* ColumnView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
 			);
 			path = Column;
@@ -369,6 +370,7 @@
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
 				97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */,
 				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
+				EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
 				BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */,
 				EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */,
