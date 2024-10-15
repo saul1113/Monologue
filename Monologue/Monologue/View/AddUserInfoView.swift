@@ -9,6 +9,9 @@ import SwiftUI
 import OrderedCollections
 
 struct AddUserInfoView: View {
+    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject private var userInfoStroe: UserInfoStore
+    
     @State private var nicknameText: String = ""
     
     @State var dict: OrderedDictionary = [
@@ -57,6 +60,13 @@ struct AddUserInfoView: View {
                 Button {
                     isPresented = false
                     isNextView = true
+                    
+                    Task {
+                        let newUserInfo = UserInfo(nickname: nicknameText, registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", following: [""], followers: [""], blocked: [""], likes: [""])
+                        
+                        await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                        
+                    }
                 } label: {
                     Text("등록")
                         .frame(maxWidth: .infinity, minHeight: 35)

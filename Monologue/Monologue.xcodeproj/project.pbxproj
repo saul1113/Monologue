@@ -16,7 +16,6 @@
 		8EF50D352CBDF47C000CABAA /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 8EF50D342CBDF47C000CABAA /* OrderedCollections */; };
 		8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D362CBDF52A000CABAA /* FilterButtons.swift */; };
 		8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D502CBDFD01000CABAA /* AuthManager.swift */; };
-		8EF50D602CBDFD01000CABAA /* ProfileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */; };
 		8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */; };
 		8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D572CBDFD01000CABAA /* ContentView.swift */; };
 		8EF50D632CBDFD01000CABAA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D582CBDFD01000CABAA /* LoginView.swift */; };
@@ -33,6 +32,9 @@
 		EAC7D7C02CBD2902008A8074 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7BF2CBD2902008A8074 /* GoogleSignIn */; };
 		EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */; };
 		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
+
+		EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +47,6 @@
 		8E91AECF2CBE30E6009889D4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8EF50D362CBDF52A000CABAA /* FilterButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButtons.swift; sourceTree = "<group>"; };
 		8EF50D502CBDFD01000CABAA /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
-		8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfo.swift; sourceTree = "<group>"; };
 		8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUserInfoView.swift; sourceTree = "<group>"; };
 		8EF50D572CBDFD01000CABAA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8EF50D582CBDFD01000CABAA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -57,6 +58,9 @@
 		8EF50D712CBE0467000CABAA /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		8EF50D732CBE0479000CABAA /* Complain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complain.swift; sourceTree = "<group>"; };
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
+		
+		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,7 @@
 				8E91AECF2CBE30E6009889D4 /* GoogleService-Info.plist */,
 				8EF50D512CBDFD01000CABAA /* Auth */,
 				8EF50D532CBDFD01000CABAA /* Model */,
+				EAC7D86A2CBE2E62008A8074 /* Store */,
 				8EF50D592CBDFD01000CABAA /* View */,
 				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
 				8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */,
@@ -131,7 +136,6 @@
 		8EF50D532CBDFD01000CABAA /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				8EF50D522CBDFD01000CABAA /* ProfileInfo.swift */,
 				8EF50D6B2CBE0402000CABAA /* UserInfo.swift */,
 				8EF50D6D2CBE0432000CABAA /* Memo.swift */,
 				8EF50D6F2CBE0453000CABAA /* Column.swift */,
@@ -150,6 +154,14 @@
 				EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		EAC7D86A2CBE2E62008A8074 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */,
+			);
+			path = Store;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -239,8 +251,8 @@
 			files = (
 				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
 				8EF50D742CBE0479000CABAA /* Complain.swift in Sources */,
-				8EF50D602CBDFD01000CABAA /* ProfileInfo.swift in Sources */,
 				8EF50D702CBE0453000CABAA /* Column.swift in Sources */,
+				EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */,
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
 				8EF50D6E2CBE0432000CABAA /* Memo.swift in Sources */,
 				8EF50D722CBE0467000CABAA /* Comment.swift in Sources */,
