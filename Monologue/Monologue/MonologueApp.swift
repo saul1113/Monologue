@@ -20,15 +20,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct MonologueApp: App {
     @StateObject private var authStore = AuthManager()
     @StateObject private var userInfoStore  = UserInfoStore()
+    @StateObject private var memoStore = MemoStore()
+    @StateObject private var columnStore = ColumnStore()
+    @StateObject private var commentStore = CommentStore()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
-//            MainView()
             LoginView()
                 .environmentObject(authStore)
                 .environmentObject(userInfoStore)
+                .environmentObject(memoStore)
+                .environmentObject(columnStore)
+                .environmentObject(commentStore)
         }
     }
 }

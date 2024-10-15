@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject private var userInfoStore: UserInfoStore
+    
     var body: some View {
         TabView {
             HomeView()
@@ -40,4 +42,9 @@ struct MainView: View {
 
 #Preview {
     MainView()
+        .environmentObject(AuthManager())
+        .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }

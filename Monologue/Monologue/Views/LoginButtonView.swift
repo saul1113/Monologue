@@ -79,4 +79,8 @@ struct AppleButtonView: View {
 #Preview {
     LoginView()
         .environmentObject(AuthManager())
+        .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }

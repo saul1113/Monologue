@@ -13,6 +13,8 @@ import SwiftUICore
 
 @MainActor
 class UserInfoStore: ObservableObject {
+    private var memoStore: MemoStore = .init()
+    private var columnStore: ColumnStore = .init()
     @Published var userInfo: UserInfo? = nil
     
     // 로그인 시 사용자(닉네임, 가입날짜) 파베에 추가
@@ -26,7 +28,7 @@ class UserInfoStore: ObservableObject {
                 "preferredCategories": user.preferredCategories,
                 "profileImageName": user.profileImageName,
                 "introduction": user.introduction,
-                "following": user.following,
+                "followings": user.followings,
                 "followers": user.followers,
                 "blocked": user.blocked,
                 "likes": user.likes
@@ -48,7 +50,7 @@ class UserInfoStore: ObservableObject {
                 "preferredCategories": user.preferredCategories,
                 "profileImageName": user.profileImageName,
                 "introduction": user.introduction,
-                "following": user.following,
+                "followings": user.followings,
                 "followers": user.followers,
                 "blocked": user.blocked,
                 "likes": user.likes
@@ -76,7 +78,7 @@ class UserInfoStore: ObservableObject {
             let preferredCategories: [String] = docData["preferredCategories"] as? [String] ?? []
             let profileImageName: String = docData["profileImageName"] as? String ?? ""
             let introduction: String = docData["introduction"] as? String ?? ""
-            let following: [String] = docData["following"] as? [String] ?? []
+            let following: [String] = docData["followings"] as? [String] ?? []
             let followers: [String] = docData["followers"] as? [String] ?? []
             let blocked: [String] = docData["blocked"] as? [String] ?? []
             let likes: [String] = docData["likes"] as? [String] ?? []
@@ -88,8 +90,8 @@ class UserInfoStore: ObservableObject {
                 preferredCategories: preferredCategories,
                 profileImageName: profileImageName,
                 introduction: introduction,
-                following: following,
-                followers: followers,
+                followers: following,
+                followings: followers,
                 blocked: blocked,
                 likes: likes
             )
@@ -98,5 +100,52 @@ class UserInfoStore: ObservableObject {
         } catch {
             print("Error loading user info: \(error)")
         }
+    }
+    
+    // 팔로워, 팔로잉, 차단 목록 로드
+    func loadUsersInfoByNickname(nicknames: [String], completion: @escaping ([UserInfo]?, Error?) -> Void) {
+        let db = Firestore.firestore()
+        
+        db.collection("User")
+            .whereField("nicknames", arrayContains: nicknames[0])
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    completion(nil, error)
+                    return
+                }
+                
+                var usersInfo: [UserInfo] = []
+                
+                for document in querySnapshot!.documents {
+                    let userInfo = UserInfo(document: document)
+                    
+                    usersInfo.append(userInfo)
+                }
+                
+                completion(usersInfo, nil)
+            }
+    }
+    
+    // 메모 개수
+    func getMemoCount(userNickname: String) -> Int {
+        var count = 0
+        
+        memoStore.loadMemosByUserNickname(userNickname: userNickname) { memos, error in
+            count = memos?.count ?? 0
+        }
+        
+        return count
+    }
+    
+    // 칼럼 개수
+    
+    func getColumnCount(userNickname: String) -> Int {
+        var count = 0
+        
+        columnStore.loadColumnsByUserNickname(userNickname: userNickname) { columns, error in
+            count = columns?.count ?? 0
+        }
+        
+        return count
     }
 }
