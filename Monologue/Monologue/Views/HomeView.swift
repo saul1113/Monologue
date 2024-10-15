@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
-struct HomeView: View {
+struct HomeView: View {    
     var body: some View {
         ZStack {
             Color(.background)
                 .ignoresSafeArea()
-            
-            Text("HomeView")
         }
     }
 }

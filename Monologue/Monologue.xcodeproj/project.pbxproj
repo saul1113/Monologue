@@ -13,6 +13,8 @@
 		8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93F2CBD216C00E5D42A /* MainView.swift */; };
 		8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9402CBD216C00E5D42A /* MyPageView.swift */; };
 		8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9412CBD216C00E5D42A /* PostView.swift */; };
+		8EF50D352CBDF47C000CABAA /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 8EF50D342CBDF47C000CABAA /* OrderedCollections */; };
+		8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D362CBDF52A000CABAA /* FilterButtons.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +25,7 @@
 		8E52D93F2CBD216C00E5D42A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		8E52D9402CBD216C00E5D42A /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		8E52D9412CBD216C00E5D42A /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		8EF50D362CBDF52A000CABAA /* FilterButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButtons.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EF50D352CBDF47C000CABAA /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +61,7 @@
 			children = (
 				8E52D92F2CBD215600E5D42A /* Assets.xcassets */,
 				8E52D9322CBD215600E5D42A /* MonologueApp.swift */,
+				8EF50D322CBDF446000CABAA /* ViewBuilders */,
 				8E52D9422CBD216C00E5D42A /* Views */,
 			);
 			path = Monologue;
@@ -71,6 +76,14 @@
 				8E52D9402CBD216C00E5D42A /* MyPageView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8EF50D322CBDF446000CABAA /* ViewBuilders */ = {
+			isa = PBXGroup;
+			children = (
+				8EF50D362CBDF52A000CABAA /* FilterButtons.swift */,
+			);
+			path = ViewBuilders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -90,6 +103,7 @@
 			);
 			name = Monologue;
 			packageProductDependencies = (
+				8EF50D342CBDF47C000CABAA /* OrderedCollections */,
 			);
 			productName = Monologue;
 			productReference = 8E52D9162CBD100A00E5D42A /* Monologue.app */;
@@ -119,6 +133,9 @@
 			);
 			mainGroup = 8E52D90D2CBD100A00E5D42A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8EF50D332CBDF47C000CABAA /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8E52D9172CBD100A00E5D42A /* Products */;
 			projectDirPath = "";
@@ -150,6 +167,7 @@
 				8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */,
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
+				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +379,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8EF50D332CBDF47C000CABAA /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8EF50D342CBDF47C000CABAA /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EF50D332CBDF47C000CABAA /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8E52D90E2CBD100A00E5D42A /* Project object */;
 }
