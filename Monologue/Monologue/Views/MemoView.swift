@@ -9,7 +9,7 @@ import SwiftUI
 import OrderedCollections
 
 struct MemoView: View {
-    @Bindable var homeviewModel = HomeViewDummy()
+    @EnvironmentObject private var memoStore: MemoStore
     var filteredMemos: [Memo]
     
     var body: some View {
@@ -17,9 +17,9 @@ struct MemoView: View {
             MasonryLayout(columns: 2, spacing: 16) {
                 ForEach(filteredMemos) { memo in
                     NavigationLink(destination: MemoDetailView(memo: memo)) {
-                        if let imageName = homeviewModel.imagesDic[memo.id] {
+//                        if let imageName = memo.id {
                             VStack {
-                                Image(imageName)
+                                Image(memo.id)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: UIScreen.main.bounds.width / 2 - 24, height: nil)
@@ -27,9 +27,9 @@ struct MemoView: View {
                                     .cornerRadius(12)
                                     .scaledToFit()
                             }
-                        } else {
-                            Text("이미지가 없습니다.")
-                        }
+//                        } else {
+//                            Text("이미지가 없습니다.")
+//                        }
                     }
                 }
             }
