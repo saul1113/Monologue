@@ -47,12 +47,12 @@ struct AddUserInfoView: View {
                 
                 VStack(alignment: .leading, spacing: 5) {
                     Text("카테고리")
-                        .foregroundStyle(.accent) // accentColor 변경해야함
+                        .foregroundStyle(.accent)
+                    
                     categoryView(dict: $dict)
                 }
                 
                 Spacer()
-                //
                 
                 Button {
                     isPresented = false
@@ -62,7 +62,7 @@ struct AddUserInfoView: View {
                         .frame(maxWidth: .infinity, minHeight: 35)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.accentColor)
+                .tint(.accent)
                 
                 Spacer()
             }
