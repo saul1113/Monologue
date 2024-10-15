@@ -10,11 +10,12 @@ import OrderedCollections
 
 struct MemoView: View {
     @Bindable var homeviewModel = HomeViewModel()
+    var filteredMemos: [Memo]
     
     var body: some View {
         ScrollView {
             MasonryLayout(columns: 2, spacing: 16) {
-                ForEach(homeviewModel.memos) { memo in
+                ForEach(filteredMemos) { memo in
                     NavigationLink(destination: MemoDetailView(memo: memo)) {
                         if let imageName = homeviewModel.imagesDic[memo.id] {
                             VStack {

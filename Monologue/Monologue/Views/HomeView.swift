@@ -9,10 +9,11 @@ import SwiftUI
 import OrderedCollections
 
 struct HomeView: View {
+    @State var homeviewModel = HomeViewModel()
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State private var selectedPickerIndex: Int = 0
-    @State private var selectedCategory: String = "전체"
+    @State private var selectedCategories: [String] = ["전체"]
     @State var dict: OrderedDictionary = [
         "전체": false,
         "오늘의 주제": false,
@@ -27,13 +28,15 @@ struct HomeView: View {
         "IT": false,
         "기타": false,
     ]
-    
-    let columns = [
-        GridItem(.flexible(), spacing: 10),
-        GridItem(.flexible(), spacing: 10)
-    ]
-    
-    @State var homeviewModel = HomeViewModel()
+    var filteredMemos: [Memo] {
+        if selectedCategories == ["전체"] {
+            return homeviewModel.memos
+        } else {
+            return homeviewModel.memos.filter { memo in
+                memo.categories.contains { selectedCategories.contains($0) }
+            }
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -55,8 +58,9 @@ struct HomeView: View {
                                 isSearching.toggle()
                             }
                         }) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.title)
+                            Image(systemName: isSearching ? "xmark" : "magnifyingglass")
+                                .font(.title2)
+                                .foregroundStyle(Color.accentColor)
                         }
                         .padding(.trailing, 8)
                         
@@ -64,7 +68,8 @@ struct HomeView: View {
                             // 알림 페이지로 이동
                         }) {
                             Image(systemName: "bell")
-                                .font(.title)
+                                .font(.title2)
+                                .foregroundStyle(Color.accentColor)
                         }
                     }
                     .padding(.horizontal, 16)
@@ -83,11 +88,15 @@ struct HomeView: View {
                     // 필터 버튼
                     categoryView(dict: $dict)
                         .padding(.bottom)
+                        .onChange(of: dict) { oldValue, newValue in
+                                // dict 값이 변경될 때마다 selectedCategories를 업데이트
+                                selectedCategories = newValue.filter { $0.value }.map { $0.key }
+                            }
                     
                     //MARK: - Grid
                     if selectedPickerIndex == 0 {
                         // 메모 뷰
-                        MemoView(homeviewModel: homeviewModel)
+                        MemoView(homeviewModel: homeviewModel, filteredMemos: filteredMemos)
                     } else {
                         // 칼럼 뷰
                     }
@@ -97,13 +106,9 @@ struct HomeView: View {
         }
         
     }
-    var filteredMemos: [Memo] {
-        homeviewModel.memos.filter { memo in
-            (selectedCategory == "전체" || memo.categories.contains(selectedCategory))
-//            && (searchText.isEmpty || memo.content.contains(searchText))
-        }
-    }
+
 }
+
 
 
 #Preview {
