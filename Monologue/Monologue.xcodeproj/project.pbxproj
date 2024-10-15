@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8B11949E2CBEAB7E00D9B28B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93E2CBD216C00E5D42A /* HomeView.swift */; };
+		8B1194A02CBED34C00D9B28B /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B11949F2CBED34100D9B28B /* TopBarView.swift */; };
+		8B1194A12CBED4F800D9B28B /* HomeColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */; };
 		8B71225F2CBE009B00734578 /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B71225E2CBE009600734578 /* MemoView.swift */; };
 		8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122602CBE00CE00734578 /* MemoDetailView.swift */; };
 		8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122642CBE509D00734578 /* MasonryLayout.swift */; };
@@ -53,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8B11949F2CBED34100D9B28B /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		8B71225E2CBE009600734578 /* MemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoView.swift; sourceTree = "<group>"; };
 		8B7122602CBE00CE00734578 /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		8B7122642CBE509D00734578 /* MasonryLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasonryLayout.swift; sourceTree = "<group>"; };
@@ -162,6 +165,7 @@
 		8E902D8D2CBEC5F100562071 /* HomeViews */ = {
 			isa = PBXGroup;
 			children = (
+				8B11949F2CBED34100D9B28B /* TopBarView.swift */,
 				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				8E902D912CBEC97500562071 /* Column */,
 				8E902D902CBEC96B00562071 /* Memo */,
@@ -363,6 +367,8 @@
 				8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */,
 				97F5E73F2CBE2D4500C98340 /* SettingView.swift in Sources */,
 				97F5E7472CBE4C6100C98340 /* UserRow.swift in Sources */,
+				8B1194A02CBED34C00D9B28B /* TopBarView.swift in Sources */,
+				8B1194A12CBED4F800D9B28B /* HomeColumn.swift in Sources */,
 				97F5E7452CBE3CDC00C98340 /* FollowListView.swift in Sources */,
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,
