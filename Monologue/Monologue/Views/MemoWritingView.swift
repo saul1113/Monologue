@@ -18,19 +18,7 @@
  날짜 -> Date
  */
 
-struct Memo {
-    var memoID: String = UUID().uuidString // 메모 ID
-    var memoContent: String // 메모 내용
-    var memoFont: String // 글꼴
-    var memoBackgroundImage: String? // 배경 사진명 (옵셔널)
-    var memoCategory: [String]
-    var memoDate: Date // 날짜
-}
-
-
 import SwiftUI
-
-
 
 struct MemoWritingView: View {
     @Environment(\.dismiss) var dismiss
@@ -39,6 +27,8 @@ struct MemoWritingView: View {
     @State private var selectedFont: String = "기본서체"
     @State private var selectedMemoCategory: String = "오늘의 주제" // 선택된 카테고리
     @State private var selectedBackgroundColor: Color = .white // 기본 배경색
+    
+    
 
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
@@ -46,22 +36,26 @@ struct MemoWritingView: View {
     let backgroundColors: [Color] = [.white, .blue.opacity(0.3), .green.opacity(0.3), .yellow.opacity(0.3)] // 배경 색상 목록
     let backgroundColorNames = ["흰색", "파란색", "녹색", "노란색"] // 배경 색상 이름
 
+    
+
     var body: some View {
         ZStack {
-            Color(.background)
+            Color(.systemBackground)
                 .ignoresSafeArea()
             
             VStack {
                 TextEditor(text: $text)
                     .font(.system(.title2, design: .default, weight: .regular))
-                    .frame(height: 370)
+                    .padding() // 내부 패딩 추가
                     .scrollContentBackground(.hidden)
                     .background(selectedBackgroundColor) // 선택된 배경색으로 설정
+                    .cornerRadius(8) // 모서리 둥글게
+                    .frame(height: 400) // 프레임 높이 지정
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundColor(text.isEmpty ? .gray : .clear)
-                            .padding(.top, -170)
-                            .padding(.leading, -175)
+                            .padding(.top, -170) // 상단 패딩 조정
+                            .padding(.leading, -170) // 좌측 패딩 조정
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color(.systemGray4))
                     }
@@ -70,13 +64,15 @@ struct MemoWritingView: View {
                             text = String(newValue.prefix(textLimit))
                         }
                     }
-                
+
                 HStack {
                     Spacer()
                     Text("\(text.count)/\(textLimit)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+                .padding(.bottom, 10)
+                
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
@@ -88,7 +84,6 @@ struct MemoWritingView: View {
                         Text("글꼴")
                             .font(.system(size: 15, weight: .light))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(fontOptions, id: \.self) { font in
                             FontButton(title: font, isSelected: selectedFont == font) {
                                 selectedFont = font
@@ -106,11 +101,9 @@ struct MemoWritingView: View {
                             .resizable()
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color.accent)
-                        
                         Text("배경")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(0..<backgroundColors.count, id: \.self) { index in
                             BackgroundButton(color: backgroundColors[index], colorName: backgroundColorNames[index]) {
                                 selectedBackgroundColor = backgroundColors[index] // 선택된 배경색으로 변경
@@ -128,11 +121,9 @@ struct MemoWritingView: View {
                             .resizable()
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color.accent)
-                        
                         Text("카테고리")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        
                         ForEach(categoryOptions, id: \.self) { category in
                             CategoryMemoButton(title: category, isSelected: selectedMemoCategory == category) {
                                 selectedMemoCategory = category
@@ -143,7 +134,9 @@ struct MemoWritingView: View {
                 }
                 
             }
+            .padding(.top, -80)
             .padding(.horizontal, 16)
+            
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
