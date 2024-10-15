@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MyPageView: View {
-    
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     var sharedString: String = "MONOLOG" // 변경 예정
     
     var body: some View {

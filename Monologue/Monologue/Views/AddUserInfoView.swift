@@ -106,8 +106,8 @@ struct AddUserInfoView: View {
                                     preferredCategories: selectedCategories,
                                     profileImageName: "",
                                     introduction: "",
-                                    following: [],
                                     followers: [],
+                                    followings: [],
                                     blocked: [],
                                     likes: []
                                 )
@@ -132,4 +132,9 @@ struct AddUserInfoView: View {
 
 #Preview {
     AddUserInfoView(isPresented: .constant(false), isNextView: .constant(false))
+        .environmentObject(AuthManager())
+        .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }

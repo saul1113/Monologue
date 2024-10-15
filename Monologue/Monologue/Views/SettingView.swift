@@ -80,5 +80,10 @@ struct SettingView: View {
 #Preview {
     NavigationStack {
         SettingView()
+            .environmentObject(AuthManager())
+            .environmentObject(UserInfoStore())
+            .environmentObject(MemoStore())
+            .environmentObject(ColumnStore())
+            .environmentObject(CommentStore())
     }
 }

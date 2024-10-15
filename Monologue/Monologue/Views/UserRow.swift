@@ -13,11 +13,11 @@ struct UserRow: View {
     let memoCount: Int
     let columnCount: Int
     
-    @Binding var isActionActive: Bool // 상태 관리
-    
+    @State var isActionActive = true
+        
     // 버튼 텍스트
-    let activeButtonText: String
-    let inactiveButtonText: String
+    let activeButtonText: String?
+    let inactiveButtonText: String?
     
     // 상태 로직
     let onActive: () -> Void
@@ -51,7 +51,7 @@ struct UserRow: View {
                 
                 isActionActive.toggle() // 상태 토글
             } label: {
-                Text(isActionActive ? inactiveButtonText : activeButtonText)
+                Text((isActionActive ? inactiveButtonText : activeButtonText)!)
                     .font(.system(size: 15))
                     .frame(width: 90, height: 30)
                     .foregroundStyle(isActionActive ? .white : .accent)

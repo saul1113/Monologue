@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct FollowListView: View {
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     @Environment(\.dismiss) private var dismiss
+    @State private var followers: [UserInfo] = []
+    @State private var followings: [UserInfo] = []
+    
     @State private var isActionActive = true // 팔로우 상태 관리
     
     @State var selectedSegment: String // 마이페이지뷰에서 받음
@@ -56,43 +60,41 @@ struct FollowListView: View {
                 VStack {
                     if selectedSegment == "팔로워" {
                         // 팔로워 뷰
-                        ForEach($users) { $user in
+                        ForEach(0..<followers.count) { index in
                             UserRow(
-                                profileImageName: user.profileImageName,
-                                nickname: user.nickname,
-                                memoCount: user.memoCount,
-                                columnCount: user.columnCount,
-                                isActionActive: $user.isActionActive, // 개별 상태 관리
+                                profileImageName: followers[index].profileImageName,
+                                nickname: followers[index].nickname,
+                                memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
+                                columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
                                 activeButtonText: "팔로우",
                                 inactiveButtonText: "팔로잉",
                                 onActive: {
                                     // 팔로우 로직
-                                    print("\(user.nickname) 다시 팔로우")
+                                    print("\(followers[index].nickname) 다시 팔로우")
                                 },
                                 onInactive: {
                                     // 언팔로우 로직
-                                    print("\(user.nickname) 언팔")
+                                    print("\(followers[index].nickname) 언팔")
                                 }
                             )
                         }
                     } else {
                         // 팔로잉 뷰
-                        ForEach($users) { $user in
+                        ForEach(0..<followings.count) { index in
                             UserRow(
-                                profileImageName: user.profileImageName,
-                                nickname: user.nickname,
-                                memoCount: user.memoCount,
-                                columnCount: user.columnCount,
-                                isActionActive: $user.isActionActive, // 개별 상태 관리
+                                profileImageName: followers[index].profileImageName,
+                                nickname: followers[index].nickname,
+                                memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
+                                columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
                                 activeButtonText: "팔로우",
                                 inactiveButtonText: "팔로잉",
                                 onActive: {
                                     // 팔로우 로직
-                                    print("\(user.nickname) 다시 팔로우")
+                                    print("\(followers[index].nickname) 다시 팔로우")
                                 },
                                 onInactive: {
                                     // 언팔로우 로직
-                                    print("\(user.nickname) 언팔")
+                                    print("\(followers[index].nickname) 언팔")
                                 }
                             )
                         }
@@ -115,11 +117,25 @@ struct FollowListView: View {
                 }
             }
         }
+        .onAppear {
+            userInfoStore.loadUsersInfoByNickname(nicknames: userInfoStore.userInfo!.followers, completion: { usersInfo, error in
+                followers = usersInfo ?? []
+            })
+            
+            userInfoStore.loadUsersInfoByNickname(nicknames: userInfoStore.userInfo!.followings, completion: { usersInfo, error in
+                followings = usersInfo ?? []
+            })
+        }
     }
 }
 
 #Preview {
     NavigationStack {
         FollowListView(selectedSegment: "팔로워")
+            .environmentObject(AuthManager())
+            .environmentObject(UserInfoStore())
+            .environmentObject(MemoStore())
+            .environmentObject(ColumnStore())
+            .environmentObject(CommentStore())
     }
 }

@@ -113,4 +113,9 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environmentObject(AuthManager())
+        .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }

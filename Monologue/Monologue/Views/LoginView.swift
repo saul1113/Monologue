@@ -17,7 +17,7 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             if isNextView {
-                ContentView()
+                MainView()
             } else {
                 ZStack {
                     Color(red: 255 / 255, green: 248 / 255, blue: 237 / 255).ignoresSafeArea()
@@ -51,4 +51,7 @@ struct LoginView: View {
     LoginView()
         .environmentObject(AuthManager())
         .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }
