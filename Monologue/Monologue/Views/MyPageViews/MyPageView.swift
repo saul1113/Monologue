@@ -149,7 +149,7 @@ struct MyPageView: View {
 
                     } else if selectedSegment == "칼럼" {
                         // 칼럼 뷰
-                        Text("칼럼 뷰")
+                        ColumnView(filteredColumns: userColumns)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
