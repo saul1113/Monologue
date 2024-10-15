@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @State private var isPresented: Bool = false
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var userInfoStore: UserInfoStore
     
     @State private var isNextView: Bool = false
     
@@ -28,7 +29,7 @@ struct LoginView: View {
                             .foregroundStyle(Color(red: 120 / 255, green: 88 / 255, blue: 79 / 255))
                             .bold()
                         
-                        GoogleButtonView(isPresented: $isPresented)
+                        GoogleButtonView(isPresented: $isPresented, isNextView: $isNextView)
                             .environmentObject(authManager)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2)
                             .padding()
@@ -49,29 +50,5 @@ struct LoginView: View {
 #Preview {
     LoginView()
         .environmentObject(AuthManager())
+        .environmentObject(UserInfoStore())
 }
-
-
-// SignUpDetailView.swift
-
-//import SwiftUI
-//
-//struct SignUpDetailView: View {
-//    @Binding var isPresented: Bool
-//    @Binding var isNextView: Bool
-//    
-//    var body: some View {
-//        NavigationStack {
-//            Button {
-//                isPresented = false
-//                isNextView = true
-//            } label: {
-//                Text("다음")
-//            }
-//        }
-//    }
-//}
-//
-//#Preview {
-//    SignUpDetailView(isPresented: .constant(false), isNextView: .constant(false))
-//}
