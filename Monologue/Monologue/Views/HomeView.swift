@@ -9,7 +9,7 @@ import SwiftUI
 import OrderedCollections
 
 struct HomeView: View {
-    @State var homeviewModel = HomeViewDummy()
+    @EnvironmentObject private var memoStore: MemoStore
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State private var selectedPickerIndex: Int = 0
@@ -98,7 +98,7 @@ struct HomeView: View {
                         // 메모 뷰
                         MemoView(homeviewModel: homeviewModel, filteredMemos: filteredMemos)
                     } else {
-                        // 칼럼 뷰
+                        HomeColumn(filteredColumns: filteredColumns)
                     }
                 }
                 .navigationBarHidden(true)
