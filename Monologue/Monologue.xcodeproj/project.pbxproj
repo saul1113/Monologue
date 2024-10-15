@@ -15,6 +15,7 @@
 		8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9412CBD216C00E5D42A /* PostView.swift */; };
 		8EF50D352CBDF47C000CABAA /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 8EF50D342CBDF47C000CABAA /* OrderedCollections */; };
 		8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D362CBDF52A000CABAA /* FilterButtons.swift */; };
+		BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FD6642CBDFF670047251E /* MemoWritingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		8E52D9402CBD216C00E5D42A /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		8E52D9412CBD216C00E5D42A /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		8EF50D362CBDF52A000CABAA /* FilterButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButtons.swift; sourceTree = "<group>"; };
+		BE0FD6642CBDFF670047251E /* MemoWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoWritingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				8E52D93F2CBD216C00E5D42A /* MainView.swift */,
 				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
+				BE0FD6642CBDFF670047251E /* MemoWritingView.swift */,
 				8E52D9402CBD216C00E5D42A /* MyPageView.swift */,
 			);
 			path = Views;
@@ -167,6 +170,7 @@
 				8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */,
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
+				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
