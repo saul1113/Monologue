@@ -77,8 +77,8 @@
 				8E52D93F2CBD216C00E5D42A /* MainView.swift */,
 				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
-				BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */,
 				BE0FD6642CBDFF670047251E /* MemoWritingView.swift */,
+				BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */,
 				8E52D9402CBD216C00E5D42A /* MyPageView.swift */,
 			);
 			path = Views;
