@@ -6,11 +6,15 @@
 //
 
 /*
+ Memo
  메모 ID -> String
  메모 내용 -> String
+ 유저 닉네임 -> String
  글꼴 -> String
  배경 사진명 -> 메모 ID String
  카테고리 -> String 배열
+ 좋아요 개수 -> 유저 닉네임 String 배열
+ Comment -> 코멘트 ID String 배열
  날짜 -> Date
  */
 

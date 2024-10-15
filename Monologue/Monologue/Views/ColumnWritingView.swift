@@ -6,10 +6,13 @@
 //
 
 /*
+ Column
  칼럼 ID -> String
  칼럼 내용 -> String
  유저 닉네임 -> String
  카테고리 -> String 배열
+ 좋아요 개수 ->  유저 닉네임 String 배열
+ Comment -> 코멘트 ID String 배열
  날짜 -> Date
  */
 
