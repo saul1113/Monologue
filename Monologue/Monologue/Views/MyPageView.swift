@@ -59,7 +59,7 @@ struct MyPageView: View {
                         Divider()
                         
                         NavigationLink {
-                            FollowListView()
+                            FollowListView(selectedSegment: "팔로워")
                         } label: {
                             HStack {
                                 Text("팔로워")
@@ -72,7 +72,7 @@ struct MyPageView: View {
                         Divider()
                         
                         NavigationLink {
-                            FollowListView()
+                            FollowListView(selectedSegment: "팔로잉")
                         } label: {
                             HStack {
                                 Text("팔로잉")

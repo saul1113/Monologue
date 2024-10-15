@@ -11,8 +11,8 @@ struct FollowListView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isActionActive = true // 팔로우 상태 관리
     
-    @State private var selectedSegment = "팔로워" // 초기 선택
-    let segments = ["팔로워", "팔로잉"] // 세그먼트 버튼
+    @State var selectedSegment: String // 마이페이지뷰에서 받음
+    private let segments = ["팔로워", "팔로잉"] // 세그먼트 버튼
     
     // 샘플 데이터임 지워야 댐
     @State private var users: [User] = [
@@ -126,6 +126,6 @@ struct FollowListView: View {
 
 #Preview {
     NavigationStack {
-        FollowListView()
+        FollowListView(selectedSegment: "팔로워")
     }
 }
