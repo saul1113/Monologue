@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OrderedCollections
 
 struct AddUserInfoView: View {
     @EnvironmentObject var authManager: AuthManager
@@ -13,6 +14,15 @@ struct AddUserInfoView: View {
     
     @State private var nicknameText: String = ""
     
+    @State var dict: OrderedDictionary = [
+        "전체": false,
+        "오늘의 주제": false,
+        "수필": false,
+        "소설": false,
+        "SF": false,
+        "IT": false,
+        "기타": false,
+    ]
     @Binding var isPresented: Bool
     @Binding var isNextView: Bool
     
@@ -38,16 +48,14 @@ struct AddUserInfoView: View {
                     .cornerRadius(10)
                     .padding(.bottom, 30)
                 
-                
                 VStack(alignment: .leading, spacing: 5) {
                     Text("카테고리")
-                        .foregroundStyle(.black) // accentColor 변경해야함
-                    Text("?")
-                    Text("?")
+                        .foregroundStyle(.accent) // accentColor 변경해야함
+                    categoryView(dict: $dict)
                 }
                 
                 Spacer()
-                // categoryView(dict: dict)
+                //
                 
                 Button {
                     isPresented = false
@@ -68,8 +76,8 @@ struct AddUserInfoView: View {
                 
                 Spacer()
             }
-            .padding(.horizontal, 25)
         }
+        .padding(.horizontal, 25)
     }
 }
 
