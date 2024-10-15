@@ -70,14 +70,6 @@ struct ActionSheetView: View {
     }
 }
 
-struct ColumnWritingView: View {
-    var body: some View {
-        VStack {
-            Text("123")
-        }
-    }
-}
-
 #Preview {
     PostView()
 }
