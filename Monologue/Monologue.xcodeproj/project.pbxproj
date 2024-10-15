@@ -49,6 +49,9 @@
 		EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */; };
 		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
 		EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */; };
+		EAC7D89E2CBEDE04008A8074 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D89D2CBEDE04008A8074 /* FirebaseStorage */; };
+		EAC7D8A02CBEDE04008A8074 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D89F2CBEDE04008A8074 /* FirebaseStorageCombine-Community */; };
+		EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */; };
 		EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */; };
 		EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB84EC52CBEE06700AC006A /* ColumnView.swift */; };
 /* End PBXBuildFile section */
@@ -91,6 +94,7 @@
 		BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnWritingView.swift; sourceTree = "<group>"; };
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
+		EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoImageStore.swift; sourceTree = "<group>"; };
 		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
 		EBB84EC52CBEE06700AC006A /* ColumnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,7 +109,9 @@
 				EAC7D7A72CBD24CC008A8074 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */,
 				EAC7D7A12CBD23E0008A8074 /* FirebaseAuth in Frameworks */,
+				EAC7D89E2CBEDE04008A8074 /* FirebaseStorage in Frameworks */,
 				EAC7D7A52CBD23E0008A8074 /* FirebaseFirestore in Frameworks */,
+				EAC7D8A02CBEDE04008A8074 /* FirebaseStorageCombine-Community in Frameworks */,
 				8EF50D352CBDF47C000CABAA /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +251,7 @@
 		EAC7D86A2CBE2E62008A8074 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */,
 				8E91AED72CBE376B009889D4 /* ComplainStore.swift */,
 				EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */,
 				8E91AED12CBE3739009889D4 /* MemoStore.swift */,
@@ -278,6 +285,8 @@
 				EAC7D7BF2CBD2902008A8074 /* GoogleSignIn */,
 				EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */,
 				8EF50D342CBDF47C000CABAA /* OrderedCollections */,
+				EAC7D89D2CBEDE04008A8074 /* FirebaseStorage */,
+				EAC7D89F2CBEDE04008A8074 /* FirebaseStorageCombine-Community */,
 			);
 			productName = Monologue;
 			productReference = 8E52D9162CBD100A00E5D42A /* Monologue.app */;
@@ -351,6 +360,7 @@
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
 				8EF50D6E2CBE0432000CABAA /* Memo.swift in Sources */,
 				8EF50D722CBE0467000CABAA /* Comment.swift in Sources */,
+				EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */,
 				8E91AED82CBE376B009889D4 /* ComplainStore.swift in Sources */,
 				8E91AED22CBE3739009889D4 /* MemoStore.swift in Sources */,
 				8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */,
@@ -652,6 +662,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EAC7D7BE2CBD2902008A8074 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		EAC7D89D2CBEDE04008A8074 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAC7D79F2CBD23E0008A8074 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		EAC7D89F2CBEDE04008A8074 /* FirebaseStorageCombine-Community */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAC7D79F2CBD23E0008A8074 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseStorageCombine-Community";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
