@@ -20,11 +20,11 @@ struct SettingView: View {
                 List {
                     Section("사용자 설정") {
                         NavigationLink("좋아요 목록") {
-                            
+                            LikeListView()
                         }
                         
                         NavigationLink("차단 유저 목록") {
-                            
+                            BlockedUsersListView()
                         }
                         
                         Button("로그아웃") {
