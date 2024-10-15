@@ -9,7 +9,14 @@ import SwiftUI
 
 struct MyPageView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
-    var sharedString: String = "MONOLOG" // 변경 예정
+    @EnvironmentObject private var authManager:AuthManager
+    @EnvironmentObject private var memoStore: MemoStore
+    @EnvironmentObject private var columnStore: ColumnStore
+    
+    @State var selectedSegment: String = "메모"
+    @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
+    @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
+    private var sharedString: String = "MONOLOG" // 변경 예정
     
     var body: some View {
         NavigationStack {
@@ -26,11 +33,11 @@ struct MyPageView: View {
                             .padding(.trailing, 24)
                         
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("북극성") // nickname
+                            Text(userInfoStore.userInfo?.nickname ?? "닉네임 없음")
                                 .font(.system(size: 18))
                                 .bold()
                             
-                            Text("IT와 관련된 글을 쓰는 북극성입니다.") // introduction
+                            Text(userInfoStore.userInfo?.introduction ?? "자기소개가 없습니다.")
                                 .font(.system(size: 16))
                         }
                     }
@@ -42,7 +49,7 @@ struct MyPageView: View {
                     HStack(spacing: 20) {
                         HStack {
                             Text("메모")
-                            Text("\(4)") // Memo 개수
+                            Text("\(userInfoStore.getMemoCount(userNickname: authManager.name))") // Memo 개수
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -51,7 +58,7 @@ struct MyPageView: View {
                         
                         HStack {
                             Text("칼럼")
-                            Text("\(4)") // Column 개수
+                            Text("\(userInfoStore.getColumnCount(userNickname: authManager.name))") // Column 개수
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -63,7 +70,7 @@ struct MyPageView: View {
                         } label: {
                             HStack {
                                 Text("팔로워")
-                                Text("\(4)") // following.count
+                                Text("\(userInfoStore.userInfo?.followers.count ?? 0)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -76,7 +83,7 @@ struct MyPageView: View {
                         } label: {
                             HStack {
                                 Text("팔로잉")
-                                Text("\(4)") // follower.count
+                                Text("\(userInfoStore.userInfo?.followings.count ?? 0)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -108,13 +115,40 @@ struct MyPageView: View {
                                 )
                         }
                     }
+                    .padding(.bottom, 30)
                     
-                    // 메모, 칼럼 뷰 얹을 예정
-                    Spacer()
+                    CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                    
+                    if selectedSegment == "메모" {
+                        // 메모 뷰
+//                        MemoView(homeviewModel: HomeViewDummy(), filteredMemos: userMemos)
+                    } else if selectedSegment == "칼럼" {
+                        // 칼럼 뷰
+                        Text("칼럼 뷰")
+                    }
                 }
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
-                
+            }
+            .onAppear {
+                Task {
+                    // 유저의 정보 로드
+                    await userInfoStore.loadUserInfo(email: authManager.email)
+                    
+                    // 유저의 메모 로드
+                    memoStore.loadMemosByUserNickname(userNickname: authManager.name) { memos, error in
+                        if let memos = memos {
+                            userMemos = memos
+                        }
+                    }
+                    
+                    // 유저의 칼럼 로드
+                    columnStore.loadColumnsByUserNickname(userNickname: authManager.name) { columns, error in
+                        if let columns = columns {
+                            userColumns = columns
+                        }
+                    }
+                }
             }
             .toolbar {
                 // 로고
@@ -150,5 +184,10 @@ struct MyPageView: View {
 #Preview {
     NavigationStack {
         MyPageView()
+            .environmentObject(AuthManager())
+            .environmentObject(UserInfoStore())
+            .environmentObject(MemoStore())
+            .environmentObject(ColumnStore())
+            .environmentObject(CommentStore())
     }
 }

@@ -23,80 +23,57 @@ struct FollowListView: View {
             Color(.background)
                 .ignoresSafeArea()
             
-            // 커스텀 Segment
-            GeometryReader { geometry in
-                HStack {
-                    ForEach(segments, id: \.self) { segment in
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                selectedSegment = segment
-                            }
-                        } label: {
-                            Text(segment)
-                                .font(.system(size: 16))
-                                .foregroundStyle(.accent)
-                                .frame(maxWidth: .infinity) // 각 탭을 동일한 너비로 설정
-                        }
-                    }
-                }
-                .overlay(
-                    // 전체 너비 밑줄
-                    Rectangle()
-                        .fill(.accent.opacity(0.2))
-                        .frame(width: geometry.size.width, height: 1) // 전체 너비
-                        .offset(y: 13),
-                    alignment: .bottomLeading
-                )
-                .overlay(
-                    Rectangle()
-                        .fill(.accent)
-                        .frame(width: geometry.size.width / 2, height: 2)
-                        .offset(x: selectedSegment == "팔로워" ? 0 : geometry.size.width / 2, y: 13),
-                    alignment: .bottomLeading
-                )
-            }
+            CustomSegmentView(segment1: "팔로워", segment2: "팔로잉", selectedSegment: $selectedSegment)
             
             ScrollView {
                 VStack {
                     if selectedSegment == "팔로워" {
                         // 팔로워 뷰
-                        ForEach(0..<followers.count) { index in
-                            UserRow(
-                                profileImageName: followers[index].profileImageName,
-                                nickname: followers[index].nickname,
-                                memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
-                                columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
-                                activeButtonText: "팔로우",
-                                inactiveButtonText: "팔로잉",
-                                onActive: {
-                                    // 팔로우 로직
-                                    print("\(followers[index].nickname) 다시 팔로우")
-                                },
-                                onInactive: {
-                                    // 언팔로우 로직
-                                    print("\(followers[index].nickname) 언팔")
-                                }
-                            )
+                        if followers.isEmpty {
+                            Text("팔로워가 없습니다.")
+                        } else {
+                            ForEach(0..<followers.count) { index in
+                                UserRow(
+                                    profileImageName: followers[index].profileImageName,
+                                    nickname: followers[index].nickname,
+                                    memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
+                                    columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
+                                    activeButtonText: "팔로우",
+                                    inactiveButtonText: "팔로잉",
+                                    onActive: {
+                                        // 팔로우 로직
+                                        print("\(followers[index].nickname) 다시 팔로우")
+                                    },
+                                    onInactive: {
+                                        // 언팔로우 로직
+                                        print("\(followers[index].nickname) 언팔")
+                                    }
+                                )
+                            }
                         }
                     } else {
                         // 팔로잉 뷰
-                        ForEach(0..<followings.count) { index in
-                            UserRow(
-                                profileImageName: followers[index].profileImageName,
-                                nickname: followers[index].nickname,
-                                memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
-                                columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
-                                activeButtonText: "팔로우",
-                                inactiveButtonText: "팔로잉",
-                                onActive: {
-                                    // 팔로우 로직
-                                    print("\(followers[index].nickname) 다시 팔로우")
-                                },
-                                onInactive: {
-                                    // 언팔로우 로직
-                                    print("\(followers[index].nickname) 언팔")
-                                }
-                            )
+                        if followings.isEmpty {
+                            Text("팔로잉이 없습니다.")
+                        } else {
+                            ForEach(0..<followings.count) { index in
+                                UserRow(
+                                    profileImageName: followers[index].profileImageName,
+                                    nickname: followers[index].nickname,
+                                    memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
+                                    columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
+                                    activeButtonText: "팔로우",
+                                    inactiveButtonText: "팔로잉",
+                                    onActive: {
+                                        // 팔로우 로직
+                                        print("\(followers[index].nickname) 다시 팔로우")
+                                    },
+                                    onInactive: {
+                                        // 언팔로우 로직
+                                        print("\(followers[index].nickname) 언팔")
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -118,13 +95,17 @@ struct FollowListView: View {
             }
         }
         .onAppear {
-            userInfoStore.loadUsersInfoByNickname(nicknames: userInfoStore.userInfo!.followers, completion: { usersInfo, error in
-                followers = usersInfo ?? []
-            })
-            
-            userInfoStore.loadUsersInfoByNickname(nicknames: userInfoStore.userInfo!.followings, completion: { usersInfo, error in
-                followings = usersInfo ?? []
-            })
+            if let userInfo = userInfoStore.userInfo {
+                    // 팔로워 목록 불러오기
+                    userInfoStore.loadUsersInfoByNickname(nicknames: userInfo.followers, completion: { usersInfo, error in
+                        followers = usersInfo ?? []
+                    })
+                    
+                    // 팔로잉 목록 불러오기
+                    userInfoStore.loadUsersInfoByNickname(nicknames: userInfo.followings, completion: { usersInfo, error in
+                        followings = usersInfo ?? []
+                    })
+                }
         }
     }
 }

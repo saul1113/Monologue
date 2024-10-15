@@ -37,6 +37,8 @@
 		97F5E7432CBE3B1F00C98340 /* LikeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7422CBE3B1F00C98340 /* LikeListView.swift */; };
 		97F5E7452CBE3CDC00C98340 /* FollowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7442CBE3CDC00C98340 /* FollowListView.swift */; };
 		97F5E7472CBE4C6100C98340 /* UserRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7462CBE4C6100C98340 /* UserRow.swift */; };
+		97F5E74A2CBEA7E400C98340 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93E2CBD216C00E5D42A /* HomeView.swift */; };
+		97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E74B2CBEACB700C98340 /* CustomSegmentView.swift */; };
 		BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FD6642CBDFF670047251E /* MemoWritingView.swift */; };
 		BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */; };
 		EAC7D7A12CBD23E0008A8074 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A02CBD23E0008A8074 /* FirebaseAuth */; };
@@ -47,8 +49,8 @@
 		EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */; };
 		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
 		EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */; };
-		EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */; };
-		EB40005E2CBE42CD00C254A2 /* HomeColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */; };
+		EB4000592CBDFA6B00C254A2 /* ColunmDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColunmDetail.swift */; };
+		EB40005E2CBE42CD00C254A2 /* HomeColunm.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB40005D2CBE42CD00C254A2 /* HomeColunm.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,13 +86,14 @@
 		97F5E7422CBE3B1F00C98340 /* LikeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeListView.swift; sourceTree = "<group>"; };
 		97F5E7442CBE3CDC00C98340 /* FollowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowListView.swift; sourceTree = "<group>"; };
 		97F5E7462CBE4C6100C98340 /* UserRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRow.swift; sourceTree = "<group>"; };
+		97F5E74B2CBEACB700C98340 /* CustomSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentView.swift; sourceTree = "<group>"; };
 		BE0FD6642CBDFF670047251E /* MemoWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoWritingView.swift; sourceTree = "<group>"; };
 		BE843DCE2CBEA36E00729E84 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnWritingView.swift; sourceTree = "<group>"; };
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
-		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
-		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
-		EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeColumn.swift; sourceTree = "<group>"; };
+		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; 
+		EB4000582CBDFA6B00C254A2 /* ColunmDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColunmDetail.swift; sourceTree = "<group>"; };
+		EB40005D2CBE42CD00C254A2 /* HomeColunm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeColunm.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +161,7 @@
 				97F5E7462CBE4C6100C98340 /* UserRow.swift */,
 				97F5E7422CBE3B1F00C98340 /* LikeListView.swift */,
 				97F5E7442CBE3CDC00C98340 /* FollowListView.swift */,
+				97F5E74B2CBEACB700C98340 /* CustomSegmentView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -290,11 +294,12 @@
 				8B71225F2CBE009B00734578 /* MemoView.swift in Sources */,
 				8B7122632CBE295400734578 /* HomeViewDummy.swift in Sources */,
 				8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */,
-				EB40005E2CBE42CD00C254A2 /* HomeColumn.swift in Sources */,
+				EB40005E2CBE42CD00C254A2 /* HomeColunm.swift in Sources */,
 				8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */,
 				8E91AED42CBE3749009889D4 /* ColumnStore.swift in Sources */,
 				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
 				8EF50D742CBE0479000CABAA /* Complain.swift in Sources */,
+				97F5E74A2CBEA7E400C98340 /* HomeView.swift in Sources */,
 				8EF50D702CBE0453000CABAA /* Column.swift in Sources */,
 				EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */,
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
@@ -317,6 +322,7 @@
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
+				97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */,
 				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
 				BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */,
