@@ -10,6 +10,7 @@ import SwiftUI
 import OrderedCollections
 
 struct HomeColunm: View {
+    @EnvironmentObject private var columnStore: ColumnStore
     // 세그먼트 선택을 위한 상태
     @State private var selectedSegment = "전체" // 기본값을 전체로 설정
     @State private var selectedTab = "메모" // 메모와 칼럼 중 기본값을 메모로 설정
@@ -33,18 +34,23 @@ struct HomeColunm: View {
     ]
     
     // 샘플 데이터 (리스트에 표시될 데이터)
-    let posts: [Post] = [
-        Post(title: "Lorem Ipsum is simply dummy text", category: "에세이", timeAgo: "4분 전"),
-        Post(title: "Lorem Ipsum is simply dummy text", category: "소설", timeAgo: "7분 전"),
-        Post(title: "Lorem Ipsum is simply dummy text", category: "IT", timeAgo: "9분 전"),
-        Post(title: "Lorem Ipsum is simply dummy text", category: "에세이", timeAgo: "10분 전")
-    ]
+    
     
     // 현재 선택된 카테고리에 맞춰 필터링된 게시물을 반환
-    var filteredPosts: [Post] {
-        let result = selectedSegment == "전체" ? posts : posts.filter { $0.category == selectedSegment }
-        print("Filtered posts: \(result.map { $0.title })")
-        return result
+    var filteredColumns: [Column] {
+        let result = categories.filter { $0.value == true }
+        var categoriesList: [String] = []
+        var columnsByFilters: [Column] = []
+        
+        for (key, _) in result {
+            categoriesList.append(key)
+        }
+        
+        columnStore.loadColumnsByCategories(categories: categoriesList) { columns, error in
+            columnsByFilters = columns ?? []
+        }
+        
+        return columnsByFilters
     }
     
     var body: some View {
@@ -112,7 +118,7 @@ struct HomeColunm: View {
 
                         // 선택된 카테고리에 맞춘 리스트
                         List {
-                            ForEach(filteredPosts) { post in
+                            ForEach(filteredColumns) { post in
                                 PostRow(post: post)
                                     .listRowBackground(Color(UIColor(red: 255/255, green: 248/255, blue: 237/255, alpha: 1))) // 각 리스트의 배경색 설정
                             }
@@ -142,18 +148,16 @@ struct Post: Identifiable {
 
 // 게시물 리스트에서 각 항목을 표시하는 뷰
 struct PostRow: View {
-    let post: Post
+    let column: Column
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(post.title)
-                .font(.headline)
             HStack {
-                Text(post.timeAgo)
+                Text(column.timeAgo)
                     .font(.subheadline)
                     .foregroundColor(.gray)
                 Spacer()
-                Text(post.category)
+                Text(column.category)
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .padding(4)

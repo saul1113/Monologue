@@ -15,7 +15,7 @@ struct ColunmDetail: View {
     var body: some View {
         ZStack {
             // 배경색 설정
-            Color(hex: "#FFF8ED")
+            Color(.accent)
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
@@ -58,7 +58,7 @@ struct ColunmDetail: View {
                         }) {
                             HStack(spacing: 4) {
                                 Image(systemName: "bubble.right")
-                                Text("\(comments.count)")  // 댓글 개수 표시
+                                Text("\(column comments.count)")  // 댓글 개수 표시
                                     .font(.subheadline)
                             }
                         }
@@ -145,12 +145,12 @@ struct CommentView: View {
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
             VStack(alignment: .leading) {
-                Text(comment.author)
-                    .font(.headline)
-                Text(comment.time)
+//                Text(comment.author)
+//                    .font(.headline)
+                Text("\(comment.date)")
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                Text(comment.text)
+                Text("\(comment.content)")
                     .font(.body)
                     .foregroundColor(.gray)
             }
@@ -231,7 +231,7 @@ struct CommentsSheetView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 Button(action: {
                     if !newComment.isEmpty {
-                        let newCommentData = Comment(author: "새작가", text: newComment, time: "방금 전")
+                        let newCommentData = Comment(userNickname: "", content: newComment, date: Date())
                         comments.append(newCommentData)  // 새 댓글을 comments 배열에 추가
                         newComment = ""  // 입력 필드 초기화
                     }
@@ -261,8 +261,11 @@ extension Color {
     }
 }
 
-struct ColunmDetail_Previews: PreviewProvider {
-    static var previews: some View {
-        ColunmDetail()
-    }
+#Preview {
+    ColunmDetail()
+        .environmentObject(AuthManager())
+        .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }

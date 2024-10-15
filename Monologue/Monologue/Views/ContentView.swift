@@ -24,7 +24,7 @@ struct ContentView: View {
                     Text("Introduction: \(userInfo.introduction)")
                     Text("Preferred Categories: \(userInfo.preferredCategories.joined(separator: ", "))")
                     Text("Followers: \(userInfo.followers.count)")
-                    Text("Following: \(userInfo.following.count)")
+                    Text("Followings: \(userInfo.followings.count)")
                 } else {
                     Text("Loading user information...") // 로드 중 메시지
                 }
@@ -47,4 +47,7 @@ struct ContentView: View {
     ContentView()
         .environmentObject(AuthManager())
         .environmentObject(UserInfoStore())
+        .environmentObject(MemoStore())
+        .environmentObject(ColumnStore())
+        .environmentObject(CommentStore())
 }
