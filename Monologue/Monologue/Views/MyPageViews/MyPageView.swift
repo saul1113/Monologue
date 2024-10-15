@@ -25,6 +25,29 @@ struct MyPageView: View {
                     .ignoresSafeArea()
                 
                 VStack {
+                    HStack(spacing: 20) {
+                        Text("MONOLOG")
+                            .foregroundStyle(.accent)
+                            .font(.title3)
+                            .bold()
+                        
+                        Spacer()
+                        
+                        NavigationLink {
+                            Text("알림 페이지")
+                        } label: {
+                            Image(systemName: "bell")
+                                .font(.title3)
+                        }
+                        
+                        NavigationLink {
+                            SettingView()
+                        } label: {
+                            Image(systemName: "line.3.horizontal")
+                                .font(.title3)
+                        }
+                    }
+                    
                     // 프사, 닉, 상메
                     HStack {
                         // 프로필 사진
@@ -121,10 +144,13 @@ struct MyPageView: View {
                     
                     if selectedSegment == "메모" {
                         // 메모 뷰
-//                        MemoView(homeviewModel: HomeViewDummy(), filteredMemos: userMemos)
+                        MemoView(filteredMemos: userMemos)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
                     } else if selectedSegment == "칼럼" {
                         // 칼럼 뷰
                         Text("칼럼 뷰")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -147,33 +173,6 @@ struct MyPageView: View {
                         if let columns = columns {
                             userColumns = columns
                         }
-                    }
-                }
-            }
-            .toolbar {
-                // 로고
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("MONOLOG")
-                        .foregroundStyle(.accent)
-                        .font(.title3)
-                        .bold()
-                }
-                
-                // 알림 버튼
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        // 알림 페이지
-                    } label: {
-                        Image(systemName: "bell")
-                    }
-                }
-                
-                // 설정 버튼
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        SettingView()
-                    } label: {
-                        Image(systemName: "line.3.horizontal")
                     }
                 }
             }

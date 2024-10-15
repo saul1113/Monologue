@@ -32,6 +32,7 @@
 		8EF50D702CBE0453000CABAA /* Column.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D6F2CBE0453000CABAA /* Column.swift */; };
 		8EF50D722CBE0467000CABAA /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D712CBE0467000CABAA /* Comment.swift */; };
 		8EF50D742CBE0479000CABAA /* Complain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF50D732CBE0479000CABAA /* Complain.swift */; };
+		979DCE7F2CBED64E00FA5BFB /* HomeColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */; };
 		97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E73C2CBE21A800C98340 /* ProfileEditView.swift */; };
 		97F5E73F2CBE2D4500C98340 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E73E2CBE2D4500C98340 /* SettingView.swift */; };
 		97F5E7412CBE3AD200C98340 /* BlockedUsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7402CBE3AD200C98340 /* BlockedUsersListView.swift */; };
@@ -355,6 +356,7 @@
 				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
 				8EF50D742CBE0479000CABAA /* Complain.swift in Sources */,
 				8B11949E2CBEAB7E00D9B28B /* HomeView.swift in Sources */,
+				979DCE7F2CBED64E00FA5BFB /* HomeColumn.swift in Sources */,
 				8EF50D702CBE0453000CABAA /* Column.swift in Sources */,
 				EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */,
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
