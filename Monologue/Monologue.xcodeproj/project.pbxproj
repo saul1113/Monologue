@@ -48,6 +48,8 @@
 		EAC7D7C22CBD2902008A8074 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7C12CBD2902008A8074 /* GoogleSignInSwift */; };
 		EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */; };
 		EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */; };
+		BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FD6642CBDFF670047251E /* MemoWritingView.swift */; };
+		BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +90,8 @@
 		8EF50D732CBE0479000CABAA /* Complain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complain.swift; sourceTree = "<group>"; };
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
+		BE0FD6642CBDFF670047251E /* MemoWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoWritingView.swift; sourceTree = "<group>"; };
+		BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnWritingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +151,8 @@
 				8B71225E2CBE009600734578 /* MemoView.swift */,
 				8B7122602CBE00CE00734578 /* MemoDetailView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
+				BE0FD6642CBDFF670047251E /* MemoWritingView.swift */,
+				BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */,
 				8E52D9402CBD216C00E5D42A /* MyPageView.swift */,
 				8E52D93F2CBD216C00E5D42A /* MainView.swift */,
 				97F5E73C2CBE21A800C98340 /* ProfileEditView.swift */,
@@ -316,7 +322,9 @@
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
+				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
+				BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */,
 				EB4000592CBDFA6B00C254A2 /* ColunmDetail.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
