@@ -17,6 +17,7 @@ import SwiftUI
  Comment -> 코멘트 ID String 배열
  날짜 -> Date
  */
+// 닉네임을 불러오는데 시간이 걸린다...
 struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
     @State private var text: String = ""
