@@ -27,7 +27,7 @@ struct ColumnWritingView: View {
     let placeholder: String = "글을 입력해 주세요."
     
     @StateObject var columnStore = ColumnStore()
-    @EnvironmentObject var userInfoStore: UserInfoStore // Ensure this is properly injected
+    @EnvironmentObject var userInfoStore: UserInfoStore
 
     var body: some View {
         ZStack {
@@ -61,7 +61,7 @@ struct ColumnWritingView: View {
                         .foregroundStyle(.secondary)
                 }
                 
-                // Add spacing here
+               
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
@@ -109,9 +109,9 @@ struct ColumnWritingView: View {
                     // 발행 버튼 액션
                     let newColumn = Column(
                         content: text,
-                        userNickname: columnStore.columns.first?.userNickname ?? "", // Ensure you have this property in your UserInfoStore
-                        font: "", // You can adjust this if needed
-                        backgroundImageName: "", // You can adjust this if needed
+                        userNickname: columnStore.columns.first?.userNickname ?? "", 
+                        font: "",
+                        backgroundImageName: "",
                         categories: [selectedColumnCategory],
                         likes: [],
                         comments: [],

@@ -44,7 +44,7 @@ struct MemoWritingView: View {
             
             VStack {
                 ZStack {
-                    // Background image fixed in size
+                    
                     Image(selectedBackgroundImageName) // 선택된 배경 이미지
                         .resizable()
                         .scaledToFit()
@@ -56,8 +56,8 @@ struct MemoWritingView: View {
                         .font(.system(.title2, design: .default, weight: .regular))
                         .padding() // 내부 패딩 추가
                         .scrollContentBackground(.hidden)
-                        .background(Color.white.opacity(0.8)) // Optional: Add a background color to the TextEditor
-                        .frame(height: 400) // Fixed height for TextEditor
+                        .background(Color.white.opacity(0.8))
+                        .frame(height: 400)
                         .cornerRadius(8) // 모서리 둥글게
                         .overlay(alignment: .topLeading) {
                             Text(placeholder)
@@ -80,7 +80,7 @@ struct MemoWritingView: View {
                 }
                 .padding(.bottom, 10)
                 
-                // Font selection section
+                
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
                         Image(systemName: "a.square")
@@ -102,7 +102,7 @@ struct MemoWritingView: View {
                 
                 Divider()
                 
-                // Background selection section
+                
                 ScrollView(.horizontal) {
                     HStack(spacing: 10) {
                         Image(systemName: "squareshape.split.2x2.dotted")
@@ -123,7 +123,7 @@ struct MemoWritingView: View {
                 
                 Divider()
                 
-                // Category selection section
+                
                 ScrollView(.horizontal) {
                     HStack(spacing: 10) {
                         Image(systemName: "tag")
@@ -171,7 +171,7 @@ struct MemoWritingView: View {
                             // Handle error (e.g., show an alert)
                             print("Error adding memo: \(error)")
                         } else {
-                            dismiss() // Close the view after successfully adding the memo
+                            dismiss()
                         }
                     }
                 }) {
@@ -183,7 +183,6 @@ struct MemoWritingView: View {
     }
 }
 
-// FontButton, BackgroundButton, and CategoryMemoButton structs remain unchanged
 
 
 struct FontButton: View {
