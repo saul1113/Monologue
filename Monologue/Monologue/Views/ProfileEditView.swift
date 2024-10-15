@@ -57,6 +57,8 @@ struct ProfileEditView: View {
             .padding(.horizontal, 16)
             .foregroundStyle(.accent)
         }
+        .navigationTitle("프로필 편집")
+        .toolbarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

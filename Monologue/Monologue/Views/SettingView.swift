@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var isShowingAlert = false
 
     var body: some View {
         ZStack {
@@ -27,15 +28,21 @@ struct SettingView: View {
                         }
                         
                         Button("로그아웃") {
-                            // 파베 로직
+                            // 파베 로그아웃 로직
                             print("로그아웃")
                         }
                         
                         Button("계정 탈퇴") {
-                            // 파베 로직
-                            print("계정 탈퇴")
+                            isShowingAlert.toggle()
                         }
                         .foregroundStyle(.red)
+                        .alert("계정을 탈퇴합니다", isPresented: $isShowingAlert) {
+                            Button("탈퇴", role: .destructive) {
+                                // 파베 계정 탈퇴 로직
+                            }
+                        } message: {
+                            Text("탈퇴 후 삭제되는 모든 정보는 복구할 수 없습니다.")
+                        }
                     }
                     .listRowBackground(Color(.background))
                     
