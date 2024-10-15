@@ -9,6 +9,13 @@ import SwiftUI
 
 struct BlockedUsersListView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var isActionActive = true // 차단 상태 관리
+    
+    // 샘플 데이터임 지워야 댐
+    @State private var users: [User] = [
+        User(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5, isActionActive: true),
+        User(profileImageName: "", nickname: "은하수", memoCount: 2, columnCount: 4, isActionActive: true)
+    ]
     
     var body: some View {
         ZStack {
@@ -18,13 +25,25 @@ struct BlockedUsersListView: View {
             ScrollView {
                 // ForEach로 변경 예정
                 VStack {
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
-                    BlockedUserRow(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5)
+                    ForEach($users) { $user in
+                        UserRow(
+                            profileImageName: user.profileImageName,
+                            nickname: user.nickname,
+                            memoCount: user.memoCount,
+                            columnCount: user.columnCount,
+                            isActionActive: $user.isActionActive, // 개별 상태 관리
+                            activeButtonText: "차단",
+                            inactiveButtonText: "차단 해제",
+                            onActive: {
+                                // 차단 로직
+                                print("\(user.nickname) 차단됨")
+                            },
+                            onInactive: {
+                                // 차단 해제 로직
+                                print("\(user.nickname) 차단 해제됨")
+                            }
+                        )
+                    }
                 }
                 .padding(.top, 25)
                 .padding(.horizontal, 16)
@@ -52,3 +71,14 @@ struct BlockedUsersListView: View {
         BlockedUsersListView()
     }
 }
+
+// 샘플임 지워야 댐
+struct User: Identifiable {
+    let id = UUID() // 각 유저를 구분하기 위한 고유 ID
+    let profileImageName: String
+    let nickname: String
+    let memoCount: Int
+    let columnCount: Int
+    var isActionActive: Bool // 차단 또는 팔로우 상태
+}
+

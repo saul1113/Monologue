@@ -1,5 +1,5 @@
 //
-//  BlockedUserRow.swift
+//  UserRow.swift
 //  Monologue
 //
 //  Created by Hyojeong on 10/15/24.
@@ -7,13 +7,21 @@
 
 import SwiftUI
 
-struct BlockedUserRow: View {
+struct UserRow: View {
     let profileImageName: String
     let nickname: String
     let memoCount: Int
     let columnCount: Int
     
-    @State private var isBlocked: Bool = true // 차단 상태 관리
+    @Binding var isActionActive: Bool // 상태 관리
+    
+    // 버튼 텍스트
+    let activeButtonText: String
+    let inactiveButtonText: String
+    
+    // 상태 로직
+    let onActive: () -> Void
+    let onInactive: () -> Void
     
     var body: some View {
         HStack {
@@ -33,23 +41,25 @@ struct BlockedUserRow: View {
             Spacer()
             
             Button {
-                if isBlocked {
-                    // 차단 해제 로직 호출
+                if isActionActive {
+                    // 차단 해제, 언팔로우 로직
+                    onInactive()
                 } else {
-                    // 차단 로직 호출
+                    // 차단, 팔로우 로직
+                    onActive()
                 }
                 
-                isBlocked.toggle() // 상태 토글
+                isActionActive.toggle() // 상태 토글
             } label: {
-                Text(isBlocked ? "차단 해제" : "차단")
+                Text(isActionActive ? inactiveButtonText : activeButtonText)
                     .font(.system(size: 15))
                     .frame(width: 90, height: 30)
-                    .foregroundStyle(isBlocked ? .white : .accent)
+                    .foregroundStyle(isActionActive ? .white : .accent)
                     .background(RoundedRectangle(cornerRadius: 10)
-                        .fill(isBlocked ? Color.accent : Color.clear)) // 배경색 변경
+                        .fill(isActionActive ? .accent : .clear)) // 배경색 변경
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(isBlocked ? .clear : .accent.opacity(0.5), lineWidth: 1)
+                            .strokeBorder(isActionActive ? .clear : .accent.opacity(0.5), lineWidth: 1)
                     )
             }
         }

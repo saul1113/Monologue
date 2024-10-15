@@ -18,7 +18,7 @@
 		97F5E7412CBE3AD200C98340 /* BlockedUsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7402CBE3AD200C98340 /* BlockedUsersListView.swift */; };
 		97F5E7432CBE3B1F00C98340 /* LikeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7422CBE3B1F00C98340 /* LikeListView.swift */; };
 		97F5E7452CBE3CDC00C98340 /* FollowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7442CBE3CDC00C98340 /* FollowListView.swift */; };
-		97F5E7472CBE4C6100C98340 /* BlockedUserRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7462CBE4C6100C98340 /* BlockedUserRow.swift */; };
+		97F5E7472CBE4C6100C98340 /* UserRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E7462CBE4C6100C98340 /* UserRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,7 +34,7 @@
 		97F5E7402CBE3AD200C98340 /* BlockedUsersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersListView.swift; sourceTree = "<group>"; };
 		97F5E7422CBE3B1F00C98340 /* LikeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeListView.swift; sourceTree = "<group>"; };
 		97F5E7442CBE3CDC00C98340 /* FollowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowListView.swift; sourceTree = "<group>"; };
-		97F5E7462CBE4C6100C98340 /* BlockedUserRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUserRow.swift; sourceTree = "<group>"; };
+		97F5E7462CBE4C6100C98340 /* UserRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				97F5E73C2CBE21A800C98340 /* ProfileEditView.swift */,
 				97F5E73E2CBE2D4500C98340 /* SettingView.swift */,
 				97F5E7402CBE3AD200C98340 /* BlockedUsersListView.swift */,
-				97F5E7462CBE4C6100C98340 /* BlockedUserRow.swift */,
+				97F5E7462CBE4C6100C98340 /* UserRow.swift */,
 				97F5E7422CBE3B1F00C98340 /* LikeListView.swift */,
 				97F5E7442CBE3CDC00C98340 /* FollowListView.swift */,
 			);
@@ -169,7 +169,7 @@
 				97F5E7432CBE3B1F00C98340 /* LikeListView.swift in Sources */,
 				8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */,
 				97F5E73F2CBE2D4500C98340 /* SettingView.swift in Sources */,
-				97F5E7472CBE4C6100C98340 /* BlockedUserRow.swift in Sources */,
+				97F5E7472CBE4C6100C98340 /* UserRow.swift in Sources */,
 				97F5E7452CBE3CDC00C98340 /* FollowListView.swift in Sources */,
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,

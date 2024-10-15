@@ -9,9 +9,16 @@ import SwiftUI
 
 struct FollowListView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var isActionActive = true // 팔로우 상태 관리
     
     @State private var selectedSegment = "팔로워" // 초기 선택
     let segments = ["팔로워", "팔로잉"] // 세그먼트 버튼
+    
+    // 샘플 데이터임 지워야 댐
+    @State private var users: [User] = [
+        User(profileImageName: "", nickname: "북극성", memoCount: 3, columnCount: 5, isActionActive: true),
+        User(profileImageName: "", nickname: "은하수", memoCount: 2, columnCount: 4, isActionActive: true)
+    ]
     
     var body: some View {
         ZStack {
@@ -55,14 +62,52 @@ struct FollowListView: View {
                 VStack {
                     if selectedSegment == "팔로워" {
                         // 팔로워 뷰
-                        
+                        ForEach($users) { $user in
+                            UserRow(
+                                profileImageName: user.profileImageName,
+                                nickname: user.nickname,
+                                memoCount: user.memoCount,
+                                columnCount: user.columnCount,
+                                isActionActive: $user.isActionActive, // 개별 상태 관리
+                                activeButtonText: "팔로우",
+                                inactiveButtonText: "팔로잉",
+                                onActive: {
+                                    // 팔로우 로직
+                                    print("\(user.nickname) 다시 팔로우")
+                                },
+                                onInactive: {
+                                    // 언팔로우 로직
+                                    print("\(user.nickname) 언팔")
+                                }
+                            )
+                        }
                     } else {
                         // 팔로잉 뷰
-                        
+                        ForEach($users) { $user in
+                            UserRow(
+                                profileImageName: user.profileImageName,
+                                nickname: user.nickname,
+                                memoCount: user.memoCount,
+                                columnCount: user.columnCount,
+                                isActionActive: $user.isActionActive, // 개별 상태 관리
+                                activeButtonText: "팔로우",
+                                inactiveButtonText: "팔로잉",
+                                onActive: {
+                                    // 팔로우 로직
+                                    print("\(user.nickname) 다시 팔로우")
+                                },
+                                onInactive: {
+                                    // 언팔로우 로직
+                                    print("\(user.nickname) 언팔")
+                                }
+                            )
+                        }
                     }
                 }
+                .foregroundStyle(.accent)
                 .padding(.horizontal, 16)
             }
+            .padding(.top, 60)
         }
         .navigationTitle("북극성") // nickname 데이터로 변경 예정
         .navigationBarTitleDisplayMode(.inline)
