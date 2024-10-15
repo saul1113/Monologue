@@ -5,18 +5,18 @@
 //  Created by Min on 10/15/24.
 //
 
+import SwiftUI
+
 /*
  Column
  칼럼 ID -> String
  칼럼 내용 -> String
  유저 닉네임 -> String
  카테고리 -> String 배열
- 좋아요 개수 ->  유저 닉네임 String 배열
+ 좋아요 개수 -> 유저 닉네임 String 배열
  Comment -> 코멘트 ID String 배열
  날짜 -> Date
  */
-import SwiftUI
-
 struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
     @State private var text: String = ""
@@ -26,6 +26,9 @@ struct ColumnWritingView: View {
     let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"] // 카테고리 목록
     let placeholder: String = "글을 입력해 주세요."
     
+    @StateObject var columnStore = ColumnStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
+
     var body: some View {
         ZStack {
             Color(.systemBackground)
@@ -58,7 +61,7 @@ struct ColumnWritingView: View {
                         .foregroundStyle(.secondary)
                 }
                 
-                // Add spacing here
+               
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
@@ -104,6 +107,23 @@ struct ColumnWritingView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     // 발행 버튼 액션
+                    let newColumn = Column(
+                        content: text,
+                        userNickname: columnStore.columns.first?.userNickname ?? "", 
+                        font: "",
+                        backgroundImageName: "",
+                        categories: [selectedColumnCategory],
+                        likes: [],
+                        comments: [],
+                        date: Date()
+                    )
+                    columnStore.addColumn(column: newColumn) { error in
+                        if let error = error {
+                            print("Error adding column: \(error)")
+                        } else {
+                            dismiss()
+                        }
+                    }
                 }) {
                     Text("발행")
                         .foregroundColor(.accentColor)
