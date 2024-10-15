@@ -26,16 +26,16 @@ struct MemoWritingView: View {
     @State private var text: String = ""
     @State private var textLimit: Int = 500
     @State private var selectedFont: String = "기본서체"
-    @State private var selectedMemoCategory: String = "오늘의 주제"
-    @State private var selectedBackgroundImageName: String = "jery1" // 기본 이미지 이름
-    
+    @State private var selectedMemoCategories: [String] = [] // Multiple selection
+    @State private var selectedBackgroundImageName: String = "jery1"
+
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
 
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
     let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"]
-    let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"] // 에셋에 저장된 이미지 이름
+    let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"]
 
     var body: some View {
         ZStack {
@@ -44,26 +44,25 @@ struct MemoWritingView: View {
             
             VStack {
                 ZStack {
-                    
-                    Image(selectedBackgroundImageName) // 선택된 배경 이미지
+                    Image(selectedBackgroundImageName)
                         .resizable()
                         .scaledToFit()
-                        .cornerRadius(8) // 모서리 둥글게
-                        .frame(height: 400) // 프레임 높이 지정
-                        .clipped() // 이미지가 프레임을 넘어가지 않도록 클리핑
-                    
+                        .cornerRadius(8)
+                        .frame(height: 400)
+                        .clipped()
+
                     TextEditor(text: $text)
                         .font(.system(.title2, design: .default, weight: .regular))
-                        .padding() // 내부 패딩 추가
+                        .padding()
                         .scrollContentBackground(.hidden)
                         .background(Color.white.opacity(0.8))
                         .frame(height: 400)
-                        .cornerRadius(8) // 모서리 둥글게
+                        .cornerRadius(8)
                         .overlay(alignment: .topLeading) {
                             Text(placeholder)
                                 .foregroundColor(text.isEmpty ? .gray : .clear)
-                                .padding(.top, -170) // 상단 패딩 조정
-                                .padding(.leading, -170) // 좌측 패딩 조정
+                                .padding(.top, -170)
+                                .padding(.leading, -170)
                         }
                         .onReceive(text.publisher.collect()) { newValue in
                             if newValue.count > textLimit {
@@ -79,7 +78,6 @@ struct MemoWritingView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.bottom, 10)
-                
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
@@ -102,7 +100,6 @@ struct MemoWritingView: View {
                 
                 Divider()
                 
-                
                 ScrollView(.horizontal) {
                     HStack(spacing: 10) {
                         Image(systemName: "squareshape.split.2x2.dotted")
@@ -114,15 +111,14 @@ struct MemoWritingView: View {
                             .foregroundStyle(Color.accent)
                         ForEach(backgroundImageNames, id: \.self) { imageName in
                             BackgroundButton(imageName: imageName) {
-                                selectedBackgroundImageName = imageName // 선택된 배경 이미지로 변경
+                                selectedBackgroundImageName = imageName
                             }
                         }
                     }
                     .padding()
                 }
-                
+
                 Divider()
-                
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 10) {
@@ -134,8 +130,12 @@ struct MemoWritingView: View {
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
                         ForEach(categoryOptions, id: \.self) { category in
-                            CategoryMemoButton(title: category, isSelected: selectedMemoCategory == category) {
-                                selectedMemoCategory = category
+                            CategoryMemoButton(title: category, isSelected: selectedMemoCategories.contains(category)) {
+                                if selectedMemoCategories.contains(category) {
+                                    selectedMemoCategories.removeAll { $0 == category }
+                                } else {
+                                    selectedMemoCategories.append(category)
+                                }
                             }
                         }
                     }
@@ -164,11 +164,10 @@ struct MemoWritingView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    // 발행 버튼 액션
-                    let newMemo = Memo(content: text, userNickname: memoStore.memos.first?.userNickname ?? "", font: selectedFont, backgroundImageName: selectedBackgroundImageName, categories: [selectedMemoCategory], likes: [], comments: [], date: Date())
+                    let newMemo = Memo(content: text, userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                       font: selectedFont, backgroundImageName: selectedBackgroundImageName, categories: selectedMemoCategories, likes: [], comments: [], date: Date())
                     memoStore.addMemo(memo: newMemo) { error in
                         if let error = error {
-                            // Handle error (e.g., show an alert)
                             print("Error adding memo: \(error)")
                         } else {
                             dismiss()

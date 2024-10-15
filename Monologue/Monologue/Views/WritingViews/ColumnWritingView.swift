@@ -21,7 +21,7 @@ struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
     @State private var text: String = ""
     @State private var textLimit: Int = 2000
-    @State private var selectedColumnCategory: String = "오늘의 주제"
+    @State private var selectedColumnCategories: [String] = [] // 다중 선택을 위한 배열로 변경
 
     let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"] // 카테고리 목록
     let placeholder: String = "글을 입력해 주세요."
@@ -53,6 +53,9 @@ struct ColumnWritingView: View {
                             text = String(newValue.prefix(textLimit))
                         }
                     }
+                    .onAppear {
+                        print("\(userInfoStore.userInfo?.nickname ?? "닉네임 없음")")
+                    }
                 
                 HStack {
                     Spacer()
@@ -60,8 +63,6 @@ struct ColumnWritingView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                
-               
                 
                 ScrollView(.horizontal) {
                     HStack(spacing: 13) {
@@ -74,13 +75,20 @@ struct ColumnWritingView: View {
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
                         ForEach(categoryOptions, id: \.self) { category in
-                            CategoryColumnButton(title: category, isSelected: selectedColumnCategory == category) {
-                                selectedColumnCategory = category
+                            CategoryColumnButton(
+                                title: category,
+                                isSelected: selectedColumnCategories.contains(category) // 배열에 해당 카테고리가 있는지 확인
+                            ) {
+                                if selectedColumnCategories.contains(category) {
+                                    selectedColumnCategories.removeAll { $0 == category } // 이미 선택된 경우 배열에서 제거
+                                } else {
+                                    selectedColumnCategories.append(category) // 선택되지 않은 경우 배열에 추가
+                                }
                             }
                         }
                     }
-                    .padding(.bottom, 10) // 아래쪽 여백을 줄임
-                    .padding(.top, 10) // 위쪽 여백을 추가
+                    .padding(.bottom, 10)
+                    .padding(.top, 10)
                 }
                 
                 Divider()
@@ -109,10 +117,10 @@ struct ColumnWritingView: View {
                     // 발행 버튼 액션
                     let newColumn = Column(
                         content: text,
-                        userNickname: columnStore.columns.first?.userNickname ?? "", 
+                        userNickname: userInfoStore.userInfo?.nickname ?? "",
                         font: "",
                         backgroundImageName: "",
-                        categories: [selectedColumnCategory],
+                        categories: selectedColumnCategories, // 선택된 카테고리 배열을 저장
                         likes: [],
                         comments: [],
                         date: Date()
@@ -153,6 +161,7 @@ struct CategoryColumnButton: View {
         }
     }
 }
+
 
 #Preview {
     ColumnWritingView()
