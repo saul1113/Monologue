@@ -58,21 +58,29 @@ struct MyPageView: View {
                         
                         Divider()
                         
-                        HStack {
-                            Text("팔로워")
-                            Text("\(4)") // following.count
-                                .bold()
+                        NavigationLink {
+                            FollowListView()
+                        } label: {
+                            HStack {
+                                Text("팔로워")
+                                Text("\(4)") // following.count
+                                    .bold()
+                            }
+                            .padding(.horizontal, 2)
                         }
-                        .padding(.horizontal, 2)
                         
                         Divider()
                         
-                        HStack {
-                            Text("팔로잉")
-                            Text("\(4)") // follower.count
-                                .bold()
+                        NavigationLink {
+                            FollowListView()
+                        } label: {
+                            HStack {
+                                Text("팔로잉")
+                                Text("\(4)") // follower.count
+                                    .bold()
+                            }
+                            .padding(.horizontal, 2)
                         }
-                        .padding(.horizontal, 2)
                     }
                     .font(.system(size: 14))
                     .frame(height: 22)
