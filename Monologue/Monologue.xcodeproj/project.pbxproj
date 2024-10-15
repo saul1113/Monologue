@@ -89,14 +89,13 @@
 			isa = PBXGroup;
 			children = (
 				8E91AECF2CBE30E6009889D4 /* GoogleService-Info.plist */,
+				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
+				8E52D92F2CBD215600E5D42A /* Assets.xcassets */,
+				8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */,
+				8EF50D322CBDF446000CABAA /* ViewBuilders */,
 				8EF50D512CBDFD01000CABAA /* Auth */,
 				8EF50D532CBDFD01000CABAA /* Model */,
 				EAC7D86A2CBE2E62008A8074 /* Store */,
-				8EF50D592CBDFD01000CABAA /* View */,
-				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
-				8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */,
-				8E52D92F2CBD215600E5D42A /* Assets.xcassets */,
-				8EF50D322CBDF446000CABAA /* ViewBuilders */,
 				8E52D9422CBD216C00E5D42A /* Views */,
 			);
 			path = Monologue;
@@ -113,6 +112,10 @@
 		8E52D9422CBD216C00E5D42A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */,
+				8EF50D572CBDFD01000CABAA /* ContentView.swift */,
+				8EF50D582CBDFD01000CABAA /* LoginView.swift */,
+				EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */,
 				8E52D93F2CBD216C00E5D42A /* MainView.swift */,
 				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
@@ -147,17 +150,6 @@
 				8EF50D732CBE0479000CABAA /* Complain.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		8EF50D592CBDFD01000CABAA /* View */ = {
-			isa = PBXGroup;
-			children = (
-				8EF50D562CBDFD01000CABAA /* AddUserInfoView.swift */,
-				8EF50D572CBDFD01000CABAA /* ContentView.swift */,
-				8EF50D582CBDFD01000CABAA /* LoginView.swift */,
-				EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		EAC7D86A2CBE2E62008A8074 /* Store */ = {
