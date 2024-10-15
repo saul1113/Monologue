@@ -25,15 +25,6 @@ struct ColumnView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
-
-                Button(action: {
-                    // 사용자 정보 추가 버튼
-                }) {
-                    Text("사용자 정보 추가")
-                        .frame(maxWidth: .infinity, minHeight: 35)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.accent)
             }
         }
     }
