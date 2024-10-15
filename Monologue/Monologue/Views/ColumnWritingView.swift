@@ -5,6 +5,8 @@
 //  Created by Min on 10/15/24.
 //
 
+import SwiftUI
+
 /*
  Column
  칼럼 ID -> String
@@ -15,8 +17,6 @@
  Comment -> 코멘트 ID String 배열
  날짜 -> Date
  */
-import SwiftUI
-
 struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
     @State private var text: String = ""
@@ -26,6 +26,9 @@ struct ColumnWritingView: View {
     let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"] // 카테고리 목록
     let placeholder: String = "글을 입력해 주세요."
     
+    @StateObject var columnStore = ColumnStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore // Ensure this is properly injected
+
     var body: some View {
         ZStack {
             Color(.systemBackground)
@@ -104,6 +107,23 @@ struct ColumnWritingView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     // 발행 버튼 액션
+                    let newColumn = Column(
+                        content: text,
+                        userNickname: columnStore.columns.first?.userNickname ?? "", // Ensure you have this property in your UserInfoStore
+                        font: "", // You can adjust this if needed
+                        backgroundImageName: "", // You can adjust this if needed
+                        categories: [selectedColumnCategory],
+                        likes: [],
+                        comments: [],
+                        date: Date()
+                    )
+                    columnStore.addColumn(column: newColumn) { error in
+                        if let error = error {
+                            print("Error adding column: \(error)")
+                        } else {
+                            dismiss()
+                        }
+                    }
                 }) {
                     Text("발행")
                         .foregroundColor(.accentColor)
