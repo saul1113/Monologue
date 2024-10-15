@@ -20,52 +20,57 @@ struct AddUserInfoView: View {
         "IT": false,
         "기타": false,
     ]
+    @Binding var isPresented: Bool
+    @Binding var isNextView: Bool
     
     var body: some View {
-        Image(systemName: "ellipsis")
-            .resizable()
-            .foregroundStyle(.gray)
-            .frame(width: 18, height: 4)
-            .padding(10)
-        
-        VStack(alignment: .leading) {
-            Spacer()
-                .frame(height: 100)
+        NavigationStack {
+            Image(systemName: "ellipsis")
+                .resizable()
+                .foregroundStyle(.gray)
+                .frame(width: 18, height: 4)
+                .padding(10)
             
-            TextField("사용하실 닉네임을 입력해주세요.", text: $nicknameText)
-                .padding(.horizontal, 10)
-                .frame(height: 45)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.gray, lineWidth: 2).opacity(0.2)
-                )
-                .cornerRadius(10)
-                .padding(.bottom, 30)
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text("카테고리")
-                    .foregroundStyle(.accent) // accentColor 변경해야함
-                categoryView(dict: $dict)
-            }
-            
-            Spacer()
-            //
-            
-            Button {
+            VStack(alignment: .leading) {
+                Spacer()
+                    .frame(height: 100)
                 
-            } label: {
-                Text("등록")
-                    .frame(maxWidth: .infinity, minHeight: 35)
+                TextField("사용하실 닉네임을 입력해주세요.", text: $nicknameText)
+                    .padding(.horizontal, 10)
+                    .frame(height: 45)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.gray, lineWidth: 2).opacity(0.2)
+                    )
+                    .cornerRadius(10)
+                    .padding(.bottom, 30)
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("카테고리")
+                        .foregroundStyle(.accent) // accentColor 변경해야함
+                    categoryView(dict: $dict)
+                }
+                
+                Spacer()
+                //
+                
+                Button {
+                    isPresented = false
+                    isNextView = true
+                } label: {
+                    Text("등록")
+                        .frame(maxWidth: .infinity, minHeight: 35)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
+                
+                Spacer()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.accent)
-            
-            Spacer()
         }
         .padding(.horizontal, 25)
     }
 }
 
 #Preview {
-    AddUserInfoView()
+    AddUserInfoView(isPresented: .constant(false), isNextView: .constant(false))
 }

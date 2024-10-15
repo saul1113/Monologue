@@ -70,6 +70,6 @@ struct AppleButtonView: View {
 }
 
 #Preview {
-    LoginView(isNextView: .constant(false))
+    LoginView()
         .environmentObject(AuthManager())
 }

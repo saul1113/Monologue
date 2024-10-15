@@ -24,9 +24,9 @@ struct MonologueApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainView()
-//            LoginView(isNextView: .constant(false))
-//                .environmentObject(authStore)
+//            MainView()
+            LoginView()
+                .environmentObject(authStore)
         }
     }
 }
