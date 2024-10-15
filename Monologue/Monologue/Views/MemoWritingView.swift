@@ -33,7 +33,7 @@ struct MemoWritingView: View {
     @State private var text: String = ""
     @State private var textLimit: Int = 500
     @State private var selectedFont: String = "기본서체"
-    @State private var selectedCategory: String = "오늘의 주제" // 선택된 카테고리
+    @State private var selectedMemoCategory: String = "오늘의 주제" // 선택된 카테고리
     @State private var selectedBackgroundColor: Color = .white // 기본 배경색
 
     let placeholder: String = "문장을 입력해 주세요."
@@ -130,8 +130,8 @@ struct MemoWritingView: View {
                             .foregroundStyle(Color.accent)
                         
                         ForEach(categoryOptions, id: \.self) { category in
-                            CategoryButton(title: category, isSelected: selectedCategory == category) {
-                                selectedCategory = category
+                            CategoryButton(title: category, isSelected: selectedMemoCategory == category) {
+                                selectedMemoCategory = category
                             }
                         }
                     }
