@@ -20,13 +20,13 @@ struct LoginView: View {
                 MainView()
             } else {
                 ZStack {
-                    Color(red: 255 / 255, green: 248 / 255, blue: 237 / 255).ignoresSafeArea()
+                    Color(.background).ignoresSafeArea()
                     
                     VStack {
                         Text("MONOLOGUE")
                             .padding(40)
                             .font(.system(size: 42))
-                            .foregroundStyle(Color(red: 120 / 255, green: 88 / 255, blue: 79 / 255))
+                            .foregroundStyle(.accent)
                             .bold()
                         
                         GoogleButtonView(isPresented: $isPresented, isNextView: $isNextView)

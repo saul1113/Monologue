@@ -11,6 +11,7 @@ import FirebaseFirestore
 
 struct Column: Codable, Identifiable {
     var id: String = UUID().uuidString
+    var title: String
     var content: String // 칼럼 내용
     var userNickname: String // 유저 닉네임
     var categories: [String] // 카테고리
@@ -22,6 +23,7 @@ struct Column: Codable, Identifiable {
         let docData = document.data()
         
         self.id = document.documentID
+        self.title = docData["title"] as? String ?? ""
         self.content = docData["content"] as? String ?? ""
         self.userNickname = docData["userNickname"] as? String ?? ""
         self.categories = docData["categories"] as? [String] ?? []
@@ -35,7 +37,8 @@ struct Column: Codable, Identifiable {
         }
     }
     
-    init(content: String, userNickname: String, font: String, backgroundImageName: String, categories: [String], likes: [String], comments: [String], date: Date) {
+    init(title: String, content: String, userNickname: String, font: String, backgroundImageName: String, categories: [String], likes: [String], comments: [String], date: Date) {
+        self.title = title
         self.content = content
         self.userNickname = userNickname
         self.categories = categories

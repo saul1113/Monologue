@@ -8,68 +8,139 @@
 import SwiftUI
 
 struct PostView: View {
-    @State private var isSheetPresented: Bool = false
-    @State private var isNavigatingToMemo: Bool = false // MemoWritingView 네비게이션 상태 관리
-    @State private var isNavigatingToColumn: Bool = false // ColumnWirtingView 네비게이션 상태 관리
+    @Environment(\.dismiss) var dismiss
+
+ 
+    @State var selectedSegment: String = "메모"
     
+    @StateObject private var memoStore = MemoStore()
+    @StateObject private var columnStore = ColumnStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @EnvironmentObject private var authManager:AuthManager
+    
+    @State private var text: String = ""
+    @State private var title: String = ""
+    @State private var selectedFont: String = "기본서체"
+    @State private var selectedBackgroundImageName: String = "jery1"
+    @State private var selectedMemoCategories: [String] = []
+    @State private var selectedColumnCategories: [String] = []
+    @State private var lineCount: Int = 0
+    
+    @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
+    @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
+
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
-                Color(.background)
-                    .ignoresSafeArea()
+                HStack(spacing: 30) {
+                    HStack {
+                        Text("Post")
+                        
+                        
+                        HStack {
+                            Button(action: {
+                                if selectedSegment == "메모" {
+                                    // 메모 저장 처리
+                                    let newMemo = Memo(content: text, userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                                       font: selectedFont, backgroundImageName: selectedBackgroundImageName, categories: selectedMemoCategories, likes: [], comments: [], date: Date(), lineCount: lineCount)
+                                    memoStore.addMemo(memo: newMemo) { error in
+                                        if let error = error {
+                                            print("Error adding memo: \(error)")
+                                        } else {
+                                            dismiss()
+                                            restFields()
+                                        }
+                                    }
+                                } else if selectedSegment == "칼럼" {
+                                    // 칼럼 저장 처리
+                                    let newColumn = Column(
+                                        title: title,
+                                        content: text,
+                                        userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                        font: "",
+                                        backgroundImageName: "",
+                                        categories: selectedColumnCategories, // 선택된 칼럼 카테고리 사용
+                                        likes: [],
+                                        comments: [],
+                                        date: Date()
+                                    )
+                                    columnStore.addColumn(column: newColumn) { error in
+                                        if let error = error {
+                                            print("Error adding column: \(error)")
+                                        } else {
+                                            dismiss()
+                                            restFields()
+                                        }
+                                    }
+                                }
+                            }) {
+                                Text("발행")
+                                    .foregroundColor(.accentColor)  // 강조 색상 설정
+                            }
+                        }
+                    }
+                }
+                
+                .padding(.bottom, 10)
+                
+                CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+
+                if selectedSegment == "메모" {
+                    MemoWritingView(text: $text, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
+                                    lineCount: $lineCount)
+                } else if selectedSegment == "칼럼" {
+                    ColumnWritingView(title: $title, text: $text, selectedColumnCategories: $selectedColumnCategories)
+                }
             }
             .onAppear {
-                isSheetPresented = true
+                Task {
+                    // 유저의 정보 로드
+                    await userInfoStore.loadUserInfo(email: authManager.email)
+                    
+                    // 유저의 메모 로드
+                    memoStore.loadMemosByUserNickname(userNickname: authManager.name) { memos, error in
+                        if let memos = memos {
+                            userMemos = memos
+                        }
+                    }
+                    
+                    // 유저의 칼럼 로드
+                    columnStore.loadColumnsByUserNickname(userNickname: authManager.name) { columns, error in
+                        if let columns = columns {
+                            userColumns = columns
+                        }
+                    }
+                }
             }
-            .sheet(isPresented: $isSheetPresented) {
-                ActionSheetView(isSheetPresented: $isSheetPresented, isNavigatingToMemo: $isNavigatingToMemo, isNavigatingToColumn: $isNavigatingToColumn)
-                    .presentationDetents([.height(200)])
-                    .presentationCornerRadius(21)
+            .onChange(of: selectedSegment) { newSegment in
+                text = ""
+                selectedMemoCategories = []
+                selectedColumnCategories = []
+                
+                if newSegment == "메모" {
+                    selectedFont = "기본서체"
+                    selectedBackgroundImageName = "jery1"
+                }
+                
             }
-            .navigationDestination(isPresented: $isNavigatingToMemo) {
-                MemoWritingView() // 네비게이션이 활성화될 때 MemoWritingView로 이동
-            }
-            .navigationDestination(isPresented: $isNavigatingToColumn) {
-                ColumnWritingView()
-            }
+            
         }
+        
     }
-}
-
-struct ActionSheetView: View {
-    @Binding var isSheetPresented: Bool
-    @Binding var isNavigatingToMemo: Bool // 부모에서 네비게이션 상태를 관리
-    @Binding var isNavigatingToColumn: Bool // 부모에서 네비게이션 상태를 관리
     
-    var body: some View {
-        VStack(spacing: 20) {
-            Button("메모 하러 가기") {
-                isSheetPresented = false // 시트 닫기
-                isNavigatingToMemo = true // 메모 작성 화면으로 이동
-            }
-            
-            Divider()
-            
-            Button("칼럼 쓰러 가기") {
-                // 칼럼 쓰러 가기 액션
-                isSheetPresented = false
-                isNavigatingToColumn = true
-            }
-            
-            Divider()
-            
-            Button("취소") {
-                // 취소 액션
-                isSheetPresented = false
-            }
+    private func restFields() {
+        text = ""
+        selectedMemoCategories = []
+        selectedColumnCategories = []
+        
+        if selectedSegment == "메모" {
+            selectedFont = "기본서체"
+            selectedBackgroundImageName = "jery1"
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .cornerRadius(21)
-        .padding()
     }
 }
 
 #Preview {
     PostView()
+        .environmentObject(UserInfoStore())  // 미리보기에서 필요한 환경 객체 제공
 }

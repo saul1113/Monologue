@@ -23,18 +23,19 @@ struct MonologueApp: App {
     @StateObject private var memoStore = MemoStore()
     @StateObject private var columnStore = ColumnStore()
     @StateObject private var commentStore = CommentStore()
+    @StateObject private var memoImageStore = MemoImageStore()
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-//            LoginView()
+            LoginView()
                 .environmentObject(authStore)
                 .environmentObject(userInfoStore)
                 .environmentObject(memoStore)
                 .environmentObject(columnStore)
                 .environmentObject(commentStore)
+                .environmentObject(memoImageStore)
         }
     }
 }

@@ -18,6 +18,7 @@ class ColumnStore: ObservableObject {
         let db = Firestore.firestore()
         
         db.collection("Column").document(column.id).setData([
+            "title": column.title,
             "content": column.content,
             "userNickname": column.userNickname,
             "categories": column.categories,
