@@ -27,7 +27,7 @@ struct ProfileEditView: View {
                 .ignoresSafeArea()
             
             VStack {
-                ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "")
+                ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "", size: 77)
                     .padding(.bottom, 17)
                     .padding(.top, 20)
                 

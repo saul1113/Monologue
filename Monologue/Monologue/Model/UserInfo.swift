@@ -30,12 +30,12 @@ struct UserInfo: Codable {
     init(document: QueryDocumentSnapshot) {
         let docData = document.data()
         
-        self.nickname = docData["content"] as? String ?? ""
+        self.nickname = docData["nickname"] as? String ?? ""
         self.preferredCategories = docData["preferredCategories"] as? [String] ?? []
         self.profileImageName = docData["profileImageName"] as? String ?? ""
         self.introduction = docData["introduction"] as? String ?? ""
         self.followers = docData["followers"] as? [String] ?? []
-        self.followings = docData["following"] as? [String] ?? []
+        self.followings = docData["followings"] as? [String] ?? []
         self.blocked = docData["blocked"] as? [String] ?? []
         self.likes = docData["likes"] as? [String] ?? []
         

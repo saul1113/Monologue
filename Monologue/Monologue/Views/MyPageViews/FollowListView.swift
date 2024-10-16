@@ -60,19 +60,19 @@ struct FollowListView: View {
                         } else {
                             ForEach(0..<followings.count) { index in
                                 UserRow(
-                                    profileImageName: followers[index].profileImageName,
-                                    nickname: followers[index].nickname,
-                                    memoCount: userInfoStore.getMemoCount(userNickname: followers[index].nickname),
-                                    columnCount: userInfoStore.getColumnCount(userNickname: followers[index].nickname),
+                                    profileImageName: followings[index].profileImageName,
+                                    nickname: followings[index].nickname,
+                                    memoCount: userInfoStore.getMemoCount(userNickname: followings[index].nickname),
+                                    columnCount: userInfoStore.getColumnCount(userNickname: followings[index].nickname),
                                     activeButtonText: "팔로우",
                                     inactiveButtonText: "팔로잉",
                                     onActive: {
                                         // 팔로우 로직
-                                        print("\(followers[index].nickname) 다시 팔로우")
+                                        print("\(followings[index].nickname) 다시 팔로우")
                                     },
                                     onInactive: {
                                         // 언팔로우 로직
-                                        print("\(followers[index].nickname) 언팔")
+                                        print("\(followings[index].nickname) 언팔")
                                     }
                                 )
                             }
@@ -84,7 +84,7 @@ struct FollowListView: View {
             }
             .padding(.top, 70)
         }
-        .navigationTitle("북극성") // nickname 데이터로 변경 예정
+        .navigationTitle(userInfoStore.userInfo?.nickname ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
         .toolbar {
@@ -99,12 +99,12 @@ struct FollowListView: View {
         .onAppear {
             if let userInfo = userInfoStore.userInfo {
                     // 팔로워 목록 불러오기
-                    userInfoStore.loadUsersInfoByNickname(nicknames: userInfo.followers, completion: { usersInfo, error in
+                    userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers, completion: { usersInfo, error in
                         followers = usersInfo ?? []
                     })
                     
                     // 팔로잉 목록 불러오기
-                    userInfoStore.loadUsersInfoByNickname(nicknames: userInfo.followings, completion: { usersInfo, error in
+                    userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings, completion: { usersInfo, error in
                         followings = usersInfo ?? []
                     })
                 }

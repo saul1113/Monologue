@@ -30,7 +30,7 @@ struct BlockedUsersListView: View {
                                 profileImageName: blockedUsers[index].profileImageName,
                                 nickname: blockedUsers[index].nickname,
                                 memoCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
-                                columnCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname), // 개별 상태 관리
+                                columnCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
                                 activeButtonText: "차단",
                                 inactiveButtonText: "차단 해제",
                                 onActive: {
@@ -65,7 +65,7 @@ struct BlockedUsersListView: View {
         }
         .onAppear {
             if let userInfo = userInfoStore.userInfo {
-                userInfoStore.loadUsersInfoByNickname(nicknames: userInfo.blocked, completion: { usersInfo, error in
+                userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked, completion: { usersInfo, error in
                     blockedUsers = usersInfo ?? []
                 })
             }

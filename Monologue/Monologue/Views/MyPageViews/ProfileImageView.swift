@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-// 다른 뷰에서 프로필 사진을 쉽게 쓰기 위해
+// 다른 뷰에서 프로필 사진을 쉽게 쓰기 위해(사이즈만 변경)
+
 struct ProfileImageView: View {
     let profileImageName: String
+    let size: CGFloat
 
     var body: some View {
         if let uiImage = UIImage(named: profileImageName) {
@@ -17,10 +19,10 @@ struct ProfileImageView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .clipShape(Circle())
-                .frame(width: 77, height: 77)
+                .frame(width: size, height: size)
         } else {
             Circle()
-                .frame(width: 77, height: 77)
+                .frame(width: size, height: size)
         }
     }
 }
