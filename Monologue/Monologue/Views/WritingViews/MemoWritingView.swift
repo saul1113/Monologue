@@ -15,6 +15,12 @@ struct MemoWritingView: View {
     
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
+    @EnvironmentObject private var authManager:AuthManager
+    @EnvironmentObject private var columnStore: ColumnStore
+    
+    @State var selectedSegment: String = "메모"
+    @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
+    @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]

@@ -39,15 +39,17 @@ struct ColumnWritingView: View {
                     .padding(.horizontal, 16) // 좌우 패딩만 16으로 설정
                     .padding(.vertical, 8) // 상하 패딩은 자유롭게 설정 가능
                     .cornerRadius(8)
-                    .frame(width: 370 ,height: 540)
+                    .frame(width: 370 ,height: 545)
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundStyle(text.isEmpty ? .gray : .clear)
                             .padding(.top)
-                            .padding(.leading)
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color(.systemGray4))
+                            .padding(.leading, 22)
                     }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.brown, lineWidth: 1) // 테두리 색상과 두께 조정
+                    )
                     .onReceive(text.publisher.collect()) { newValue in
                         if newValue.count > textLimit {
                             text = String(newValue.prefix(textLimit))

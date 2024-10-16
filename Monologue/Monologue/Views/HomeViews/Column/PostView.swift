@@ -9,16 +9,23 @@ import SwiftUI
 
 struct PostView: View {
     @Environment(\.dismiss) var dismiss
+
+ 
+    @State var selectedSegment: String = "메모"
+    
     @StateObject private var memoStore = MemoStore()
     @StateObject private var columnStore = ColumnStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
-    @State var selectedSegment: String = "메모"
+    @EnvironmentObject private var authManager:AuthManager
     
     @State private var text: String = ""
     @State private var selectedFont: String = "기본서체"
     @State private var selectedBackgroundImageName: String = "jery1"
     @State private var selectedMemoCategories: [String] = []
     @State private var selectedColumnCategories: [String] = []
+    
+    @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
+    @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
 
     var body: some View {
         NavigationView {
@@ -60,6 +67,7 @@ struct PostView: View {
                                     print("Error adding column: \(error)")
                                 } else {
                                     dismiss()
+                                    restFields()
                                 }
                             }
                         }
@@ -77,6 +85,26 @@ struct PostView: View {
                     MemoWritingView(text: $text, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName)
                 } else if selectedSegment == "칼럼" {
                     ColumnWritingView(text: $text, selectedColumnCategories: $selectedColumnCategories)
+                }
+            }
+            .onAppear {
+                Task {
+                    // 유저의 정보 로드
+                    await userInfoStore.loadUserInfo(email: authManager.email)
+                    
+                    // 유저의 메모 로드
+                    memoStore.loadMemosByUserNickname(userNickname: authManager.name) { memos, error in
+                        if let memos = memos {
+                            userMemos = memos
+                        }
+                    }
+                    
+                    // 유저의 칼럼 로드
+                    columnStore.loadColumnsByUserNickname(userNickname: authManager.name) { columns, error in
+                        if let columns = columns {
+                            userColumns = columns
+                        }
+                    }
                 }
             }
             .onChange(of: selectedSegment) { newSegment in
