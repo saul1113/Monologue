@@ -8,10 +8,10 @@ import SwiftUI
 import OrderedCollections
 
 struct TopBarView: View {
-    @State private var searchText: String = ""
-    @State private var isSearching: Bool = false
+    @Binding var searchText: String
+    @Binding var isSearching: Bool
 //    @State private var selectedPickerIndex: Int = 0
-    @State var selectedSegment: String = "메모"
+    @Binding var selectedSegment: String
     @State private var selectedCategories: [String] = ["전체"]
     @State var dict: OrderedDictionary = [
         "전체": false,
@@ -42,18 +42,8 @@ struct TopBarView: View {
                 }
                 Spacer()
 
-                if isSearching {
-                    TextField("검색", text: $searchText)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .transition(.move(edge: .trailing))
-                        .onDisappear {
-                            searchText = ""
-                        }
-                }
-                Spacer()
-                
                 Button(action: {
-                    withAnimation(.interactiveSpring(response: 0.2, dampingFraction: 0.5, blendDuration: 0.2)) {
+                    withAnimation(.easeInOut(duration: 0.3)) {
                         isSearching.toggle()
                     }
                 }) {
@@ -62,6 +52,7 @@ struct TopBarView: View {
                         .foregroundStyle(Color.accentColor)
                 }
                 .padding(.trailing, 8)
+//                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 
                 // 알림 버튼 (우측에 위치)
                 if !isSearching {

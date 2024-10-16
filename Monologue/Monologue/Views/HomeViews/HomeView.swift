@@ -18,7 +18,7 @@ struct HomeView: View {
     @State var selectedSegment: String = "메모"
     @State private var selectedCategories: [String] = ["전체"]
     @State var dict: OrderedDictionary = [
-        "전체": false,
+        "전체": true,
         "오늘의 주제": false,
         "에세이": false,
         "사랑" : false,
@@ -64,28 +64,41 @@ struct HomeView: View {
                 Color.background.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    TopBarView()
+                    TopBarView(searchText: $searchText, isSearching: $isSearching, selectedSegment: $selectedSegment)
                     .transition(.move(edge: .top))
                     
-//                    // 필터 버튼
+                    // 필터 버튼
                     categoryView(dict: $dict)
                         .padding(.bottom)
                         .onChange(of: dict) { oldValue, newValue in
-                            // dict 값이 변경될 때마다 selectedCategories를 업데이트
                             selectedCategories = newValue.filter { $0.value }.map { $0.key }
+                            
+                            let otherSelected = newValue.filter { $0.key != "전체" && $0.value }.count
+                            if otherSelected == newValue.count - 1 {
+                                // 모든 항목이 선택되면 "전체"를 활성화하고 나머지 항목을 비활성화
+                                for (key, _) in newValue {
+                                    dict[key] = (key == "전체")
+                                }
+                            } else if selectedCategories.isEmpty {
+                                // 아무 항목도 선택되지 않았을 때 "전체" 선택
+                                dict["전체"] = true
+                            } else if selectedCategories.contains("전체") && selectedCategories.count > 1 {
+                                // "전체"와 다른 항목이 같이 선택되었을 때 "전체"를 비활성화
+                                dict["전체"] = false
+                            }
                         }
                     
-                    // grid
-//                                        if selectedPickerIndex == 0 {
-//                                            // 메모 뷰
-//                                            MemoView(filteredMemos: filteredMemos)
-//                                        } else {
-//                                            // HomeColumn(filteredColumns: filteredColumns)
-//                                        }
                     if selectedSegment == "메모" {
                         MemoView(filteredMemos: filteredMemos)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else if selectedSegment == "칼럼" {
                         ColumnView(filteredColumns: filteredColumns)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                }
+                VStack {
+                    if isSearching {
+                        SearchView(searchText: $searchText, isSearching: $isSearching)
                     }
                 }
             }
