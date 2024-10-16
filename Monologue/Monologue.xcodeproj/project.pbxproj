@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		8B11949E2CBEAB7E00D9B28B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93E2CBD216C00E5D42A /* HomeView.swift */; };
 		8B1194A02CBED34C00D9B28B /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B11949F2CBED34100D9B28B /* TopBarView.swift */; };
-		8B1194A12CBED4F800D9B28B /* HomeColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */; };
+		8B1194A12CBED4F800D9B28B /* ColumnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB40005D2CBE42CD00C254A2 /* ColumnView.swift */; };
 		8B71225F2CBE009B00734578 /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B71225E2CBE009600734578 /* MemoView.swift */; };
 		8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122602CBE00CE00734578 /* MemoDetailView.swift */; };
 		8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122642CBE509D00734578 /* MasonryLayout.swift */; };
@@ -94,7 +94,7 @@
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
 		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
-		EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeColumn.swift; sourceTree = "<group>"; };
+		EB40005D2CBE42CD00C254A2 /* ColumnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,7 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */,
-				EB40005D2CBE42CD00C254A2 /* HomeColumn.swift */,
+				EB40005D2CBE42CD00C254A2 /* ColumnView.swift */,
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
 			);
 			path = Column;
@@ -368,7 +368,7 @@
 				97F5E73F2CBE2D4500C98340 /* SettingView.swift in Sources */,
 				97F5E7472CBE4C6100C98340 /* UserRow.swift in Sources */,
 				8B1194A02CBED34C00D9B28B /* TopBarView.swift in Sources */,
-				8B1194A12CBED4F800D9B28B /* HomeColumn.swift in Sources */,
+				8B1194A12CBED4F800D9B28B /* ColumnView.swift in Sources */,
 				97F5E7452CBE3CDC00C98340 /* FollowListView.swift in Sources */,
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,

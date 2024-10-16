@@ -11,7 +11,8 @@ import OrderedCollections
 struct MemoDetailView: View {
     @State var memo: Memo
     @EnvironmentObject var memoStore: MemoStore
-    @EnvironmentObject var userInfo: UserInfoStore
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @EnvironmentObject private var authManager:AuthManager
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0  // 좋아요 수를 관리할 상태 변수
     @State private var showAllComments = false  // 전체 댓글 보기 시트를 열기 위한 상태
@@ -43,8 +44,10 @@ struct MemoDetailView: View {
                     
                     // 메모
                     Image(memo.id)
-                        .font(.body)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .foregroundColor(.black)
+                        .scaledToFit()
                     
                     // 댓글과 좋아요 버튼
                     HStack {
@@ -63,13 +66,14 @@ struct MemoDetailView: View {
                         Button(action: {
                             isLiked.toggle()  // 하트 상태를 반전시킴
                             if isLiked {
-                                userInfo.loadUserInfo { user, error in
-                                    userInfo.userInfo = user ?? nil
-                                }
-                                memo.likes.append(userInfo.userInfo.nickname)
+//                                userInfoStore.loadUserInfo { user, error in
+//                                    userInfoStore.userInfoStore = user ?? nil
+//                                }
+//                                memo.likes.append(userInfo.userInfo.nickname)
+//                                userInfoStore.loadUserInfo(email: authManager.email)
                             } else {
                                 likesCount -= 1  // 좋아요 취소
-                                memo.likes = likesCount
+//                                memo.likes.removeAll { $0 == "\(userInfoStore.loadUserInfo.nickname)" }
                             }
                         }) {
                             HStack(spacing: 4) {
@@ -80,7 +84,7 @@ struct MemoDetailView: View {
                             }
                         }
                         Spacer()
-                        Text(column.categories.first ?? "카테고리 없음")
+                        Text(memo.categories.first ?? "카테고리 없음")
                             .font(.footnote)
                             .foregroundColor(.gray)
                             .padding(.trailing, 8)
@@ -152,6 +156,12 @@ struct MemoDetailView: View {
                 // 처음에 좋아요 수를 설정
                 likesCount = memo.likes.count
                 displayedComments = memo.comments  // 초기 댓글 리스트 설정
+            }
+        }
+        .onAppear {
+            Task {
+                // 유저의 정보 로드
+                await userInfoStore.loadUserInfo(email: authManager.email)
             }
         }
     }

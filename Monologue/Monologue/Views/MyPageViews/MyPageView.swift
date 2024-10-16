@@ -181,12 +181,12 @@ struct MyPageView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        MyPageView()
-            .environmentObject(AuthManager())
-            .environmentObject(UserInfoStore())
-            .environmentObject(MemoStore())
-            .environmentObject(ColumnStore())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        MyPageView()
+//            .environmentObject(AuthManager())
+//            .environmentObject(UserInfoStore())
+//            .environmentObject(MemoStore())
+//            .environmentObject(ColumnStore())
+//    }
+//}

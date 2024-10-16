@@ -10,8 +10,12 @@ import OrderedCollections
 
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
+    @EnvironmentObject private var columnStore: ColumnStore
     @State private var isScrollingDown = false
-    @State private var selectedPickerIndex: Int = 0
+//        @State private var selectedPickerIndex: Int = 0
+    @State private var searchText: String = ""
+    @State private var isSearching: Bool = false
+    @State var selectedSegment: String = "메모"
     @State private var selectedCategories: [String] = ["전체"]
     @State var dict: OrderedDictionary = [
         "전체": false,
@@ -41,21 +45,29 @@ struct HomeView: View {
         }
     }
     
+    var filteredColumns: [Column] {
+        if selectedCategories == ["전체"] {
+            columnStore.loadColumn { columns, error in
+                columnStore.columns = columns ?? []
+            }
+            return columnStore.columns
+        } else {
+            return columnStore.columns.filter { column in
+                column.categories.contains { selectedCategories.contains($0) }
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
                 Color.background.ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    VStack {
-                        if !isScrollingDown {
-                            TopBarView()
-                        }
-                    }
-                    .animation(.easeInOut, value: isScrollingDown)
+                    TopBarView()
                     .transition(.move(edge: .top))
                     
-                    // 필터 버튼
+//                    // 필터 버튼
                     categoryView(dict: $dict)
                         .padding(.bottom)
                         .onChange(of: dict) { oldValue, newValue in
@@ -64,25 +76,30 @@ struct HomeView: View {
                         }
                     
                     // grid
-                    if selectedPickerIndex == 0 {
-                        // 메모 뷰
+//                                        if selectedPickerIndex == 0 {
+//                                            // 메모 뷰
+//                                            MemoView(filteredMemos: filteredMemos)
+//                                        } else {
+//                                            // HomeColumn(filteredColumns: filteredColumns)
+//                                        }
+                    if selectedSegment == "메모" {
                         MemoView(filteredMemos: filteredMemos)
-                    } else {
-                        // HomeColumn(filteredColumns: filteredColumns)
+                    } else if selectedSegment == "칼럼" {
+                        ColumnView(filteredColumns: filteredColumns)
                     }
                 }
-                .onAppear {
-                    UIScrollView.appearance().bounces = true
-                }
-                .navigationBarHidden(true)
             }
+            .onAppear {
+                UIScrollView.appearance().bounces = true
+            }
+            .navigationBarHidden(true)
         }
     }
 }
-
-
-
-#Preview {
+    
+    
+    
+    #Preview {
     HomeView()
         .environmentObject(AuthManager())
         .environmentObject(UserInfoStore())
