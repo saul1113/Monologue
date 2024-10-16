@@ -28,6 +28,10 @@ struct MemoWritingView: View {
     var body: some View {
         
 
+    var body: some View {
+        ZStack {
+            Color(.background)
+                .ignoresSafeArea()
             
             VStack {
                 ZStack {

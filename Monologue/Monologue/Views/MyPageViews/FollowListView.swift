@@ -24,6 +24,8 @@ struct FollowListView: View {
                 .ignoresSafeArea()
             
             CustomSegmentView(segment1: "팔로워", segment2: "팔로잉", selectedSegment: $selectedSegment)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .padding(.top, 10)
             
             ScrollView {
                 VStack {
@@ -80,7 +82,7 @@ struct FollowListView: View {
                 .foregroundStyle(.accent)
                 .padding(.horizontal, 16)
             }
-            .padding(.top, 60)
+            .padding(.top, 70)
         }
         .navigationTitle("북극성") // nickname 데이터로 변경 예정
         .navigationBarTitleDisplayMode(.inline)

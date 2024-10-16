@@ -92,9 +92,53 @@ struct ColumnWritingView: View {
                 }
                 
                 Divider()
+                
             }
-        
-        .padding(.horizontal, 16)
+            .padding(.top, -100)
+            .padding(.horizontal, 16)
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("칼럼")
+                    .font(.headline)
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    // 발행 버튼 액션
+                    let newColumn = Column(
+                        title: "testTitle",
+                        content: text,
+                        userNickname: columnStore.columns.first?.userNickname ?? "", 
+                        font: "",
+                        backgroundImageName: "",
+                        categories: [selectedColumnCategory],
+                        likes: [],
+                        comments: [],
+                        date: Date()
+                    )
+                    columnStore.addColumn(column: newColumn) { error in
+                        if let error = error {
+                            print("Error adding column: \(error)")
+                        } else {
+                            dismiss()
+                        }
+                    }
+                }) {
+                    Text("발행")
+                        .foregroundColor(.accentColor)
+                }
+            }
+        }
     }
 }
 

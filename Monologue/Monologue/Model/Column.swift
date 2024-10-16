@@ -23,7 +23,7 @@ struct Column: Codable, Identifiable {
         let docData = document.data()
         
         self.id = document.documentID
-        self.title = document["title"] as? String ?? ""
+        self.title = docData["title"] as? String ?? ""
         self.content = docData["content"] as? String ?? ""
         self.userNickname = docData["userNickname"] as? String ?? ""
         self.categories = docData["categories"] as? [String] ?? []

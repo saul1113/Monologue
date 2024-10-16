@@ -55,5 +55,6 @@ struct CustomSegmentView: View {
                 alignment: .bottomLeading
             )
         }
+        .frame(height: 40)
     }
 }

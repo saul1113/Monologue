@@ -104,10 +104,15 @@ class UserInfoStore: ObservableObject {
     
     // 팔로워, 팔로잉, 차단 목록 로드
     func loadUsersInfoByNickname(nicknames: [String], completion: @escaping ([UserInfo]?, Error?) -> Void) {
+        guard !nicknames.isEmpty else {
+            completion([], nil) // 닉네임 배열이 비어있으면 빈 배열을 반환
+            return
+        }
+        
         let db = Firestore.firestore()
         
         db.collection("User")
-            .whereField("nicknames", arrayContains: nicknames[0])
+            .whereField("nickname", in: nicknames) // 배열로 변경
             .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     completion(nil, error)
