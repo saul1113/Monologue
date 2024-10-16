@@ -18,6 +18,8 @@ struct UserProfileView: View {
     @State var selectedSegment: String = "메모"
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
+    @State private var isShowingSheet: Bool = false
+    
     private var sharedString: String = "MONOLOG" // 변경 예정
     
     // 기본 이니셜라이저
@@ -32,24 +34,6 @@ struct UserProfileView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    HStack(spacing: 20) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "chevron.backward")
-                                .font(.title3)
-                        }
-                        
-                        Spacer()
-                        
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .font(.title3)
-                        }
-                    }
-                    
                     // 프사, 닉, 상메
                     HStack {
                         // 프로필 사진
@@ -74,7 +58,7 @@ struct UserProfileView: View {
                     HStack(spacing: 20) {
                         HStack {
                             Text("메모")
-                            Text("")
+                            Text("\(userMemos.count)")
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -83,15 +67,16 @@ struct UserProfileView: View {
                         
                         HStack {
                             Text("칼럼")
-                            Text("")
+                            Text("\(userColumns.count)")
                                 .bold()
                         }
                         .padding(.horizontal, 2)
                         
                         Divider()
                         
-                        NavigationLink {
-                            FollowListView(selectedSegment: "팔로워")
+                        // NavigationLink로 변경 예정
+                        Button {
+                            
                         } label: {
                             HStack {
                                 Text("팔로워")
@@ -103,8 +88,9 @@ struct UserProfileView: View {
                         
                         Divider()
                         
-                        NavigationLink {
-                            FollowListView(selectedSegment: "팔로잉")
+                        // NavigationLink로 변경 예정
+                        Button {
+                            
                         } label: {
                             HStack {
                                 Text("팔로잉")
@@ -161,6 +147,40 @@ struct UserProfileView: View {
                 }
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
+            }
+            .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isShowingSheet.toggle()
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.title3)
+                    }
+                    .confirmationDialog("", isPresented: $isShowingSheet) {
+                        Button("공유하기") {
+                            
+                        }
+                        
+                        Button("차단하기", role: .destructive) {
+                            
+                        }
+                        
+                        Button("신고하기", role: .destructive) {
+                            
+                        }
+                        
+                        Button("취소", role: .cancel) {}
+                    }
+                }
             }
             .onAppear {
                 Task {
