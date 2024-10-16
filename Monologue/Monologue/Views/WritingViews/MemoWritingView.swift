@@ -16,7 +16,7 @@ struct MemoWritingView: View {
     
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
-    @EnvironmentObject private var authManager:AuthManager    
+    @EnvironmentObject private var authManager:AuthManager
     
     let rows = [GridItem(.fixed(50))]
     
@@ -25,131 +25,129 @@ struct MemoWritingView: View {
     let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"]
     let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"]
     
-    var body: some View {
         
-
-    var body: some View {
-        ZStack {
-            Color(.background)
-                .ignoresSafeArea()
-            
-            VStack {
-                ZStack {
-                    Image(selectedBackgroundImageName)
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(8)
-                        .frame(maxWidth: 370 ,maxHeight: 400)
-                        .clipped()
-                    
-                    TextEditor(text: $text)
-                        .font(.system(.title2, design: .default, weight: .regular))
-                        .padding()
-                        .scrollContentBackground(.hidden)
-                        .background(Color.white.opacity(0.8))
-                        .frame(width: 380 ,height: 400)
-                        .cornerRadius(8)
-                        .overlay(alignment: .topLeading) {
-                            Text(placeholder)
-                                .font(.title2)
-                                .foregroundColor(text.isEmpty ? .gray : .clear)
-                                .padding(.top, 25)
-                                .padding(.leading, 20)
-                        }
-                }
-                .padding(.horizontal, 16)
+        
+        var body: some View {
+            ZStack {
                 
-                HStack {
-                    Spacer()
-                    Text("\(text.count)/500")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.bottom, -5)
-                .padding(.horizontal, 16)
-                
-                
-                HStack {
-                    HStack(spacing: 13) {
-                        Image(systemName: "a.square")
+                VStack {
+                    ZStack {
+                        Image(selectedBackgroundImageName)
                             .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color.accent)
+                            .scaledToFit()
+                            .cornerRadius(8)
+                            .frame(maxWidth: 370 ,maxHeight: 400)
+                            .clipped()
                         
-                        Text("글꼴")
-                            .font(.system(size: 15, weight: .light))
-                            .foregroundStyle(Color.accent)
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHGrid(rows: rows, spacing: 16) {
-                                ForEach(fontOptions, id: \.self) { font in
-                                    FontButton(title: font, isSelected: selectedFont == font) {
-                                        selectedFont = font
-                                    }
-                                }
+                        TextEditor(text: $text)
+                            .font(.system(.title2, design: .default, weight: .regular))
+                            .padding()
+                            .scrollContentBackground(.hidden)
+                            .background(Color.white.opacity(0.8))
+                            .frame(width: 380 ,height: 400)
+                            .cornerRadius(8)
+                            .overlay(alignment: .topLeading) {
+                                Text(placeholder)
+                                    .font(.title2)
+                                    .foregroundColor(text.isEmpty ? .gray : .clear)
+                                    .padding(.top, 25)
+                                    .padding(.leading, 20)
                             }
-                            
-    
-                        }
                     }
-                }
-                
-                Divider()
-                
-                HStack {
-                    HStack(spacing: 5) {
-                        Image(systemName: "squareshape.split.2x2.dotted")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color.accent)
-                        Text("배경")
-                            .font(.system(size: 15))
-                            .foregroundStyle(Color.accent)
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHGrid(rows: rows, spacing: 16) {
-                                ForEach(backgroundImageNames, id: \.self) { imageName in
-                                    BackgroundButton(imageName: imageName) {
-                                        selectedBackgroundImageName = imageName
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    .padding(.horizontal, 16)
                     
-                }
-                
-                Divider()
-                
-                HStack {
-                    HStack(spacing: 13) {
-                        Image(systemName: "tag")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color.accent)
-                        Text("카테고리")
-                            .font(.system(size: 15))
-                            .foregroundStyle(Color.accent)
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHGrid(rows: rows, spacing: 16) {
-                                ForEach(categoryOptions, id: \.self) { category in
-                                    CategoryMemoButton(title: category, isSelected: selectedMemoCategories.contains(category)) {
-                                        if selectedMemoCategories.contains(category) {
-                                            selectedMemoCategories.removeAll { $0 == category }
-                                        } else {
-                                            selectedMemoCategories.append(category)
+                    HStack {
+                        Spacer()
+                        Text("\(text.count)/500")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.bottom, -5)
+                    .padding(.horizontal, 16)
+                    
+                    
+                    HStack {
+                        HStack(spacing: 13) {
+                            Image(systemName: "a.square")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(Color.accent)
+                            
+                            Text("글꼴")
+                                .font(.system(size: 15, weight: .light))
+                                .foregroundStyle(Color.accent)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHGrid(rows: rows, spacing: 16) {
+                                    ForEach(fontOptions, id: \.self) { font in
+                                        FontButton(title: font, isSelected: selectedFont == font) {
+                                            selectedFont = font
                                         }
                                     }
                                 }
-                                .padding(.leading, 10)
+                                
+                                
                             }
                         }
                     }
+                    
+                    Divider()
+                    
+                    HStack {
+                        HStack(spacing: 5) {
+                            Image(systemName: "squareshape.split.2x2.dotted")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(Color.accent)
+                            Text("배경")
+                                .font(.system(size: 15))
+                                .foregroundStyle(Color.accent)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHGrid(rows: rows, spacing: 16) {
+                                    ForEach(backgroundImageNames, id: \.self) { imageName in
+                                        BackgroundButton(imageName: imageName) {
+                                            selectedBackgroundImageName = imageName
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                    
+                    Divider()
+                    
+                    HStack {
+                        HStack(spacing: 13) {
+                            Image(systemName: "tag")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(Color.accent)
+                            Text("카테고리")
+                                .font(.system(size: 15))
+                                .foregroundStyle(Color.accent)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHGrid(rows: rows, spacing: 16) {
+                                    ForEach(categoryOptions, id: \.self) { category in
+                                        CategoryMemoButton(title: category, isSelected: selectedMemoCategories.contains(category)) {
+                                            if selectedMemoCategories.contains(category) {
+                                                selectedMemoCategories.removeAll { $0 == category }
+                                            } else {
+                                                selectedMemoCategories.append(category)
+                                            }
+                                        }
+                                    }
+                                    .padding(.leading, 10)
+                                }
+                            }
+                        }
+                    }
+                    Divider()
                 }
-                Divider()
+                .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 16)
         }
+        
     }
-
 
 
 
