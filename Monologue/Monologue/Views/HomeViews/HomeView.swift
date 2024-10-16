@@ -17,7 +17,7 @@ struct HomeView: View {
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State var selectedSegment: String = "메모"
-    @State private var selectedCategories: [String] = ["전체"]
+    @State private var selectedCategories: [String]? = ["전체"]
     @State var dict: OrderedDictionary = [
         "전체": false,
         "오늘의 주제": false,
@@ -42,7 +42,7 @@ struct HomeView: View {
             return columnStore.columns
         } else {
             return columnStore.columns.filter { column in
-                column.categories.contains { selectedCategories.contains($0) }
+                column.categories.contains { selectedCategories!.contains($0) }
             }
         }
     }
@@ -64,7 +64,7 @@ struct HomeView: View {
                             selectedCategories = newValue.filter { $0.value }.map { $0.key }
                         }
                     if selectedSegment == "메모" {
-                        MemoView(filters: selectedCategories)
+                        MemoView(filters: $selectedCategories)
                     } else if selectedSegment == "칼럼" {
                         ColumnView(filteredColumns: filteredColumns)
                     }
