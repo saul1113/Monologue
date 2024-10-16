@@ -145,7 +145,6 @@
 		8E52D90D2CBD100A00E5D42A /* Monologue */ = {
 			isa = PBXGroup;
 			children = (
-				EA50F6162CC0105000D468C4 /* AppleAuth.swift */,
 				EA50F6132CC00FFF00D468C4 /* Monologue.entitlements */,
 				EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */,
 				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
@@ -266,6 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				8EF50D502CBDFD01000CABAA /* AuthManager.swift */,
+				EA50F6162CC0105000D468C4 /* AppleAuth.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
