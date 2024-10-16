@@ -8,11 +8,6 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject private var userInfoStore: UserInfoStore
-    @EnvironmentObject private var authManager:AuthManager
-    @EnvironmentObject private var memoStore: MemoStore
-    @EnvironmentObject private var columnStore: ColumnStore
-    
     var body: some View {
         TabView {
             Group {
@@ -49,9 +44,4 @@ struct MainView: View {
 
 #Preview {
     MainView()
-        .environmentObject(AuthManager())
-        .environmentObject(UserInfoStore())
-        .environmentObject(MemoStore())
-        .environmentObject(ColumnStore())
-        .environmentObject(CommentStore())
 }
