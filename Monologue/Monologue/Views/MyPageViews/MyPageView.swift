@@ -16,6 +16,9 @@ struct MyPageView: View {
     @State var selectedSegment: String = "메모"
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
+    @State private var memoCount: Int = 0 // 메모 개수
+    @State private var columnCount: Int = 0 // 칼럼 개수
+    
     private var sharedString: String = "MONOLOG" // 변경 예정
     
     @State var filters: [String]? = nil
@@ -55,7 +58,7 @@ struct MyPageView: View {
                         // 프로필 사진
                         ProfileImageView(profileImageName: userInfoStore.userInfo?.profileImageName ?? "",
                                          size: 77)
-                            .padding(.trailing, 24)
+                        .padding(.trailing, 24)
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text(userInfoStore.userInfo?.nickname ?? "닉네임 없음")
@@ -74,7 +77,7 @@ struct MyPageView: View {
                     HStack(spacing: 20) {
                         HStack {
                             Text("메모")
-                            Text("\(userInfoStore.getMemoCount(userNickname: userInfoStore.userInfo?.nickname ?? ""))") // Memo 개수
+                            Text("\(memoCount)") // Memo 개수
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -83,7 +86,7 @@ struct MyPageView: View {
                         
                         HStack {
                             Text("칼럼")
-                            Text("\(userInfoStore.getColumnCount(userNickname: userInfoStore.userInfo?.nickname ?? ""))") // Column 개수
+                            Text("\(columnCount)") // Column 개수
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -112,7 +115,7 @@ struct MyPageView: View {
                                     .bold()
                             }
                             .padding(.horizontal, 2)
-                        } 
+                        }
                     }
                     .font(.system(size: 14))
                     .frame(height: 22)
@@ -149,7 +152,7 @@ struct MyPageView: View {
                         MemoView(filters: $filters, userMemos: userMemos)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .padding(.horizontal, -16)
-
+                        
                     } else if selectedSegment == "칼럼" {
                         // 칼럼 뷰
                         ColumnView(filteredColumns: userColumns)
@@ -165,17 +168,19 @@ struct MyPageView: View {
                     // 유저의 정보 로드
                     await userInfoStore.loadUserInfo(email: authManager.email)
                     
-                    // 유저의 메모 로드
+                    // 유저의 메모 로드 및 메모 수 업데이트
                     memoStore.loadMemosByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { memos, error in
                         if let memos = memos {
                             userMemos = memos
+                            memoCount = memos.count
                         }
                     }
                     
-                    // 유저의 칼럼 로드
+                    // 유저의 칼럼 로드 및 칼럼 수 업데이트
                     columnStore.loadColumnsByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { columns, error in
                         if let columns = columns {
                             userColumns = columns
+                            columnCount = columns.count
                         }
                     }
                 }
