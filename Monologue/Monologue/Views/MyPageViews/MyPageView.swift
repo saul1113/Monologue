@@ -34,7 +34,7 @@ struct MyPageView: View {
                         Spacer()
                         
                         NavigationLink {
-                            Text("알림 페이지")
+                            NotificationView()
                         } label: {
                             Image(systemName: "bell")
                                 .font(.title3)
@@ -146,11 +146,13 @@ struct MyPageView: View {
                         // 메모 뷰
                         MemoView(filteredMemos: userMemos)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(.horizontal, -16)
 
                     } else if selectedSegment == "칼럼" {
                         // 칼럼 뷰
                         ColumnView(filteredColumns: userColumns)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(.horizontal, -16)
                     }
                 }
                 .padding(.horizontal, 16)
