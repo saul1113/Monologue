@@ -10,7 +10,7 @@ import FirebaseStorage
 import SwiftUI
 
 class MemoImageStore: ObservableObject {
-    @Published var images: [UIImage] = []
+    @Published var images: [UIImage] = [] // 이미지 이름이 추적이 안됨 -> index로 매칭을 했다.
     
     // 스토리지에 이미지 파일
     func UploadImage(image: UIImage ,imageName: String) {
@@ -28,16 +28,23 @@ class MemoImageStore: ObservableObject {
         }
     }
     
-    func loadImage(imageName: String) {
+    func loadImage(imageName: String, completion: @escaping (UIImage?) -> Void) {
         let storagRef = Storage.storage().reference(withPath: "img/\(imageName)")
         storagRef.getData(maxSize: 4 * 1024 * 1024) { (data, error) in
             if let error = error {
-                print("에러 발생")
+                print("에러 발생: \(error.localizedDescription)")
+                completion(nil) // 에러 발생 시 nil 반환
                 return
             }
-            if let tempImage = UIImage(data: data!) {
-                self.images.append(tempImage)
+            guard let tempImage = UIImage(data: data!) else {
+                completion(nil) // 이미지 변환 실패 시 nil 반환
+                return
             }
+            
+            self.images.append(tempImage)
+            print(tempImage)
+            
+            completion(tempImage) // 성공적으로 로드된 이미지 반환
         }
     }
 }

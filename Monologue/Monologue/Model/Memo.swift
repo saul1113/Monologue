@@ -9,7 +9,7 @@ import Foundation
 import FirebaseCore
 import FirebaseFirestore
 
-struct Memo: Codable, Identifiable {
+struct Memo: Codable, Hashable, Identifiable {
     var id: String = UUID().uuidString
     var content: String // 메모 내용
     var userNickname: String // 유저 닉네임

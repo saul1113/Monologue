@@ -11,12 +11,13 @@ import OrderedCollections
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
+    @EnvironmentObject private var memoImageStore: MemoImageStore
+    @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
-//        @State private var selectedPickerIndex: Int = 0
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
     @State var selectedSegment: String = "메모"
-    @State private var selectedCategories: [String] = ["전체"]
+    @State private var selectedCategories: [String]? = ["전체"]
     @State var dict: OrderedDictionary = [
         "전체": true,
         "오늘의 주제": false,
@@ -31,21 +32,9 @@ struct HomeView: View {
         "IT": false,
         "기타": false,
     ]
-    var filteredMemos: [Memo] {
-        if selectedCategories == ["전체"] {
-            memoStore.loadMemos { memos, error in
-                memoStore.memos = memos ?? []
-            }
-            return memoStore.memos
-        } else {
-            //            print(self.filteredMemos[0].id)
-            return memoStore.memos.filter { memo in
-                memo.categories.contains { selectedCategories.contains($0) }
-            }
-        }
-    }
     
     var filteredColumns: [Column] {
+        guard !columnStore.columns.isEmpty else { return [] }
         if selectedCategories == ["전체"] {
             columnStore.loadColumn { columns, error in
                 columnStore.columns = columns ?? []
@@ -53,7 +42,7 @@ struct HomeView: View {
             return columnStore.columns
         } else {
             return columnStore.columns.filter { column in
-                column.categories.contains { selectedCategories.contains($0) }
+                column.categories.contains { selectedCategories!.contains($0) }
             }
         }
     }
@@ -87,9 +76,8 @@ struct HomeView: View {
                                 dict["전체"] = false
                             }
                         }
-                    
                     if selectedSegment == "메모" {
-                        MemoView(filteredMemos: filteredMemos)
+                        MemoView(filters: $selectedCategories)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else if selectedSegment == "칼럼" {
                         ColumnView(filteredColumns: filteredColumns)
@@ -102,17 +90,15 @@ struct HomeView: View {
                     }
                 }
             }
-            .onAppear {
-                UIScrollView.appearance().bounces = true
-            }
             .navigationBarHidden(true)
+        }
+        .onAppear {
+            UIScrollView.appearance().bounces = true
         }
     }
 }
-    
-    
-    
-    #Preview {
+
+#Preview {
     HomeView()
         .environmentObject(AuthManager())
         .environmentObject(UserInfoStore())

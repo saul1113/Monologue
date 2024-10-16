@@ -95,7 +95,7 @@ class UserInfoStore: ObservableObject {
                 blocked: blocked,
                 likes: likes
             )
-            print("User info loaded successfully: \(String(describing: userInfo))")
+//            print("User info loaded successfully: \(String(describing: userInfo))")
             
         } catch {
             print("Error loading user info: \(error)")
@@ -103,16 +103,16 @@ class UserInfoStore: ObservableObject {
     }
     
     // 팔로워, 팔로잉, 차단 목록 로드
-    func loadUsersInfoByNickname(nicknames: [String], completion: @escaping ([UserInfo]?, Error?) -> Void) {
-        guard !nicknames.isEmpty else {
-            completion([], nil) // 닉네임 배열이 비어있으면 빈 배열을 반환
+    func loadUsersInfoByEmail(emails: [String], completion: @escaping ([UserInfo]?, Error?) -> Void) {
+        guard !emails.isEmpty else {
+            completion([], nil) // 이메일 배열이 비어있으면 빈 배열을 반환
             return
         }
         
         let db = Firestore.firestore()
         
         db.collection("User")
-            .whereField("nickname", in: nicknames) // 배열로 변경
+            .whereField(FieldPath.documentID(), in: emails) // 배열로 변경
             .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     completion(nil, error)
@@ -122,6 +122,7 @@ class UserInfoStore: ObservableObject {
                 var usersInfo: [UserInfo] = []
                 
                 for document in querySnapshot!.documents {
+                    
                     let userInfo = UserInfo(document: document)
                     
                     usersInfo.append(userInfo)
