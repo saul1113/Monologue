@@ -9,7 +9,7 @@ import Foundation
 import FirebaseCore
 import FirebaseFirestore
 
-struct UserInfo: Codable {
+struct UserInfo: Codable, Hashable {
     var nickname: String // 닉네임
     var registrationDate: Date  // 가입날짜
     var preferredCategories: [String] // 선호 카테고리
