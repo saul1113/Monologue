@@ -12,7 +12,7 @@ struct ColumnView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
-    var body: some View 
+    var body: some View {
         ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
             VStack {
