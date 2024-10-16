@@ -14,6 +14,7 @@ class FilteredMemoStore: ObservableObject {
     
     @Published var filteredMemos: [Memo] = []
     @Published var images: [UIImage] = []
+    @Published var isLoadingImages: Bool = false
     
     func setFilteredMemos(filters: [String]) {
         if filters == ["전체"] {
@@ -46,22 +47,30 @@ class FilteredMemoStore: ObservableObject {
     }
     
     private func loadImagesForMemos() {
-        DispatchQueue.main.async {
-            self.images = []
-            for memo in self.filteredMemos {
-                self.memoImageStore.loadImage(imageName: memo.id) { image in
-                    if let image = image {
-                        self.images.append(image)
+            DispatchQueue.main.async {
+                self.images = []
+                for memo in self.filteredMemos {
+                    self.memoImageStore.loadImage(imageName: memo.id) { image in
+                        if let image = image {
+                            self.images.append(image)
+                        }
                     }
                 }
             }
+        }
+    
+    func setUserMemos(userMemos: [Memo]) {
+        DispatchQueue.main.async {
+            self.filteredMemos = userMemos
+            self.loadImagesForMemos()
         }
     }
 }
 
 struct MemoView: View {
     @StateObject private var filteredMemoStore: FilteredMemoStore = .init()
-    var filters: [String]
+    @Binding var filters: [String]?
+    var userMemos: [Memo]?
     
     var body: some View {
         ScrollView {
@@ -71,15 +80,13 @@ struct MemoView: View {
                         NavigationLink(destination: MemoDetailView(memo: filteredMemoStore.filteredMemos[index])) {
                             ZStack {
                                 let image = filteredMemoStore.images[index]
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: UIScreen.main.bounds.width / 2 - 24, height: nil)
-                                        .clipped()
-                                        .cornerRadius(12)
-                                        .scaledToFit()
-                                
-                            }
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: UIScreen.main.bounds.width / 2 - 24, height: nil)
+                                    .clipped()
+                                    .cornerRadius(12)
+                                    .scaledToFit()                            }
                         }
                     }
                 }
@@ -87,7 +94,23 @@ struct MemoView: View {
         }
         .padding(.horizontal, 16)
         .onAppear {
-            filteredMemoStore.setFilteredMemos(filters: filters)
+            if let tempFilters = filters {
+                filteredMemoStore.setFilteredMemos(filters: tempFilters)
+            }
+            
+            if let userMemos = userMemos {
+                filteredMemoStore.setUserMemos(userMemos: userMemos)
+            }
+        }
+        .onChange(of: filters) {
+            if let tempFilters = filters {
+                filteredMemoStore.setFilteredMemos(filters: tempFilters)
+            }
+        }
+        .onChange(of: userMemos) {
+            if let userMemos = userMemos {
+                filteredMemoStore.setUserMemos(userMemos: userMemos)
+            }
         }
     }
 }

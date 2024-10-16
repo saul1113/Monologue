@@ -18,6 +18,8 @@ struct MyPageView: View {
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     private var sharedString: String = "MONOLOG" // 변경 예정
     
+    @State var filters: [String]? = nil
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -144,7 +146,7 @@ struct MyPageView: View {
                     
                     if selectedSegment == "메모" {
                         // 메모 뷰
-                        MemoView(filteredMemos: userMemos)
+                        MemoView(filters: $filters, userMemos: userMemos)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .padding(.horizontal, -16)
 
