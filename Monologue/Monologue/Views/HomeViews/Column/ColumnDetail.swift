@@ -261,6 +261,6 @@ extension Color {
 }
 
 #Preview {
-    ColumnDetail(column: Column(content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2"], date: Date()))
+    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2"], date: Date()))
         .environmentObject(ColumnStore())
 }
