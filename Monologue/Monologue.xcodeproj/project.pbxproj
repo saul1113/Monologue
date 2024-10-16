@@ -61,6 +61,9 @@
 		EAC7D8A02CBEDE04008A8074 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D89F2CBEDE04008A8074 /* FirebaseStorageCombine-Community */; };
 		EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */; };
 		EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */; };
+		EBA90F662CC0195C00710E54 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F652CC0195C00710E54 /* ShareSheetView.swift */; };
+		EBA90F682CC0242F00710E54 /* DeleteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */; };
+		EBA90F6A2CC02CC900710E54 /* ReportReasonSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */; };
 		EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB84EC52CBEE06700AC006A /* ColumnView.swift */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +113,9 @@
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
 		EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoImageStore.swift; sourceTree = "<group>"; };
 		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
+		EBA90F652CC0195C00710E54 /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
+		EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSheetView.swift; sourceTree = "<group>"; };
+		EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportReasonSheetView.swift; sourceTree = "<group>"; };
 		EBB84EC52CBEE06700AC006A /* ColumnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -232,8 +238,11 @@
 		8E902D912CBEC97500562071 /* Column */ = {
 			isa = PBXGroup;
 			children = (
-				EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */,
 				EBB84EC52CBEE06700AC006A /* ColumnView.swift */,
+				EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */,
+				EBA90F652CC0195C00710E54 /* ShareSheetView.swift */,
+				EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */,
+				EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */,
 			);
 			path = Column;
 			sourceTree = "<group>";
@@ -368,6 +377,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBA90F6A2CC02CC900710E54 /* ReportReasonSheetView.swift in Sources */,
 				8B71225F2CBE009B00734578 /* MemoView.swift in Sources */,
 				8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */,
 				8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */,
@@ -388,11 +398,13 @@
 				8E91AED22CBE3739009889D4 /* MemoStore.swift in Sources */,
 				97594F502CBFE9CA0001B6D2 /* ProfileImageSelectionView.swift in Sources */,
 				8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */,
+				EBA90F682CC0242F00710E54 /* DeleteSheetView.swift in Sources */,
 				8EF50D632CBDFD01000CABAA /* LoginView.swift in Sources */,
 				EAC7D85F2CBE0919008A8074 /* LoginButtonView.swift in Sources */,
 				8EF50D642CBDFD01000CABAA /* MonologueApp.swift in Sources */,
 				8E91AED62CBE3762009889D4 /* CommentStore.swift in Sources */,
 				8EF50D6C2CBE0402000CABAA /* UserInfo.swift in Sources */,
+				EBA90F662CC0195C00710E54 /* ShareSheetView.swift in Sources */,
 				97F5E7412CBE3AD200C98340 /* BlockedUsersListView.swift in Sources */,
 				97F5E7432CBE3B1F00C98340 /* LikeListView.swift in Sources */,
 				8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */,

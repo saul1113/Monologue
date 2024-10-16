@@ -10,22 +10,31 @@ struct ColumnView: View {
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject private var userInfoStore: UserInfoStore
+    @Environment(\.dismiss) private var dismiss
     var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
     var body: some View {
-        ZStack(alignment: .leading) {
-            Color.background.ignoresSafeArea()
-            VStack {
-                // 필터링된 칼럼 리스트
-                List {
-                    ForEach(filteredColumns) { post in
-                        NavigationLink(destination: ColumnDetail(column: post)) {
-                            PostRow(column: post)
+        NavigationView {
+            ZStack(alignment: .leading) {
+                Color.background.ignoresSafeArea()
+                VStack {
+                    List {
+                        ForEach(filteredColumns) { post in
+                            ZStack {
+                                // NavigationLink를 ZStack의 투명한 레이어로 만들어 클릭 영역으로만 사용
+                                NavigationLink(destination: ColumnDetail(column: post)) {
+                                    EmptyView()
+                                }
+                                .opacity(0) // NavigationLink는 보이지 않도록 설정
+                                PostRow(column: post) // PostRow는 항상 보이도록 설정
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .listRowBackground(Color.background)
+                            
                         }
-                        .listRowBackground(Color.background)
                     }
+                    .listStyle(PlainListStyle())
                 }
-                .listStyle(PlainListStyle())
             }
         }
     }
@@ -49,15 +58,20 @@ struct PostRow: View {
                     .font(Font.headline.weight(.bold))
                 
                 Spacer()
-                Text(column.date, style: .relative) // 게시 시간 표시
-                        .font(.subheadline)
-                        .foregroundColor(.black)
+                Text(timeAgoSinceDate(column.date)) // 초단위 삭제
+                    .font(.subheadline)
+                    .foregroundColor(.black)
             }
+            Text(column.title)
+                .font(.body)
+                .foregroundStyle(.black)
+                .font(Font.headline.weight(.bold))
             
             HStack {
                 Text(column.content) // 칼럼 내용 표시
-                    .font(.body)
+                    .font(.caption)
                     .foregroundColor(.black)
+                    .font(Font.caption.weight(.thin))
                     .lineLimit(3) // 3 줄까지만 표시
             }
             
@@ -68,7 +82,7 @@ struct PostRow: View {
                     Text("\(column.comments.count)")  // 댓글 수 표시
                         .font(.subheadline)
                 }
-
+                
                 HStack {
                     Image(systemName: "heart")
                         .foregroundColor(.gray)
@@ -93,6 +107,27 @@ struct PostRow: View {
             .stroke(.gray, lineWidth: 0.5))
         .padding(.vertical, 1)
     }
+    func timeAgoSinceDate(_ date: Date) -> String {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents([.year, .month, .weekOfYear, .day, .hour, .minute], from: date, to: now)
+        
+        if let year = components.year, year > 0 {
+            return "\(year)년 전"
+        } else if let month = components.month, month > 0 {
+            return "\(month)달 전"
+        } else if let week = components.weekOfYear, week > 0 {
+            return "\(week)주 전"
+        } else if let day = components.day, day > 0 {
+            return "\(day)일 전"
+        } else if let hour = components.hour, hour > 0 {
+            return "\(hour)시간 전"
+        } else if let minute = components.minute, minute > 0 {
+            return "\(minute)분 전"
+        } else {
+            return "방금 전"
+        }
+    }
 }
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
@@ -101,9 +136,13 @@ struct HomeView_Previews: PreviewProvider {
             Column(title: "title2", content: "Sample Column 2", userNickname: "User2", font: "", backgroundImageName: "", categories: ["사랑"], likes: ["User1"], comments: [], date: Date())
         ]
         
-        return ColumnView(filteredColumns: sampleColumns)
-            .environmentObject(ColumnStore())
-            .environmentObject(AuthManager())
-            .environmentObject(UserInfoStore())
+        NavigationView {
+            ColumnView(filteredColumns: sampleColumns)
+                .environmentObject(ColumnStore())
+                .environmentObject(AuthManager())
+                .environmentObject(UserInfoStore())
+        }
     }
 }
+
+

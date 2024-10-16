@@ -14,6 +14,11 @@ struct ColumnDetail: View {
     @State private var showAllComments = false  // 전체 댓글 보기 시트를 열기 위한 상태
     @State private var newComment = ""  // 새 댓글을 저장할 상태
     @State private var displayedComments: [String] = []  // 현재 보여지는 댓글 리스트
+    @State private var showShareSheet: Bool = false  // 공유하기 시트 표시 여부 상태
+    @State private var showDeleteSheet: Bool = false  // 삭제하기 시트 표시 여부 상태
+    @State private var selectedComment: String? 
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var isCommentFieldFocused: Bool
     
     var column: Column  // Column 데이터를 외부에서 받아오도록 수정
     
@@ -28,7 +33,7 @@ struct ColumnDetail: View {
                 VStack(alignment: .leading, spacing: 16) {
                     // 프로필 이미지, 닉네임, 시간 표시
                     HStack {
-                        Image(systemName: "person.circle.fill")  // 프로필 이미지
+                        Image(systemName: "person.circle")  // 프로필 이미지
                             .resizable()
                             .frame(width: 40, height: 40)
                             .clipShape(Circle())
@@ -39,12 +44,19 @@ struct ColumnDetail: View {
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
+                        Spacer()
+                        Button(action: {
+                            showShareSheet = true
+                        }) {
+                            Image(systemName: "ellipsis")
+                                .foregroundColor(.gray)
+                        }
                     }
                     .padding(.horizontal)
                     
                     // 게시글 제목과 내용
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Lorem Ipsum is simply dummy text")
+                        Text(column.title)
                             .font(.title3)
                             .bold()
                         Text(column.content)
@@ -57,13 +69,14 @@ struct ColumnDetail: View {
                     HStack {
                         // 댓글 버튼
                         Button(action: {
-                            showAllComments.toggle()  // 전체 댓글 보기 시트 열기
+                            isCommentFieldFocused = true
                         }) {
                             HStack(spacing: 4) {
                                 Image(systemName: "bubble.right")
                                 Text("\(displayedComments.count)")  // 댓글 개수 표시
                                     .font(.subheadline)
                             }
+                            .foregroundStyle(.gray)
                         }
                         
                         // 좋아요 버튼
@@ -79,10 +92,11 @@ struct ColumnDetail: View {
                         }) {
                             HStack(spacing: 4) {
                                 Image(systemName: isLiked ? "heart.fill" : "heart")  // 좋아요 시 빨간 하트로 변경
-                                    .foregroundColor(isLiked ? .red : .black)  // 색상 설정
+                                    .foregroundColor(isLiked ? .red : .gray)  // 색상 설정
                                 Text("\(likesCount)")  // 좋아요 수 표시
                                     .font(.subheadline)
                             }
+                            .foregroundStyle(.gray)
                         }
                         Spacer()
                         Text(column.categories.first ?? "카테고리 없음")  // 카테고리 텍스트
@@ -90,6 +104,7 @@ struct ColumnDetail: View {
                             .foregroundColor(.gray)
                             .padding(.trailing, 8)  // 여백 추가
                     }
+                    .padding(.horizontal)
                 }
                 .padding()
                 .background(Color.white)  // 게시글의 배경을 흰색으로 설정
@@ -109,15 +124,36 @@ struct ColumnDetail: View {
                                 .foregroundColor(.gray)
                                 .font(.subheadline)
                         }
-                        .padding(.horizontal)
+                        .padding()
                         
-                        // 댓글 리스트 (2개까지만 표시)
                         ForEach(displayedComments, id: \.self) { comment in
-                            CommentView(comment: comment)
+                            HStack {
+                                Image(systemName: "person.circle")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
+                                    .padding(5)
+                                VStack(alignment: .leading) {
+                                    Text("닉네임")
+                                        .font(.caption2)
+                                        .font(Font.headline.weight(.bold))
+                                    Text(comment)
+                                        .font(.caption)
+                                        .foregroundColor(.black)
+                                }
+                                Spacer()
+                                Button(action: {
+                                    selectedComment = comment
+                                    showDeleteSheet = true
+                                }) {
+                                    Image(systemName: "ellipsis")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .padding(.horizontal)
                         }
                     }
                 }
-                .padding()
                 .cornerRadius(10)  // 모서리를 둥글게 처리
                 .padding(.horizontal)
                 .background(Color.white)
@@ -126,10 +162,12 @@ struct ColumnDetail: View {
                 
                 // 댓글 입력창
                 HStack {
-                    TextField("댓글을 입력하세요", text: $newComment, onCommit: {
-                        addComment()  // Enter를 눌렀을 때 댓글 추가
-                    })
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    TextField("댓글을 입력하세요", text: $newComment)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .focused($isCommentFieldFocused) // 포커스 상태 바인딩
+                        .onSubmit {
+                            addComment()  // Enter를 눌렀을 때 댓글 추가
+                        }
                     
                     Button(action: {
                         addComment()  // 등록 버튼을 눌렀을 때 댓글 추가
@@ -145,6 +183,28 @@ struct ColumnDetail: View {
                 // 처음에 좋아요 수를 설정
                 likesCount = column.likes.count
                 displayedComments = column.comments  // 초기 댓글 리스트 설정
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheetView(isPresented: $showShareSheet)
+                .presentationDetents([.height(150)]) // 시트 높이를 버튼 수에 맞게 설정
+                .presentationDragIndicator(.hidden) // 드래그 인디케이터를 숨겨서 깔끔하게
+        }
+        .sheet(isPresented: $showDeleteSheet) {
+            DeleteSheetView(isPresented: $showDeleteSheet, onDelete: {
+                deleteComment()
+            })
+            .presentationDetents([.height(150)]) // 시트 높이를 버튼 수에 맞게 설정
+            .presentationDragIndicator(.hidden) // 드래그 인디케이터를 숨겨서 깔끔하게
+        }
+        .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) { // 위치를 .navigationBarLeading으로 설정
+                Button(action: {
+                    dismiss() // dismiss를 사용해 이전 화면으로 돌아가기
+                }) {
+                    Image(systemName: "chevron.backward") // "Back" 텍스트 없이 화살표 아이콘만 표시
+                }
             }
         }
     }
@@ -168,15 +228,29 @@ struct ColumnDetail: View {
             newComment = ""
         }
     }
+    func deleteComment() {
+            guard let commentToDelete = selectedComment else { return }
+            // 클라이언트에서 삭제
+            displayedComments.removeAll { $0 == commentToDelete }
+            columnStore.updateComment(columnId: column.id, userNickname: commentToDelete) { error in
+                if let error = error {
+                    print("Error deleting comment: \(error.localizedDescription)")
+                } else {
+                    print("Comment deleted successfully.")
+                }
+            }
+            selectedComment = nil
+        }
+    
 }
 
 // 댓글 뷰
 struct CommentView: View {
-//    var column: Column
+    //    var column: Column
     let comment: String
     var body: some View {
         HStack {
-            Image(systemName: "person.circle.fill")
+            Image(systemName: "person.circle")
                 .resizable()
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
@@ -192,6 +266,8 @@ struct CommentView: View {
         }
     }
 }
+
+
 
 // 확장 함수: HEX 색상 코드를 SwiftUI에서 사용 가능하게 하는 방법
 extension Color {
