@@ -10,7 +10,7 @@ import SwiftUI
 // 회원가입 뷰, ProfileImageEditView 에서 사용
 struct ProfileImageSelectionView: View {
     @Binding var selectedImageName: String
-    let imageNames = ["profileImage1", "profileImage2", "profileImage3", "profileImage4"] // 고정된 이미지 이름 리스트
+    let imageNames = ["profileImage1", "profileImage2", "profileImage3", "profileImage4"]
     
     var body: some View {
         HStack(spacing: 24) {

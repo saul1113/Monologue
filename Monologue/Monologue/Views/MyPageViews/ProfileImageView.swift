@@ -14,8 +14,8 @@ struct ProfileImageView: View {
     let size: CGFloat
 
     var body: some View {
-        if let uiImage = UIImage(named: profileImageName) {
-            Image(uiImage: uiImage)
+        if !profileImageName.isEmpty {
+            Image(profileImageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .clipShape(Circle())
