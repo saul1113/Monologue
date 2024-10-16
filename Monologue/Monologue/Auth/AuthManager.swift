@@ -65,13 +65,15 @@ class AuthManager: ObservableObject {
 extension AuthManager {
     func signOut() {
         do {
-            try Auth.auth().signOut()
-            self.email = ""
+//            try Auth.auth().signOut()
+
+            self.authenticationState = .unauthenticated  // 상태를 로그아웃 상태로 업데이트
+            print("로그아웃 성공")
         }
-        catch {
-            print(error)
-            errorMessage = error.localizedDescription
-        }
+//        catch {
+//            print("Error signing out: \(error.localizedDescription)")
+//            self.errorMessage = error.localizedDescription
+//        }
     }
     
     func deleteAccount() async -> Bool {
