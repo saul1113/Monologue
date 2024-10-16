@@ -18,6 +18,9 @@ struct ProfileEditView: View {
     @State private var isShowingSheet: Bool = false
     @State private var selectedImageName: String = ""
     
+    @State private var nicknameCheckWarning: Bool = false // 닉네임 확인
+    @State private var nicknameDuplicateWarning: Bool = false // 닉네임 중복 경고
+    
     var body: some View {
         ZStack {
             Color(.background)
@@ -25,8 +28,8 @@ struct ProfileEditView: View {
             
             VStack {
                 ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "")
-                        .padding(.bottom, 17)
-                        .padding(.top, 20)
+                    .padding(.bottom, 17)
+                    .padding(.top, 20)
                 
                 Button {
                     isShowingSheet.toggle()
@@ -46,7 +49,7 @@ struct ProfileEditView: View {
                         .bold()
                     
                     TextField("닉네임 변경", text: $nickname)
-                        // 14글자로 제한
+                    // 14글자로 제한
                         .onChange(of: nickname) { oldValue, newValue in
                             if newValue.count > 14 {
                                 nickname = String(newValue.prefix(14))
@@ -55,7 +58,25 @@ struct ProfileEditView: View {
                 }
                 
                 Divider()
-                    .padding(.bottom, 18)
+                    .padding(.bottom, (nicknameCheckWarning || nicknameDuplicateWarning) ? 0 : 18)
+                
+                // 닉네임 비어 있음 경고
+                if nicknameCheckWarning && nickname.isEmpty {
+                    Text("닉네임을 입력해주세요.")
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                // 닉네임 중복 경고
+                if nicknameDuplicateWarning {
+                    Text("이미 존재하는 닉네임입니다.")
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
                 
                 HStack {
                     Text("자기소개")
@@ -63,7 +84,7 @@ struct ProfileEditView: View {
                         .bold()
                     
                     TextField("자기소개 추가", text: $introduction)
-                        // 36글자로 제한
+                    // 36글자로 제한
                         .onChange(of: introduction) { oldValue, newValue in
                             if newValue.count > 36 {
                                 introduction = String(newValue.prefix(36))
@@ -98,14 +119,29 @@ struct ProfileEditView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button("완료") {
-                    Task {
-                        if var userInfo = userInfoStore.userInfo {
-                            userInfo.nickname = nickname
-                            userInfo.introduction = introduction
-                            userInfo.profileImageName = selectedImageName
+                    if nickname.isEmpty {
+                        nicknameCheckWarning = true
+                        nicknameDuplicateWarning = false
+                    } else {
+                        nicknameCheckWarning = false
+                        
+                        Task {
+                            let nicknameExists = await authManager.NicknameDuplicate(nickname: nickname)
                             
-                            await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
-                            dismiss()
+                            if nicknameExists {
+                                nicknameDuplicateWarning = true // 닉네임 중복 경고
+                            } else {
+                                nicknameDuplicateWarning = false
+                                
+                                if var userInfo = userInfoStore.userInfo {
+                                    userInfo.nickname = nickname
+                                    userInfo.introduction = introduction
+                                    userInfo.profileImageName = selectedImageName
+                                    
+                                    await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
+                                    dismiss()
+                                }
+                            }
                         }
                     }
                 }
