@@ -25,8 +25,7 @@ struct UserRow: View {
     
     var body: some View {
         HStack {
-            Circle() // profileImageName
-                .frame(width: 50, height: 50)
+            ProfileImageView(profileImageName: profileImageName, size: 77)
                 .padding(.trailing, 10)
             
             VStack(alignment: .leading, spacing: 6) {

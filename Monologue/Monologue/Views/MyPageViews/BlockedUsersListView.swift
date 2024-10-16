@@ -26,22 +26,26 @@ struct BlockedUsersListView: View {
                 } else {
                     VStack {
                         ForEach(0..<blockedUsers.count) { index in
-                            UserRow(
-                                profileImageName: blockedUsers[index].profileImageName,
-                                nickname: blockedUsers[index].nickname,
-                                memoCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
-                                columnCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname), // 개별 상태 관리
-                                activeButtonText: "차단",
-                                inactiveButtonText: "차단 해제",
-                                onActive: {
-                                    // 차단 로직
-                                    print("\(blockedUsers[index].nickname) 차단됨")
-                                },
-                                onInactive: {
-                                    // 차단 해제 로직
-                                    print("\(blockedUsers[index].nickname) 차단 해제됨")
-                                }
-                            )
+                            NavigationLink {
+                                UserProfileView(userInfo: blockedUsers[index])
+                            } label: {
+                                UserRow(
+                                    profileImageName: blockedUsers[index].profileImageName,
+                                    nickname: blockedUsers[index].nickname,
+                                    memoCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
+                                    columnCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
+                                    activeButtonText: "차단",
+                                    inactiveButtonText: "차단 해제",
+                                    onActive: {
+                                        // 차단 로직
+                                        print("\(blockedUsers[index].nickname) 차단됨")
+                                    },
+                                    onInactive: {
+                                        // 차단 해제 로직
+                                        print("\(blockedUsers[index].nickname) 차단 해제됨")
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -65,7 +69,7 @@ struct BlockedUsersListView: View {
         }
         .onAppear {
             if let userInfo = userInfoStore.userInfo {
-                userInfoStore.loadUsersInfoByNickname(nicknames: userInfo.blocked, completion: { usersInfo, error in
+                userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked, completion: { usersInfo, error in
                     blockedUsers = usersInfo ?? []
                 })
             }

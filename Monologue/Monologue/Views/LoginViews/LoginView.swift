@@ -31,10 +31,9 @@ struct LoginView: View {
                         
                         GoogleButtonView(isPresented: $isPresented, isNextView: $isNextView)
                             .environmentObject(authManager)
-                            .shadow(color: .gray, radius: 2, x: 0, y: 2)
                             .padding()
                         
-                        AppleButtonView(isPresented: $isPresented)
+                        AppleButtonView(isPresented: $isPresented, isNextView: $isNextView)
                             .environmentObject(authManager)
                     }
                 }

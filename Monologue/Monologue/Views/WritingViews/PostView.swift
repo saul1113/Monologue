@@ -9,14 +9,12 @@ import SwiftUI
 
 struct PostView: View {
     @Environment(\.dismiss) var dismiss
-    
-    
     @State var selectedSegment: String = "메모"
-    
-    @StateObject private var memoStore = MemoStore()
-    @StateObject private var columnStore = ColumnStore()
+    @EnvironmentObject private var memoStore: MemoStore
+    @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager:AuthManager
+    @EnvironmentObject private var memoImageStore: MemoImageStore
     
     @State private var text: String = ""
     @State private var selectedFont: String = "기본서체"
@@ -62,6 +60,9 @@ struct PostView: View {
                                             restFields()
                                         }
                                     }
+                                    
+                                    memoImageStore.UploadImage(image: .memo4, imageName: newMemo.id)
+                                    
                                 } else if selectedSegment == "칼럼" {
                                     let newColumn = Column(
                                         title: title,
@@ -150,7 +151,12 @@ struct PostView: View {
     }
 }
 
-#Preview {
-    PostView()
-        .environmentObject(UserInfoStore())  // 미리보기에서 필요한 환경 객체 제공
-}
+//#Preview {
+//    PostView()
+//        .environmentObject(AuthManager())
+//        .environmentObject(UserInfoStore())
+//        .environmentObject(MemoStore())
+//        .environmentObject(ColumnStore())
+//        .environmentObject(CommentStore())
+//        .environmentObject(MemoImageStore())
+//}
