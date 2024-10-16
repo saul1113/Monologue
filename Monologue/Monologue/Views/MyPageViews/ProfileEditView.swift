@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 struct ProfileEditView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
@@ -15,9 +14,11 @@ struct ProfileEditView: View {
     
     @State private var nickname: String = ""
     @State private var introduction: String = ""
+    @State private var isShowingSheet: Bool = false
+    @State private var selectedImageName: String = ""
     
-    @State private var selectedImage: UIImage?
-    @State private var imagePickerItem: PhotosPickerItem?
+    @State private var nicknameCheckWarning: Bool = false // 닉네임 확인
+    @State private var nicknameDuplicateWarning: Bool = false // 닉네임 중복 경고
     
     var body: some View {
         ZStack {
@@ -25,35 +26,28 @@ struct ProfileEditView: View {
                 .ignoresSafeArea()
             
             VStack {
-                if let selectedImage = selectedImage {
-                    Image(uiImage: selectedImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 77, height: 77)
-                        .clipShape(Circle())
-                        .padding(.bottom, 17)
-                        .padding(.top, 20)
-                } else {
-                    Circle()
-                        .frame(width: 77, height: 77)
-                        .padding(.bottom, 17)
-                        .padding(.top, 20)
-                }
-                
-                PhotosPicker(selection: $imagePickerItem, matching: .images) {
-                    Text("사진 수정")
-                        .bold()
-                }
-                .padding(.bottom, 53)
-                .onChange(of: imagePickerItem) { oldValue, newValue in
-                    Task {
-                        if let newValue {
-                            if let imageData = try await newValue.loadTransferable(type: Data.self),
-                               let image = UIImage(data: imageData) {
-                                selectedImage = image
-                            }
-                        }
+                // 프로필 사진 수정 버튼
+                Button {
+                    isShowingSheet.toggle()
+                } label: {
+                    ZStack {
+                        ProfileImageView(
+                            profileImageName: !selectedImageName.isEmpty ? selectedImageName : (userInfoStore.userInfo?.profileImageName ?? ""),
+                            size: 84
+                        )
+                        
+                        Image(systemName: "pencil")
+                            .bold()
+                            .frame(width: 30, height: 30)
+                            .background(Circle().fill(.white))
+                            .padding(.top, 60)
+                            .padding(.leading, 60)
                     }
+                }
+                .padding(.vertical, 20)
+                .sheet(isPresented: $isShowingSheet) {
+                    ProfileImageEditView(selectedImageName: $selectedImageName)
+                        .presentationDetents([.height(250)])
                 }
                 
                 HStack {
@@ -62,7 +56,7 @@ struct ProfileEditView: View {
                         .bold()
                     
                     TextField("닉네임 변경", text: $nickname)
-                        // 14글자로 제한
+                    // 14글자로 제한
                         .onChange(of: nickname) { oldValue, newValue in
                             if newValue.count > 14 {
                                 nickname = String(newValue.prefix(14))
@@ -71,7 +65,25 @@ struct ProfileEditView: View {
                 }
                 
                 Divider()
-                    .padding(.bottom, 18)
+                    .padding(.bottom, (nicknameCheckWarning || nicknameDuplicateWarning) ? 0 : 18)
+                
+                // 닉네임 비어 있음 경고
+                if nicknameCheckWarning && nickname.isEmpty {
+                    Text("닉네임을 입력해주세요.")
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                // 닉네임 중복 경고
+                if nicknameDuplicateWarning {
+                    Text("이미 존재하는 닉네임입니다.")
+                        .foregroundStyle(.red)
+                        .font(.caption)
+                        .padding(.bottom, 18)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
                 
                 HStack {
                     Text("자기소개")
@@ -79,7 +91,7 @@ struct ProfileEditView: View {
                         .bold()
                     
                     TextField("자기소개 추가", text: $introduction)
-                        // 36글자로 제한
+                    // 36글자로 제한
                         .onChange(of: introduction) { oldValue, newValue in
                             if newValue.count > 36 {
                                 introduction = String(newValue.prefix(36))
@@ -98,10 +110,7 @@ struct ProfileEditView: View {
             // 기존 닉, 상메, 프사 불러옴
             nickname = userInfoStore.userInfo?.nickname ?? ""
             introduction = userInfoStore.userInfo?.introduction ?? ""
-            
-            if let profileImageName = userInfoStore.userInfo?.profileImageName {
-                selectedImage = UIImage(named: profileImageName)
-            }
+            selectedImageName = userInfoStore.userInfo?.profileImageName ?? ""
         }
         .navigationTitle("프로필 편집")
         .toolbarTitleDisplayMode(.inline)
@@ -117,18 +126,43 @@ struct ProfileEditView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button("완료") {
-                    Task {
-                        if var userInfo = userInfoStore.userInfo {
-                            userInfo.nickname = nickname
-                            userInfo.introduction = introduction
-
-                            // 프사 이미지 업로드 로직...
-                            
-                            await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
-                            dismiss()
-                        }
+                    handleComplete()
+                }
+            }
+        }
+    }
+    
+    // 완료 버튼 핸들링
+    func handleComplete() {
+        if nickname.isEmpty {
+            nicknameCheckWarning = true
+            nicknameDuplicateWarning = false
+        } else {
+            nicknameCheckWarning = false
+            Task {
+                // 닉네임이 변경된 경우에만 중복 검사
+                if nickname != userInfoStore.userInfo?.nickname {
+                    let nicknameExists = await authManager.NicknameDuplicate(nickname: nickname)
+                    if nicknameExists {
+                        nicknameDuplicateWarning = true
+                        return
                     }
                 }
+                nicknameDuplicateWarning = false
+                saveUserInfo()
+            }
+        }
+    }
+    
+    // 유저 정보 저장
+    func saveUserInfo() {
+        if var userInfo = userInfoStore.userInfo {
+            userInfo.nickname = nickname
+            userInfo.introduction = introduction
+            userInfo.profileImageName = selectedImageName
+            Task {
+                await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
+                dismiss()
             }
         }
     }
