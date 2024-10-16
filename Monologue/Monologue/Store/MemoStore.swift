@@ -37,6 +37,22 @@ class MemoStore: ObservableObject {
         }
     }
     
+    func addMemo(memo: Memo) async throws {
+        let db = Firestore.firestore()
+        
+        try await db.collection("Memo").document(memo.id).setData([
+            "content": memo.content,
+            "userNickname": memo.userNickname,
+            "font": memo.font,
+            "backgroundImageName": memo.backgroundImageName,
+            "categories": memo.categories,
+            "likes": memo.likes,
+            "comments": memo.comments,
+            "date": Timestamp(date: memo.date),
+            "lineCount": memo.lineCount
+        ])
+    }
+    
     // MARK: - 메모 전체 로드
     func loadMemos(completion: @escaping ([Memo]?, Error?) -> Void) {
         let db = Firestore.firestore()
@@ -53,10 +69,28 @@ class MemoStore: ObservableObject {
                     let memo = Memo(document: document)
                     
                     memos.append(memo)
+                    self.memos = memos
                 }
                 completion(memos, nil)
             }
     }
+    
+    func loadMemos() async throws -> [Memo] {
+            let db = Firestore.firestore()
+            
+            let querySnapshot = try await db.collection("Memo").getDocuments()
+            
+            var memos: [Memo] = []
+            
+            for document in querySnapshot.documents {
+                let memo = Memo(document: document)
+                memos.append(memo)
+            }
+            
+            self.memos = memos
+            return memos
+        }
+        
     
     // MARK: - 메모 유저 닉네임으로 로드
     func loadMemosByUserNickname(userNickname: String, completion: @escaping ([Memo]?, Error?) -> Void) {
@@ -80,6 +114,23 @@ class MemoStore: ObservableObject {
                 completion(memos, nil)
             }
     }
+    
+    func loadMemosByUserNickname(userNickname: String) async throws -> [Memo] {
+            let db = Firestore.firestore()
+            
+            let querySnapshot = try await db.collection("Memo")
+                .whereField("userNickname", isEqualTo: userNickname)
+                .getDocuments()
+            
+            var memos: [Memo] = []
+            
+            for document in querySnapshot.documents {
+                let memo = Memo(document: document)
+                memos.append(memo)
+            }
+            
+            return memos
+        }
     
     // MARK: - 메모 카테고리들로 로드
     func loadMemosByCategories(categories: [String], completion: @escaping ([Memo]?, Error?) -> Void) {
@@ -105,6 +156,23 @@ class MemoStore: ObservableObject {
                 }
     }
     
+    func loadMemosByCategories(categories: [String]) async throws -> [Memo] {
+            let db = Firestore.firestore()
+            
+            let querySnapshot = try await db.collection("Memo")
+                .whereField("categories", arrayContains: categories[0])
+                .getDocuments()
+            
+            var memos: [Memo] = []
+            
+            for document in querySnapshot.documents {
+                let memo = Memo(document: document)
+                memos.append(memo)
+            }
+            
+            return memos
+        }
+    
     // MARK: - 메모 아이디로 메모 삭제
     func deleteMemo(memoId: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -117,6 +185,12 @@ class MemoStore: ObservableObject {
             }
         }
     }
+    
+    func deleteMemo(memoId: String) async throws {
+            let db = Firestore.firestore()
+            
+            try await db.collection("Memo").document(memoId).delete()
+        }
     
     // MARK: - 좋아요 수정
     func updateLikes(memoId: String, userNickname: String, completion: @escaping (Error?) -> Void) {
@@ -167,6 +241,37 @@ class MemoStore: ObservableObject {
         }
     }
     
+    func updateLikes(memoId: String, userNickname: String) async throws {
+           let db = Firestore.firestore()
+           
+           let likes = try await loadMemoLikes(memoId: memoId)
+           
+           var tempLikes: [String] = likes ?? []
+           
+           if tempLikes.contains(userNickname) {
+               tempLikes.remove(at: tempLikes.firstIndex(of: userNickname)!)
+           } else {
+               tempLikes.append(userNickname)
+           }
+           
+           try await db.collection("Memo").document(memoId).updateData([
+               "likes": tempLikes
+           ])
+       }
+       
+       private func loadMemoLikes(memoId: String) async throws -> [String]? {
+           let db = Firestore.firestore()
+           
+           let document = try await db.collection("Memo").document(memoId).getDocument()
+           
+           guard let data = document.data(), document.exists else {
+               return nil
+           }
+           
+           let likes = data["likes"] as? [String]
+           return likes
+       }
+    
     // MARK: - 댓글 수정
     func updateComment(memoId: String, userNickname: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -214,5 +319,36 @@ class MemoStore: ObservableObject {
             let comments = document.data()?["comments"] as? [String]
             completion(comments, nil)
         }
+    }
+    
+    func updateComment(memoId: String, userNickname: String) async throws {
+        let db = Firestore.firestore()
+        
+        let comments = try await loadMemoComment(memoId: memoId)
+        
+        var tempComments: [String] = comments ?? []
+        
+        if let index = tempComments.firstIndex(of: userNickname) {
+            tempComments.remove(at: index)
+        } else {
+            tempComments.append(userNickname)
+        }
+        
+        try await db.collection("Memo").document(memoId).updateData([
+            "comments": tempComments
+        ])
+    }
+
+    private func loadMemoComment(memoId: String) async throws -> [String]? {
+        let db = Firestore.firestore()
+        
+        let document = try await db.collection("Memo").document(memoId).getDocument()
+        
+        guard let data = document.data(), document.exists else {
+            return nil
+        }
+        
+        let comments = data["comments"] as? [String]
+        return comments
     }
 }
