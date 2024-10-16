@@ -83,7 +83,7 @@ class UserInfoStore: ObservableObject {
             let blocked: [String] = docData["blocked"] as? [String] ?? []
             let likes: [String] = docData["likes"] as? [String] ?? []
             
-            // `userInfo` 업데이트
+            // `userInfoStore` 업데이트
             self.userInfo = UserInfo(
                 nickname: nickname,
                 registrationDate: registrationDate,

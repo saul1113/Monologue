@@ -18,7 +18,7 @@ struct MemoView: View {
                 ForEach(filteredMemos) { memo in
                     NavigationLink(destination: MemoDetailView(memo: memo)) {
 //                        if let imageName = memo.id {
-                            VStack {
+                            ZStack {
                                 Image(memo.id)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
@@ -29,11 +29,11 @@ struct MemoView: View {
                             }
 //                        } else {
 //                            Text("이미지가 없습니다.")
-//                        }
+                        }
                     }
                 }
             }
             .padding(.horizontal, 16)
-        }
+//        }
     }
 }
