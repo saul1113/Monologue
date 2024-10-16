@@ -67,11 +67,12 @@ struct AddUserInfoView: View {
                 }
                 .padding(.bottom, 30)
                 
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("카테고리")
+                VStack(alignment: .leading) {
+                    Text("관심 카테고리")
                         .foregroundStyle(.accent)
                     
                     categoryView(dict: $dict)
+                        .padding(.leading, -15)
                 }
                 
                 Spacer()
