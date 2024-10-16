@@ -20,32 +20,31 @@ import SwiftUI
 // 닉네임을 불러오는데 시간이 걸린다...
 struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var text: String = ""
+    @Binding var text: String // Make text a Binding
     @State private var textLimit: Int = 2000
-    @State private var selectedColumnCategories: [String] = [] // 다중 선택을 위한 배열로 변경
-
+    @Binding var selectedColumnCategories: [String] // Change to Binding
+    
     let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"] // 카테고리 목록
     let placeholder: String = "글을 입력해 주세요."
     
     @StateObject var columnStore = ColumnStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
-
+    
     var body: some View {
         ZStack {
-            Color(.systemBackground)
-                .ignoresSafeArea()
             
             VStack {
                 TextEditor(text: $text)
                     .font(.system(.title2, design: .default, weight: .regular))
-                    .padding()
+                    .padding(.horizontal, 16) // 좌우 패딩만 16으로 설정
+                    .padding(.vertical, 8) // 상하 패딩은 자유롭게 설정 가능
                     .cornerRadius(8)
-                    .frame(height: 540)
+                    .frame(width: 370 ,height: 540)
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundStyle(text.isEmpty ? .gray : .clear)
-                            .padding(.top, -240)
-                            .padding(.leading, -170)
+                            .padding(.top)
+                            .padding(.leading)
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color(.systemGray4))
                     }
@@ -57,6 +56,7 @@ struct ColumnWritingView: View {
                     .onAppear {
                         print("\(userInfoStore.userInfo?.nickname ?? "닉네임 없음")")
                     }
+                    
                 
                 HStack {
                     Spacer()
@@ -78,12 +78,12 @@ struct ColumnWritingView: View {
                         ForEach(categoryOptions, id: \.self) { category in
                             CategoryColumnButton(
                                 title: category,
-                                isSelected: selectedColumnCategories.contains(category) // 배열에 해당 카테고리가 있는지 확인
+                                isSelected: selectedColumnCategories.contains(category) // Check if the category is selected
                             ) {
                                 if selectedColumnCategories.contains(category) {
-                                    selectedColumnCategories.removeAll { $0 == category } // 이미 선택된 경우 배열에서 제거
+                                    selectedColumnCategories.removeAll { $0 == category } // Remove if already selected
                                 } else {
-                                    selectedColumnCategories.append(category) // 선택되지 않은 경우 배열에 추가
+                                    selectedColumnCategories.append(category) // Add if not selected
                                 }
                             }
                         }
@@ -93,60 +93,22 @@ struct ColumnWritingView: View {
                 }
                 
                 Divider()
-                
-            }
-            .padding(.top, -100)
-            .padding(.horizontal, 16)
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                }
             }
             
-            ToolbarItem(placement: .principal) {
-                Text("칼럼")
-                    .font(.headline)
-            }
-            
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    // 발행 버튼 액션
-                    let newColumn = Column(
-                        content: text,
-                        userNickname: userInfoStore.userInfo?.nickname ?? "",
-                        font: "",
-                        backgroundImageName: "",
-                        categories: selectedColumnCategories, // 선택된 카테고리 배열을 저장
-                        likes: [],
-                        comments: [],
-                        date: Date()
-                    )
-                    columnStore.addColumn(column: newColumn) { error in
-                        if let error = error {
-                            print("Error adding column: \(error)")
-                        } else {
-                            dismiss()
-                        }
-                    }
-                }) {
-                    Text("발행")
-                        .foregroundColor(.accentColor)
-                }
-            }
         }
+        .padding(.horizontal, 16)
+        
     }
 }
+
+
+
 
 struct CategoryColumnButton: View {
     var title: String
     var isSelected: Bool
     var action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             Text(title)
@@ -163,7 +125,7 @@ struct CategoryColumnButton: View {
     }
 }
 
-
 #Preview {
-    ColumnWritingView()
+    // Provide necessary environment object for preview
+    ColumnWritingView(text: .constant(""), selectedColumnCategories: .constant([]))
 }

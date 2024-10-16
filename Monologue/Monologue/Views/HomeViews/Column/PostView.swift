@@ -8,68 +8,106 @@
 import SwiftUI
 
 struct PostView: View {
-    @State private var isSheetPresented: Bool = false
-    @State private var isNavigatingToMemo: Bool = false // MemoWritingView 네비게이션 상태 관리
-    @State private var isNavigatingToColumn: Bool = false // ColumnWirtingView 네비게이션 상태 관리
+    @Environment(\.dismiss) var dismiss
+    @StateObject private var memoStore = MemoStore()
+    @StateObject private var columnStore = ColumnStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @State var selectedSegment: String = "메모"
     
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Color(.background)
-                    .ignoresSafeArea()
-            }
-            .onAppear {
-                isSheetPresented = true
-            }
-            .sheet(isPresented: $isSheetPresented) {
-                ActionSheetView(isSheetPresented: $isSheetPresented, isNavigatingToMemo: $isNavigatingToMemo, isNavigatingToColumn: $isNavigatingToColumn)
-                    .presentationDetents([.height(200)])
-                    .presentationCornerRadius(21)
-            }
-            .navigationDestination(isPresented: $isNavigatingToMemo) {
-                MemoWritingView() // 네비게이션이 활성화될 때 MemoWritingView로 이동
-            }
-            .navigationDestination(isPresented: $isNavigatingToColumn) {
-                ColumnWritingView()
-            }
-        }
-    }
-}
+    @State private var text: String = ""
+    @State private var selectedFont: String = "기본서체"
+    @State private var selectedBackgroundImageName: String = "jery1"
+    @State private var selectedMemoCategories: [String] = []
+    @State private var selectedColumnCategories: [String] = []
 
-struct ActionSheetView: View {
-    @Binding var isSheetPresented: Bool
-    @Binding var isNavigatingToMemo: Bool // 부모에서 네비게이션 상태를 관리
-    @Binding var isNavigatingToColumn: Bool // 부모에서 네비게이션 상태를 관리
-    
     var body: some View {
-        VStack(spacing: 20) {
-            Button("메모 하러 가기") {
-                isSheetPresented = false // 시트 닫기
-                isNavigatingToMemo = true // 메모 작성 화면으로 이동
+        NavigationView {
+            VStack {
+                HStack {
+                    Spacer()
+
+                    Text("Post")
+
+                    Spacer()  // "Post" 뒤에 중간 여백을 위한 Spacer
+
+                    Button(action: {
+                        if selectedSegment == "메모" {
+                            // 메모 저장 처리
+                            let newMemo = Memo(content: text, userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                               font: selectedFont, backgroundImageName: selectedBackgroundImageName, categories: selectedMemoCategories, likes: [], comments: [], date: Date())
+                            memoStore.addMemo(memo: newMemo) { error in
+                                if let error = error {
+                                    print("Error adding memo: \(error)")
+                                } else {
+                                    dismiss()
+                                    restFields()
+                                }
+                            }
+                        } else if selectedSegment == "칼럼" {
+                            // 칼럼 저장 처리
+                            let newColumn = Column(
+                                content: text,
+                                userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                font: "",
+                                backgroundImageName: "",
+                                categories: selectedColumnCategories, // 선택된 칼럼 카테고리 사용
+                                likes: [],
+                                comments: [],
+                                date: Date()
+                            )
+                            columnStore.addColumn(column: newColumn) { error in
+                                if let error = error {
+                                    print("Error adding column: \(error)")
+                                } else {
+                                    dismiss()
+                                }
+                            }
+                        }
+                    }) {
+                        Text("발행")
+                            .foregroundColor(.accentColor)  // 강조 색상 설정
+                    }
+                }
+                
+                .padding(.bottom, 10)
+                
+                CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+
+                if selectedSegment == "메모" {
+                    MemoWritingView(text: $text, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName)
+                } else if selectedSegment == "칼럼" {
+                    ColumnWritingView(text: $text, selectedColumnCategories: $selectedColumnCategories)
+                }
+            }
+            .onChange(of: selectedSegment) { newSegment in
+                text = ""
+                selectedMemoCategories = []
+                selectedColumnCategories = []
+                
+                if newSegment == "메모" {
+                    selectedFont = "기본서체"
+                    selectedBackgroundImageName = "jery1"
+                }
+                
             }
             
-            Divider()
-            
-            Button("칼럼 쓰러 가기") {
-                // 칼럼 쓰러 가기 액션
-                isSheetPresented = false
-                isNavigatingToColumn = true
-            }
-            
-            Divider()
-            
-            Button("취소") {
-                // 취소 액션
-                isSheetPresented = false
-            }
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .cornerRadius(21)
-        .padding()
+        
+    }
+    
+    private func restFields() {
+        text = ""
+        selectedMemoCategories = []
+        selectedColumnCategories = []
+        
+        if selectedSegment == "메모" {
+            selectedFont = "기본서체"
+            selectedBackgroundImageName = "jery1"
+        }
     }
 }
 
 #Preview {
     PostView()
+        .environmentObject(UserInfoStore())  // 미리보기에서 필요한 환경 객체 제공
 }
