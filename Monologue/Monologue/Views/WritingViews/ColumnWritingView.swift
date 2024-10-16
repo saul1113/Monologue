@@ -7,39 +7,36 @@
 
 import SwiftUI
 
-/*
- Column
- 칼럼 ID -> String
- 칼럼 내용 -> String
- 유저 닉네임 -> String
- 카테고리 -> String 배열
- 좋아요 개수 -> 유저 닉네임 String 배열
- Comment -> 코멘트 ID String 배열
- 날짜 -> Date
- */
-// 닉네임을 불러오는데 시간이 걸린다...
 struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
-    @Binding var text: String // Make text a Binding
+    @Binding var title: String
+    @Binding var text: String
     @State private var textLimit: Int = 2000
-    @Binding var selectedColumnCategories: [String] // Change to Binding
+    @Binding var selectedColumnCategories: [String]
     
-    let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"] // 카테고리 목록
+    let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF", "철학", "역사", "리뷰", "정치"] // 더 많은 카테고리 추가
     let placeholder: String = "글을 입력해 주세요."
     
     @StateObject var columnStore = ColumnStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
     
+    // 그리드 레이아웃 정의 (두 열의 고정 크기)
+    let rows = [GridItem(.fixed(50))]
+    
     var body: some View {
-        ZStack {
-            
+        
             VStack {
+                TextField("제목을 입력해주세요", text: $title)
+                    
+                
+                    .textFieldStyle(.roundedBorder)
+                
                 TextEditor(text: $text)
                     .font(.system(.title2, design: .default, weight: .regular))
-                    .padding(.horizontal, 16) // 좌우 패딩만 16으로 설정
-                    .padding(.vertical, 8) // 상하 패딩은 자유롭게 설정 가능
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
                     .cornerRadius(8)
-                    .frame(width: 370 ,height: 545)
+                    .frame(width: 370, height: 500)
                     .overlay(alignment: .topLeading) {
                         Text(placeholder)
                             .foregroundStyle(text.isEmpty ? .gray : .clear)
@@ -48,17 +45,13 @@ struct ColumnWritingView: View {
                     }
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.brown, lineWidth: 1) // 테두리 색상과 두께 조정
+                            .stroke(Color.brown, lineWidth: 1)
                     )
                     .onReceive(text.publisher.collect()) { newValue in
                         if newValue.count > textLimit {
                             text = String(newValue.prefix(textLimit))
                         }
                     }
-                    .onAppear {
-                        print("\(userInfoStore.userInfo?.nickname ?? "닉네임 없음")")
-                    }
-                    
                 
                 HStack {
                     Spacer()
@@ -67,44 +60,43 @@ struct ColumnWritingView: View {
                         .foregroundStyle(.secondary)
                 }
                 
-                ScrollView(.horizontal) {
-                    HStack(spacing: 13) {
-                        Image(systemName: "tag")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color.accent)
-                        
-                        Text("카테고리")
-                            .font(.system(size: 15))
-                            .foregroundStyle(Color.accent)
-                        ForEach(categoryOptions, id: \.self) { category in
-                            CategoryColumnButton(
-                                title: category,
-                                isSelected: selectedColumnCategories.contains(category) // Check if the category is selected
-                            ) {
-                                if selectedColumnCategories.contains(category) {
-                                    selectedColumnCategories.removeAll { $0 == category } // Remove if already selected
-                                } else {
-                                    selectedColumnCategories.append(category) // Add if not selected
+                
+                
+                    HStack {
+                        HStack {
+                            Image(systemName: "tag")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(Color.accent)
+                            
+                            Text("카테고리")
+                                .font(.system(size: 15))
+                                .foregroundStyle(Color.accent)
+                        }
+                        ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHGrid(rows: rows, spacing: 16) { // 두 줄짜리 그리드
+                            ForEach(categoryOptions, id: \.self) { category in
+                                CategoryColumnButton(
+                                    title: category,
+                                    isSelected: selectedColumnCategories.contains(category)
+                                ) {
+                                    if selectedColumnCategories.contains(category) {
+                                        selectedColumnCategories.removeAll { $0 == category }
+                                    } else {
+                                        selectedColumnCategories.append(category)
+                                    }
                                 }
                             }
                         }
                     }
-                    .padding(.bottom, 10)
-                    .padding(.top, 10)
                 }
                 
                 Divider()
             }
-            
-        }
-        .padding(.horizontal, 16)
         
+        .padding(.horizontal, 16)
     }
 }
-
-
-
 
 struct CategoryColumnButton: View {
     var title: String
@@ -116,7 +108,7 @@ struct CategoryColumnButton: View {
             Text(title)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(isSelected ? .white : .brown)
-                .frame(width: 80, height: 30)
+                .frame(width: 100, height: 30) // 버튼 크기를 고정
                 .background(isSelected ? Color.accentColor : Color.clear)
                 .cornerRadius(10)
                 .overlay(
@@ -128,6 +120,5 @@ struct CategoryColumnButton: View {
 }
 
 #Preview {
-    // Provide necessary environment object for preview
-    ColumnWritingView(text: .constant(""), selectedColumnCategories: .constant([]))
+    ColumnWritingView(title: .constant(""), text: .constant(""), selectedColumnCategories: .constant([]))
 }

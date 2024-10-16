@@ -12,15 +12,13 @@ struct MemoWritingView: View {
     @Binding var selectedFont: String
     @Binding var selectedMemoCategories: [String] // Multiple selection
     @Binding var selectedBackgroundImageName: String
+    @Binding var lineCount: Int
     
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
-    @EnvironmentObject private var authManager:AuthManager
-    @EnvironmentObject private var columnStore: ColumnStore
+    @EnvironmentObject private var authManager:AuthManager    
     
-    @State var selectedSegment: String = "메모"
-    @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
-    @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
+    let rows = [GridItem(.fixed(50))]
     
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
@@ -66,7 +64,8 @@ struct MemoWritingView: View {
                 .padding(.bottom, -5)
                 .padding(.horizontal, 16)
                 
-                ScrollView(.horizontal) {
+                
+                HStack {
                     HStack(spacing: 13) {
                         Image(systemName: "a.square")
                             .resizable()
@@ -76,19 +75,24 @@ struct MemoWritingView: View {
                         Text("글꼴")
                             .font(.system(size: 15, weight: .light))
                             .foregroundStyle(Color.accent)
-                        ForEach(fontOptions, id: \.self) { font in
-                            FontButton(title: font, isSelected: selectedFont == font) {
-                                selectedFont = font
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHGrid(rows: rows, spacing: 16) {
+                                ForEach(fontOptions, id: \.self) { font in
+                                    FontButton(title: font, isSelected: selectedFont == font) {
+                                        selectedFont = font
+                                    }
+                                }
                             }
+                            
+    
                         }
                     }
-                    .padding()
                 }
                 
                 Divider()
                 
-                ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
+                HStack {
+                    HStack(spacing: 5) {
                         Image(systemName: "squareshape.split.2x2.dotted")
                             .resizable()
                             .frame(width: 20, height: 20)
@@ -96,18 +100,22 @@ struct MemoWritingView: View {
                         Text("배경")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        ForEach(backgroundImageNames, id: \.self) { imageName in
-                            BackgroundButton(imageName: imageName) {
-                                selectedBackgroundImageName = imageName
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHGrid(rows: rows, spacing: 16) {
+                                ForEach(backgroundImageNames, id: \.self) { imageName in
+                                    BackgroundButton(imageName: imageName) {
+                                        selectedBackgroundImageName = imageName
+                                    }
+                                }
                             }
                         }
                     }
-                    .padding()
+                    
                 }
                 
                 Divider()
                 
-                ScrollView(.horizontal) {
+                HStack {
                     HStack(spacing: 13) {
                         Image(systemName: "tag")
                             .resizable()
@@ -116,21 +124,25 @@ struct MemoWritingView: View {
                         Text("카테고리")
                             .font(.system(size: 15))
                             .foregroundStyle(Color.accent)
-                        ForEach(categoryOptions, id: \.self) { category in
-                            CategoryMemoButton(title: category, isSelected: selectedMemoCategories.contains(category)) {
-                                if selectedMemoCategories.contains(category) {
-                                    selectedMemoCategories.removeAll { $0 == category }
-                                } else {
-                                    selectedMemoCategories.append(category)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHGrid(rows: rows, spacing: 16) {
+                                ForEach(categoryOptions, id: \.self) { category in
+                                    CategoryMemoButton(title: category, isSelected: selectedMemoCategories.contains(category)) {
+                                        if selectedMemoCategories.contains(category) {
+                                            selectedMemoCategories.removeAll { $0 == category }
+                                        } else {
+                                            selectedMemoCategories.append(category)
+                                        }
+                                    }
                                 }
+                                .padding(.leading, 10)
                             }
                         }
                     }
-                    .padding()
                 }
                 Divider()
-                
             }
+            .padding(.horizontal, 16)
         }
     }
 
@@ -195,5 +207,5 @@ struct CategoryMemoButton: View {
 }
 
 #Preview {
-    MemoWritingView(text: .constant(""), selectedFont: .constant("기본서체"), selectedMemoCategories: .constant([]), selectedBackgroundImageName: .constant("jery1"))
+    MemoWritingView(text: .constant(""), selectedFont: .constant("기본서체"), selectedMemoCategories: .constant([]), selectedBackgroundImageName: .constant("jery1"), lineCount: .constant(5))
 }
