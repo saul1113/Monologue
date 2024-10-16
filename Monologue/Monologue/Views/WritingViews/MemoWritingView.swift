@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import OrderedCollections
+
 
 struct MemoWritingView: View {
     @Binding var text: String
@@ -22,7 +24,7 @@ struct MemoWritingView: View {
     
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
-    let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF"]
+    let categoryOptions = ["오늘의 주제", "에세이", "사랑", "자연", "시", "자기계발", "추억", "소설", "SF", "IT", "기타"]
     let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"]
     
     let lineHeight: CGFloat = 24 // 라인 높이 정의
@@ -206,10 +208,10 @@ struct BackgroundButton: View {
     
     var body: some View {
         Button(action: action) {
-            Image(imageName) // 이미지 버튼으로 변경
+            Image(imageName) 
                 .resizable()
                 .scaledToFit()
-                .frame(width: 70, height: 30) // 버튼 크기 조정
+                .frame(width: 70, height: 30)
                 .cornerRadius(10)
         }
     }

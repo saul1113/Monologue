@@ -37,8 +37,9 @@ struct PostView: View {
             VStack {
                 HStack {
                     
-                    Spacer()
+                    
                         Text("Post")
+                        .font(.headline)
                         
                     Spacer()
                             Button(action: {
@@ -62,14 +63,13 @@ struct PostView: View {
                                         }
                                     }
                                 } else if selectedSegment == "칼럼" {
-                                    // 칼럼 저장 처리
                                     let newColumn = Column(
                                         title: title,
                                         content: text,
                                         userNickname: userInfoStore.userInfo?.nickname ?? "",
                                         font: "",
                                         backgroundImageName: "",
-                                        categories: selectedColumnCategories, // 선택된 칼럼 카테고리 사용
+                                        categories: selectedColumnCategories,
                                         likes: [],
                                         comments: [],
                                         date: Date()
@@ -85,7 +85,7 @@ struct PostView: View {
                                 }
                             }) {
                                 Text("발행")
-                                    .foregroundColor(.accent)  // 강조 색상 설정
+                                    .foregroundColor(.accent)
                             }
                         
                     

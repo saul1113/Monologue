@@ -14,7 +14,7 @@ struct ColumnWritingView: View {
     @State private var textLimit: Int = 2000
     @Binding var selectedColumnCategories: [String]
     
-    let categoryOptions = ["오늘의 주제", "에세이", "소설", "SF", "철학", "역사", "리뷰", "정치"] // 더 많은 카테고리 추가
+    let categoryOptions = ["오늘의 주제", "에세이", "사랑", "자연", "시", "자기계발", "추억", "소설", "SF", "IT", "기타"]
     let placeholder: String = "글을 입력해 주세요."
     
     @StateObject var columnStore = ColumnStore()
@@ -111,7 +111,7 @@ struct CategoryColumnButton: View {
             Text(title)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(isSelected ? .white : .brown)
-                .frame(width: 70, height: 30) // 버튼 크기를 고정
+                .frame(width: 70, height: 30) 
                 .background(isSelected ? Color.accentColor : Color.clear)
                 .cornerRadius(10)
                 .overlay(
