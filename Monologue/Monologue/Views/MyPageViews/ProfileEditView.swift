@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 struct ProfileEditView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
@@ -27,26 +26,29 @@ struct ProfileEditView: View {
                 .ignoresSafeArea()
             
             VStack {
-                    // 프로필 사진 수정 버튼
-                    Button {
-                        isShowingSheet.toggle()
-                    } label: {
-                        ZStack {
-                            ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "", size: 84)
-                            
-                            Image(systemName: "pencil")
-                                .bold()
-                                .frame(width: 30, height: 30)
-                                .background(Circle().fill(.white))
-                                .padding(.top, 60)
-                                .padding(.leading, 60)
-                        }
+                // 프로필 사진 수정 버튼
+                Button {
+                    isShowingSheet.toggle()
+                } label: {
+                    ZStack {
+                        ProfileImageView(
+                            profileImageName: !selectedImageName.isEmpty ? selectedImageName : (userInfoStore.userInfo?.profileImageName ?? ""),
+                            size: 84
+                        )
+                        
+                        Image(systemName: "pencil")
+                            .bold()
+                            .frame(width: 30, height: 30)
+                            .background(Circle().fill(.white))
+                            .padding(.top, 60)
+                            .padding(.leading, 60)
                     }
-                    .padding(.vertical, 20)
-                    .sheet(isPresented: $isShowingSheet) {
-                        ProfileImageEditView(selectedImageName: $selectedImageName)
-                            .presentationDetents([.height(250)])
-                    }
+                }
+                .padding(.vertical, 20)
+                .sheet(isPresented: $isShowingSheet) {
+                    ProfileImageEditView(selectedImageName: $selectedImageName)
+                        .presentationDetents([.height(250)])
+                }
                 
                 HStack {
                     Text("닉네임")
@@ -124,32 +126,43 @@ struct ProfileEditView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button("완료") {
-                    if nickname.isEmpty {
-                        nicknameCheckWarning = true
-                        nicknameDuplicateWarning = false
-                    } else {
-                        nicknameCheckWarning = false
-                        
-                        Task {
-                            let nicknameExists = await authManager.NicknameDuplicate(nickname: nickname)
-                            
-                            if nicknameExists {
-                                nicknameDuplicateWarning = true // 닉네임 중복 경고
-                            } else {
-                                nicknameDuplicateWarning = false
-                                
-                                if var userInfo = userInfoStore.userInfo {
-                                    userInfo.nickname = nickname
-                                    userInfo.introduction = introduction
-                                    userInfo.profileImageName = selectedImageName
-                                    
-                                    await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
-                                    dismiss()
-                                }
-                            }
-                        }
+                    handleComplete()
+                }
+            }
+        }
+    }
+    
+    // 완료 버튼 핸들링
+    func handleComplete() {
+        if nickname.isEmpty {
+            nicknameCheckWarning = true
+            nicknameDuplicateWarning = false
+        } else {
+            nicknameCheckWarning = false
+            Task {
+                // 닉네임이 변경된 경우에만 중복 검사
+                if nickname != userInfoStore.userInfo?.nickname {
+                    let nicknameExists = await authManager.NicknameDuplicate(nickname: nickname)
+                    if nicknameExists {
+                        nicknameDuplicateWarning = true
+                        return
                     }
                 }
+                nicknameDuplicateWarning = false
+                saveUserInfo()
+            }
+        }
+    }
+    
+    // 유저 정보 저장
+    func saveUserInfo() {
+        if var userInfo = userInfoStore.userInfo {
+            userInfo.nickname = nickname
+            userInfo.introduction = introduction
+            userInfo.profileImageName = selectedImageName
+            Task {
+                await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
+                dismiss()
             }
         }
     }
