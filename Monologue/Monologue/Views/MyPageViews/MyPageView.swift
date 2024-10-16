@@ -51,8 +51,7 @@ struct MyPageView: View {
                     // 프사, 닉, 상메
                     HStack {
                         // 프로필 사진
-                        Circle() // profileImageName
-                            .frame(width: 77, height: 77)
+                        ProfileImageView(profileImageName: userInfoStore.userInfo?.profileImageName ?? "")
                             .padding(.trailing, 24)
                         
                         VStack(alignment: .leading, spacing: 12) {

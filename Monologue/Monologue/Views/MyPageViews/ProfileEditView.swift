@@ -15,9 +15,8 @@ struct ProfileEditView: View {
     
     @State private var nickname: String = ""
     @State private var introduction: String = ""
-    
-    @State private var selectedImage: UIImage?
-    @State private var imagePickerItem: PhotosPickerItem?
+    @State private var isShowingSheet: Bool = false
+    @State private var selectedImageName: String = ""
     
     var body: some View {
         ZStack {
@@ -25,35 +24,20 @@ struct ProfileEditView: View {
                 .ignoresSafeArea()
             
             VStack {
-                if let selectedImage = selectedImage {
-                    Image(uiImage: selectedImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 77, height: 77)
-                        .clipShape(Circle())
+                ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "")
                         .padding(.bottom, 17)
                         .padding(.top, 20)
-                } else {
-                    Circle()
-                        .frame(width: 77, height: 77)
-                        .padding(.bottom, 17)
-                        .padding(.top, 20)
-                }
                 
-                PhotosPicker(selection: $imagePickerItem, matching: .images) {
+                Button {
+                    isShowingSheet.toggle()
+                } label: {
                     Text("사진 수정")
                         .bold()
                 }
                 .padding(.bottom, 53)
-                .onChange(of: imagePickerItem) { oldValue, newValue in
-                    Task {
-                        if let newValue {
-                            if let imageData = try await newValue.loadTransferable(type: Data.self),
-                               let image = UIImage(data: imageData) {
-                                selectedImage = image
-                            }
-                        }
-                    }
+                .sheet(isPresented: $isShowingSheet) {
+                    ProfileImageEditView(selectedImageName: $selectedImageName)
+                        .presentationDetents([.height(350)])
                 }
                 
                 HStack {
@@ -98,10 +82,7 @@ struct ProfileEditView: View {
             // 기존 닉, 상메, 프사 불러옴
             nickname = userInfoStore.userInfo?.nickname ?? ""
             introduction = userInfoStore.userInfo?.introduction ?? ""
-            
-            if let profileImageName = userInfoStore.userInfo?.profileImageName {
-                selectedImage = UIImage(named: profileImageName)
-            }
+            selectedImageName = userInfoStore.userInfo?.profileImageName ?? ""
         }
         .navigationTitle("프로필 편집")
         .toolbarTitleDisplayMode(.inline)
@@ -121,8 +102,7 @@ struct ProfileEditView: View {
                         if var userInfo = userInfoStore.userInfo {
                             userInfo.nickname = nickname
                             userInfo.introduction = introduction
-
-                            // 프사 이미지 업로드 로직...
+                            userInfo.profileImageName = selectedImageName
                             
                             await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
                             dismiss()
