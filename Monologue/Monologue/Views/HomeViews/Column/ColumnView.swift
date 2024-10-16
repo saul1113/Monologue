@@ -14,6 +14,7 @@ struct ColumnView: View {
     
     var body: some View {
         ZStack {
+            Color.background.ignoresSafeArea()
             VStack {
                 // 필터링된 칼럼 리스트
                 List {
@@ -21,7 +22,7 @@ struct ColumnView: View {
                         NavigationLink(destination: ColumnDetail(column: post)) {
                             PostRow(column: post)
                         }
-                        .listRowBackground(Color(UIColor(red: 255/255, green: 248/255, blue: 237/255, alpha: 1)))
+                        .listRowBackground(Color.background)
                     }
                 }
                 .listStyle(PlainListStyle())

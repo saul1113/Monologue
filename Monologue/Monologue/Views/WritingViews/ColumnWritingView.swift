@@ -31,7 +31,7 @@ struct ColumnWritingView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemBackground)
+            Color(.background)
                 .ignoresSafeArea()
             
             VStack {
