@@ -108,6 +108,7 @@ struct ColumnWritingView: View {
                 Button(action: {
                     // 발행 버튼 액션
                     let newColumn = Column(
+                        title: "testTitle",
                         content: text,
                         userNickname: columnStore.columns.first?.userNickname ?? "", 
                         font: "",
