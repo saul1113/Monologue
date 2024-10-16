@@ -27,21 +27,26 @@ struct ProfileEditView: View {
                 .ignoresSafeArea()
             
             VStack {
-                ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "", size: 77)
-                    .padding(.bottom, 17)
-                    .padding(.top, 20)
-                
-                Button {
-                    isShowingSheet.toggle()
-                } label: {
-                    Text("사진 수정")
-                        .bold()
-                }
-                .padding(.bottom, 53)
-                .sheet(isPresented: $isShowingSheet) {
-                    ProfileImageEditView(selectedImageName: $selectedImageName)
-                        .presentationDetents([.height(350)])
-                }
+                    // 프로필 사진 수정 버튼
+                    Button {
+                        isShowingSheet.toggle()
+                    } label: {
+                        ZStack {
+                            ProfileImageView(profileImageName: !selectedImageName.isEmpty ? selectedImageName : userInfoStore.userInfo?.profileImageName ?? "", size: 84)
+                            
+                            Image(systemName: "pencil")
+                                .bold()
+                                .frame(width: 30, height: 30)
+                                .background(Circle().fill(.white))
+                                .padding(.top, 60)
+                                .padding(.leading, 60)
+                        }
+                    }
+                    .padding(.vertical, 20)
+                    .sheet(isPresented: $isShowingSheet) {
+                        ProfileImageEditView(selectedImageName: $selectedImageName)
+                            .presentationDetents([.height(250)])
+                    }
                 
                 HStack {
                     Text("닉네임")

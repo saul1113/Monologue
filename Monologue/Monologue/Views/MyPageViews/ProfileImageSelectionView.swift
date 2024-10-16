@@ -9,6 +9,7 @@ import SwiftUI
 
 // 회원가입 뷰, ProfileImageEditView 에서 사용
 struct ProfileImageSelectionView: View {
+    @Environment(\.dismiss) private var dismiss
     @Binding var selectedImageName: String
     let imageNames = ["profileImage1", "profileImage2", "profileImage3", "profileImage4"]
     
@@ -17,6 +18,7 @@ struct ProfileImageSelectionView: View {
             ForEach(imageNames, id: \.self) { imageName in
                 Button {
                     selectedImageName = imageName
+                    dismiss()
                 } label: {
                     Image(imageName)
                         .resizable()
