@@ -25,24 +25,24 @@ struct BlockedUsersListView: View {
                     }
                 } else {
                     VStack {
-                        ForEach(0..<blockedUsers.count) { index in
+                        ForEach(blockedUsers, id: \.self) { blockedUser in
                             NavigationLink {
-                                UserProfileView(userInfo: blockedUsers[index])
+                                UserProfileView(userInfo: blockedUser)
                             } label: {
                                 UserRow(
-                                    profileImageName: blockedUsers[index].profileImageName,
-                                    nickname: blockedUsers[index].nickname,
-                                    memoCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
-                                    columnCount: userInfoStore.getMemoCount(userNickname: blockedUsers[index].nickname),
+                                    profileImageName: blockedUser.profileImageName,
+                                    nickname: blockedUser.nickname,
+                                    memoCount: userInfoStore.getMemoCount(userNickname: blockedUser.nickname),
+                                    columnCount: userInfoStore.getMemoCount(userNickname: blockedUser.nickname),
                                     activeButtonText: "차단",
                                     inactiveButtonText: "차단 해제",
                                     onActive: {
                                         // 차단 로직
-                                        print("\(blockedUsers[index].nickname) 차단됨")
+                                        print("\(blockedUser.nickname) 차단됨")
                                     },
                                     onInactive: {
                                         // 차단 해제 로직
-                                        print("\(blockedUsers[index].nickname) 차단 해제됨")
+                                        print("\(blockedUser.nickname) 차단 해제됨")
                                     }
                                 )
                             }
