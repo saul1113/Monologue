@@ -26,7 +26,8 @@ class MemoStore: ObservableObject {
             "categories": memo.categories,
             "likes": memo.likes,
             "comments": memo.comments,
-            "date": Timestamp(date: memo.date)
+            "date": Timestamp(date: memo.date),
+            "lineCount": memo.lineCount
         ]) { error in
             if let error = error {
                 completion(error)

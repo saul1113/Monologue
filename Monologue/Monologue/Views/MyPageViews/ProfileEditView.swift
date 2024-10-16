@@ -62,6 +62,12 @@ struct ProfileEditView: View {
                         .bold()
                     
                     TextField("닉네임 변경", text: $nickname)
+                        // 14글자로 제한
+                        .onChange(of: nickname) { oldValue, newValue in
+                            if newValue.count > 14 {
+                                nickname = String(newValue.prefix(14))
+                            }
+                        }
                 }
                 
                 Divider()
@@ -73,6 +79,12 @@ struct ProfileEditView: View {
                         .bold()
                     
                     TextField("자기소개 추가", text: $introduction)
+                        // 36글자로 제한
+                        .onChange(of: introduction) { oldValue, newValue in
+                            if newValue.count > 36 {
+                                introduction = String(newValue.prefix(36))
+                            }
+                        }
                 }
                 
                 Divider()

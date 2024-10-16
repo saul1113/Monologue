@@ -19,6 +19,7 @@ struct Memo: Codable, Identifiable {
     var likes: [String] // 좋아요 개수
     var comments: [String] // 코멘트ID
     var date: Date // 날짜
+    var lineCount: Int // 라인 수
     
     init(document: QueryDocumentSnapshot) {
         let docData = document.data()
@@ -37,9 +38,11 @@ struct Memo: Codable, Identifiable {
         } else {
             self.date = Date()
         }
+        
+        self.lineCount = docData["lineCount"] as? Int ?? 0
     }
     
-    init(content: String, userNickname: String, font: String, backgroundImageName: String, categories: [String], likes: [String], comments: [String], date: Date) {
+    init(content: String, userNickname: String, font: String, backgroundImageName: String, categories: [String], likes: [String], comments: [String], date: Date, lineCount: Int) {
         self.content = content
         self.userNickname = userNickname
         self.font = font
@@ -48,5 +51,6 @@ struct Memo: Codable, Identifiable {
         self.likes = likes
         self.comments = comments
         self.date = date
+        self.lineCount = lineCount
     }
 }

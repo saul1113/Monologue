@@ -97,8 +97,8 @@ struct PostRow: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         let sampleColumns = [
-            Column(content: "Sample Column 1", userNickname: "User1", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["Comment 1", "Comment 2"], date: Date()),
-            Column(content: "Sample Column 2", userNickname: "User2", font: "", backgroundImageName: "", categories: ["사랑"], likes: ["User1"], comments: [], date: Date())
+            Column(title: "title1", content: "Sample Column 1", userNickname: "User1", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["Comment 1", "Comment 2"], date: Date()),
+            Column(title: "title2", content: "Sample Column 2", userNickname: "User2", font: "", backgroundImageName: "", categories: ["사랑"], likes: ["User1"], comments: [], date: Date())
         ]
         
         return ColumnView(filteredColumns: sampleColumns)

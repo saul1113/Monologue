@@ -10,7 +10,7 @@ import FirebaseStorage
 import SwiftUI
 
 class MemoImageStore: ObservableObject {
-    @Published var image: UIImage = UIImage()
+    @Published var images: [UIImage] = []
     
     // 스토리지에 이미지 파일
     func UploadImage(image: UIImage ,imageName: String) {
@@ -36,10 +36,10 @@ class MemoImageStore: ObservableObject {
                 return
             }
             if let tempImage = UIImage(data: data!) {
-                self.image = tempImage
-                print("성공")
-                print(self.image)
+                self.images.append(tempImage)
             }
         }
     }
 }
+
+// 메모 글 쓰기 -> 이미지 생성 -> 이미지 받아서 저장 -> 메인뷰나 내정보뷰에서 부를때 로드해서 이미지 배열에 담기
