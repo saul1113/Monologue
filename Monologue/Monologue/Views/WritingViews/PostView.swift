@@ -36,13 +36,19 @@ struct PostView: View {
                     HStack {
                         Text("Post")
                         
-                        
                         HStack {
                             Button(action: {
                                 if selectedSegment == "메모" {
                                     // 메모 저장 처리
-                                    let newMemo = Memo(content: text, userNickname: userInfoStore.userInfo?.nickname ?? "",
-                                                       font: selectedFont, backgroundImageName: selectedBackgroundImageName, categories: selectedMemoCategories, likes: [], comments: [], date: Date(), lineCount: lineCount)
+                                    let newMemo = Memo(content: text,
+                                                       userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                                       font: selectedFont,
+                                                       backgroundImageName: selectedBackgroundImageName,
+                                                       categories: selectedMemoCategories,
+                                                       likes: [],
+                                                       comments: [],
+                                                       date: Date(),
+                                                       lineCount: lineCount)
                                     memoStore.addMemo(memo: newMemo) { error in
                                         if let error = error {
                                             print("Error adding memo: \(error)")
@@ -80,7 +86,6 @@ struct PostView: View {
                         }
                     }
                 }
-                
                 .padding(.bottom, 10)
                 
                 CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
