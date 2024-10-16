@@ -13,7 +13,7 @@ struct ColumnView: View {
     var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
             VStack {
                 // 필터링된 칼럼 리스트
@@ -38,47 +38,60 @@ struct PostRow: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text(column.date, style: .relative) // 게시 시간 표시
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                    .clipShape(Circle())
+                
+                Text("임시 닉네임")
+                    .font(.caption2)
+                    .foregroundStyle(.black)
+                    .font(Font.headline.weight(.bold))
+                
                 Spacer()
-                Text(column.categories.first ?? "카테고리 없음.")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                    .padding(4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(5)
+                Text(column.date, style: .relative) // 게시 시간 표시
+                        .font(.subheadline)
+                        .foregroundColor(.black)
             }
-
-            Text(column.content) // 칼럼 내용 표시
-                .font(.body)
-                .foregroundColor(.black)
-                .lineLimit(2) // 두 줄까지만 표시
-
+            
             HStack {
-                // 하트 아이콘과 좋아요 수
-                // 댓글 아이콘과 댓글 수
+                Text(column.content) // 칼럼 내용 표시
+                    .font(.body)
+                    .foregroundColor(.black)
+                    .lineLimit(3) // 3 줄까지만 표시
+            }
+            
+            HStack {
                 HStack {
-                    Image(systemName: "bubble.right.fill")
+                    Image(systemName: "bubble.right")
                         .foregroundColor(.gray)
                     Text("\(column.comments.count)")  // 댓글 수 표시
                         .font(.subheadline)
                 }
 
                 HStack {
-                    Image(systemName: "heart.fill")
-                        .foregroundColor(.red)
+                    Image(systemName: "heart")
+                        .foregroundColor(.gray)
                     Text("\(column.likes.count)")  // 좋아요 수 표시
                         .font(.subheadline)
                 }
+                
+                Spacer()
+                Text(column.categories.first ?? "카테고리 없음.")
+                    .font(.subheadline)
+                    .foregroundColor(.black)
+                    .padding(4)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(8)
             }
             .padding(.top, 8)
         }
         .padding()
         .background(Color.white)
         .cornerRadius(8)
-        .shadow(radius: 2)
-        .padding(.vertical, 4)
+        .overlay(RoundedRectangle(cornerRadius: 10)
+            .stroke(.gray, lineWidth: 0.5))
+        .padding(.vertical, 1)
     }
 }
 struct HomeView_Previews: PreviewProvider {

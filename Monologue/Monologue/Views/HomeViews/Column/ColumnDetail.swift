@@ -64,9 +64,6 @@ struct ColumnDetail: View {
                                 Text("\(displayedComments.count)")  // 댓글 개수 표시
                                     .font(.subheadline)
                             }
-                            .sheet(isPresented: $showAllComments) {
-                                CommentsSheetView(comments: $displayedComments, newComment: $newComment)
-                            }
                         }
                         
                         // 좋아요 버튼
@@ -99,35 +96,24 @@ struct ColumnDetail: View {
                 .cornerRadius(10)  // 모서리를 둥글게 처리
                 
                 // 댓글 영역
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("댓글 \(displayedComments.count)")
-                            .font(.headline)
-                        Spacer()
-                        Text("등록순")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
-                        Text("최신순")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
-                    }
-                    .padding(.horizontal)
-                    
-                    // 댓글 리스트 (2개까지만 표시)
-                    ForEach(displayedComments.prefix(2), id: \.self) { comment in
-                        CommentView(comment: comment)
-                    }
-                    
-                    // 댓글 더보기 버튼
-                    if displayedComments.count > 2 {
-                        Button(action: {
-                            showAllComments.toggle()  // 전체 댓글 보기 시트 열기
-                        }) {
-                            Text("댓글 더 보기")
-                                .foregroundColor(.blue)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack {
+                            Text("댓글 \(displayedComments.count)")
+                                .font(.headline)
+                            Spacer()
+                            Text("등록순")
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                            Text("최신순")
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
                         }
-                        .sheet(isPresented: $showAllComments) {
-                            CommentsSheetView(comments: $displayedComments, newComment: $newComment)
+                        .padding(.horizontal)
+                        
+                        // 댓글 리스트 (2개까지만 표시)
+                        ForEach(displayedComments, id: \.self) { comment in
+                            CommentView(comment: comment)
                         }
                     }
                 }
@@ -186,59 +172,23 @@ struct ColumnDetail: View {
 
 // 댓글 뷰
 struct CommentView: View {
+//    var column: Column
     let comment: String
     var body: some View {
-        HStack(alignment: .top) {
+        HStack {
             Image(systemName: "person.circle.fill")
                 .resizable()
                 .frame(width: 40, height: 40)
                 .clipShape(Circle())
+                .padding(5)
             VStack(alignment: .leading) {
+                Text("닉네임")
+                    .font(.caption2)
+                    .font(Font.headline.weight(.bold))
                 Text(comment)
-                    .font(.body)
-                    .foregroundColor(.gray)
+                    .font(.caption)
+                    .foregroundColor(.black)
             }
-            Spacer()
-        }
-        .padding(.horizontal)
-    }
-}
-
-// 전체 댓글 시트 뷰 (댓글 더보기 시트에서도 동일한 동작 적용)
-struct CommentsSheetView: View {
-    @Binding var comments: [String]  // 댓글 배열을 바인딩하여 전달
-    @Binding var newComment: String
-    
-    var body: some View {
-        VStack {
-            Text("댓글")
-                .font(.title2)
-                .bold()
-                .padding()
-            
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(comments, id: \.self) { comment in
-                        CommentView(comment: comment)
-                    }
-                }
-                .padding()
-            }
-            
-            // 댓글 입력창
-            HStack {
-                TextField("댓글을 입력하세요", text: $newComment)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                Button(action: {
-                    if !newComment.isEmpty {
-                        comments.append(newComment)  // 새 댓글을 comments 배열에 추가
-                        newComment = ""  // 입력 필드 초기화
-                    }
-                }) {
-                    Text("등록")
-                }
-            }
-            .padding()
         }
     }
 }
