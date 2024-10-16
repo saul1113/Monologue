@@ -32,6 +32,7 @@ struct Memo: Codable, Identifiable {
         self.categories = docData["categories"] as? [String] ?? []
         self.likes = docData["likes"] as? [String] ?? []
         self.comments = docData["comments"] as? [String] ?? []
+        self.lineCount = docData["lineCount"] as? Int ?? 0
         
         if let timestamp = docData["date"] as? Timestamp {
             self.date = timestamp.dateValue()
