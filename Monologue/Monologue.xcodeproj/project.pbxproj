@@ -194,6 +194,7 @@
 		8E902D8E2CBEC5F900562071 /* WritingViews */ = {
 			isa = PBXGroup;
 			children = (
+				8E52D9412CBD216C00E5D42A /* PostView.swift */,
 				BE0FD6642CBDFF670047251E /* MemoWritingView.swift */,
 				BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */,
 			);
@@ -233,7 +234,6 @@
 			children = (
 				EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */,
 				EBB84EC52CBEE06700AC006A /* ColumnView.swift */,
-				8E52D9412CBD216C00E5D42A /* PostView.swift */,
 			);
 			path = Column;
 			sourceTree = "<group>";

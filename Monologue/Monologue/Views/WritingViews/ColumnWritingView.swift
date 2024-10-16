@@ -24,76 +24,70 @@ struct ColumnWritingView: View {
     let rows = [GridItem(.fixed(50))]
     
     var body: some View {
-        
-            VStack {
-                TextField("제목을 입력해주세요", text: $title)
-                    
-                
-                    .textFieldStyle(.roundedBorder)
-                
-                TextEditor(text: $text)
-                    .font(.system(.title2, design: .default, weight: .regular))
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .cornerRadius(8)
-                    .frame(width: 370, height: 500)
-                    .overlay(alignment: .topLeading) {
-                        Text(placeholder)
-                            .foregroundStyle(text.isEmpty ? .gray : .clear)
-                            .padding(.top)
-                            .padding(.leading, 22)
-                    }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.brown, lineWidth: 1)
-                    )
-                    .onReceive(text.publisher.collect()) { newValue in
-                        if newValue.count > textLimit {
-                            text = String(newValue.prefix(textLimit))
-                        }
-                    }
-                
-                HStack {
-                    Spacer()
-                    Text("\(text.count)/\(textLimit)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+        VStack {
+            TextField("제목을 입력해주세요", text: $title)
+                .textFieldStyle(.roundedBorder)
+            
+            TextEditor(text: $text)
+                .font(.system(.title2, design: .default, weight: .regular))
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .cornerRadius(8)
+                .frame(width: 370, height: 500)
+                .overlay(alignment: .topLeading) {
+                    Text(placeholder)
+                        .foregroundStyle(text.isEmpty ? .gray : .clear)
+                        .padding(.top)
+                        .padding(.leading, 22)
                 }
-                
-                
-                
-                    HStack {
-                        HStack {
-                            Image(systemName: "tag")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color.accent)
-                            
-                            Text("카테고리")
-                                .font(.system(size: 15))
-                                .foregroundStyle(Color.accent)
-                        }
-                        ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHGrid(rows: rows, spacing: 16) { // 두 줄짜리 그리드
-                            ForEach(categoryOptions, id: \.self) { category in
-                                CategoryColumnButton(
-                                    title: category,
-                                    isSelected: selectedColumnCategories.contains(category)
-                                ) {
-                                    if selectedColumnCategories.contains(category) {
-                                        selectedColumnCategories.removeAll { $0 == category }
-                                    } else {
-                                        selectedColumnCategories.append(category)
-                                    }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.brown, lineWidth: 1)
+                )
+                .onReceive(text.publisher.collect()) { newValue in
+                    if newValue.count > textLimit {
+                        text = String(newValue.prefix(textLimit))
+                    }
+                }
+            
+            HStack {
+                Spacer()
+                Text("\(text.count)/\(textLimit)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            
+            HStack {
+                HStack {
+                    Image(systemName: "tag")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color.accent)
+                    
+                    Text("카테고리")
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.accent)
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHGrid(rows: rows, spacing: 16) { // 두 줄짜리 그리드
+                        ForEach(categoryOptions, id: \.self) { category in
+                            CategoryColumnButton(
+                                title: category,
+                                isSelected: selectedColumnCategories.contains(category)
+                            ) {
+                                if selectedColumnCategories.contains(category) {
+                                    selectedColumnCategories.removeAll { $0 == category }
+                                } else {
+                                    selectedColumnCategories.append(category)
                                 }
                             }
                         }
                     }
                 }
-                
-                Divider()
             }
-        
+            
+            Divider()
+        }
         .padding(.horizontal, 16)
     }
 }

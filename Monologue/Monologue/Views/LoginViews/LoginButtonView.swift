@@ -5,6 +5,8 @@
 //  Created by 김종혁 on 10/15/24.
 //
 
+//
+
 import SwiftUI
 
 struct GoogleButtonView: View {
@@ -15,12 +17,15 @@ struct GoogleButtonView: View {
     var body: some View {
         Button(action: {
             Task {
-                let nicknameExists = await authManager.signInWithGoogle()
+                let googleLoginCancel = await authManager.signInWithGoogle()
+                let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
                 
-                if nicknameExists {
+                if googleLoginCancel && nicknameExists {
                     isNextView = true  // 닉네임이 있으면 ContentView로
-                } else {
-                    isPresented = true  // 닉네임이 없으면 Sheet 띄움
+                } else if !googleLoginCancel { // 구글로그인 취소할 때 sheet 안뜸
+                    isPresented = false
+                } else if googleLoginCancel && !nicknameExists {
+                    isPresented = true // 닉네임이 없으면 Sheet 띄움
                 }
             }
         }) {
