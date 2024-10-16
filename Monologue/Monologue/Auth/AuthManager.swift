@@ -127,7 +127,8 @@ extension AuthManager {
             //            authenticationState = .authenticated
             //            return true
             
-            return await checkNicknameExists(email: self.email)
+//            return await checkNicknameExists(email: self.email)
+            return true
         }
         catch {
             print(error.localizedDescription)
