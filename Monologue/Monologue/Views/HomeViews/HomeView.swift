@@ -68,10 +68,10 @@ struct HomeView: View {
                                 for (key, _) in newValue {
                                     dict[key] = (key == "전체")
                                 }
-                            } else if selectedCategories.isEmpty {
+                            } else if selectedCategories!.isEmpty {
                                 // 아무 항목도 선택되지 않았을 때 "전체" 선택
                                 dict["전체"] = true
-                            } else if selectedCategories.contains("전체") && selectedCategories.count > 1 {
+                            } else if selectedCategories!.contains("전체") && selectedCategories!.count > 1 {
                                 // "전체"와 다른 항목이 같이 선택되었을 때 "전체"를 비활성화
                                 dict["전체"] = false
                             }
