@@ -10,6 +10,10 @@
 		8B11949E2CBEAB7E00D9B28B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93E2CBD216C00E5D42A /* HomeView.swift */; };
 		8B1194A02CBED34C00D9B28B /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B11949F2CBED34100D9B28B /* TopBarView.swift */; };
 		8B1194A12CBED4F800D9B28B /* (null) in Sources */ = {isa = PBXBuildFile; };
+		8B1194C32CBFD5C300D9B28B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1194C22CBFD5BD00D9B28B /* SearchView.swift */; };
+		8B1194C52CC037F500D9B28B /* DeleteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1194C42CC037F200D9B28B /* DeleteSheetView.swift */; };
+		8B1194C72CC0381600D9B28B /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1194C62CC0381400D9B28B /* ShareSheetView.swift */; };
+		8B1194C92CC0384900D9B28B /* ReportReasonSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1194C82CC0383000D9B28B /* ReportReasonSheetView.swift */; };
 		8B71225F2CBE009B00734578 /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B71225E2CBE009600734578 /* MemoView.swift */; };
 		8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122602CBE00CE00734578 /* MemoDetailView.swift */; };
 		8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122642CBE509D00734578 /* MasonryLayout.swift */; };
@@ -70,6 +74,10 @@
 
 /* Begin PBXFileReference section */
 		8B11949F2CBED34100D9B28B /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
+		8B1194C22CBFD5BD00D9B28B /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		8B1194C42CC037F200D9B28B /* DeleteSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSheetView.swift; sourceTree = "<group>"; };
+		8B1194C62CC0381400D9B28B /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
+		8B1194C82CC0383000D9B28B /* ReportReasonSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportReasonSheetView.swift; sourceTree = "<group>"; };
 		8B71225E2CBE009600734578 /* MemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoView.swift; sourceTree = "<group>"; };
 		8B7122602CBE00CE00734578 /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		8B7122642CBE509D00734578 /* MasonryLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasonryLayout.swift; sourceTree = "<group>"; };
@@ -193,6 +201,7 @@
 		8E902D8D2CBEC5F100562071 /* HomeViews */ = {
 			isa = PBXGroup;
 			children = (
+				8B1194C22CBFD5BD00D9B28B /* SearchView.swift */,
 				8B11949F2CBED34100D9B28B /* TopBarView.swift */,
 				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				8E902D912CBEC97500562071 /* Column */,
@@ -233,6 +242,9 @@
 		8E902D902CBEC96B00562071 /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				8B1194C82CC0383000D9B28B /* ReportReasonSheetView.swift */,
+				8B1194C62CC0381400D9B28B /* ShareSheetView.swift */,
+				8B1194C42CC037F200D9B28B /* DeleteSheetView.swift */,
 				8B71225E2CBE009600734578 /* MemoView.swift */,
 				8B7122602CBE00CE00734578 /* MemoDetailView.swift */,
 			);
@@ -389,6 +401,7 @@
 				8E91AED42CBE3749009889D4 /* ColumnStore.swift in Sources */,
 				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
 				8EF50D742CBE0479000CABAA /* Complain.swift in Sources */,
+				8B1194C92CC0384900D9B28B /* ReportReasonSheetView.swift in Sources */,
 				EA50F6172CC0105000D468C4 /* AppleAuth.swift in Sources */,
 				8B11949E2CBEAB7E00D9B28B /* HomeView.swift in Sources */,
 				97594F542CC01D390001B6D2 /* UserProfileView.swift in Sources */,
@@ -398,6 +411,7 @@
 				97594F4C2CBFB9B20001B6D2 /* ProfileImageEditView.swift in Sources */,
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
 				8EF50D6E2CBE0432000CABAA /* Memo.swift in Sources */,
+				8B1194C32CBFD5C300D9B28B /* SearchView.swift in Sources */,
 				8EF50D722CBE0467000CABAA /* Comment.swift in Sources */,
 				EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */,
 				8E91AED82CBE376B009889D4 /* ComplainStore.swift in Sources */,
@@ -422,11 +436,13 @@
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
+				8B1194C72CC0381600D9B28B /* ShareSheetView.swift in Sources */,
 				97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */,
 				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
 				97594F4E2CBFE6360001B6D2 /* ProfileImageView.swift in Sources */,
 				EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
+				8B1194C52CC037F500D9B28B /* DeleteSheetView.swift in Sources */,
 				BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */,
 				97594F522CC017F00001B6D2 /* NotificationView.swift in Sources */,
 				EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */,
