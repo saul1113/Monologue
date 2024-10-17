@@ -51,6 +51,7 @@ struct GoogleButtonView: View {
     }
 }
 
+
 struct AppleButtonView: View {
     @StateObject private var appleAuth = AppleAuth()
     @EnvironmentObject var authManager: AuthManager
@@ -65,13 +66,17 @@ struct AppleButtonView: View {
             onCompletion: { result in
                 appleAuth.handleAuthorization(result) {
                     Task {
-                        let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
-                        if appleAuth.isSignedIn && nicknameExists {
-                            authManager.authenticationState = .authenticated  // 닉네임이 있으면 로그인 성공
-                        } else if !appleAuth.isSignedIn {
-                            isPresented = false  // 로그인 실패 시 Sheet 닫기
-                        } else if appleAuth.isSignedIn && !nicknameExists {
-                            isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+                        if appleAuth.isSignedIn {
+                            authManager.email = appleAuth.userEmail ?? ""
+                            
+                            let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
+                            
+                            if nicknameExists {
+                                authManager.authenticationState = .authenticated  // 닉네임이 존재하면 로그인 성공
+                                isPresented = false
+                            } else {
+                                isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+                            }
                         }
                     }
                 }
