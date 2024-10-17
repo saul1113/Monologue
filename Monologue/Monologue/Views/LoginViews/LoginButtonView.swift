@@ -15,20 +15,19 @@ import FirebaseAuth
 struct GoogleButtonView: View {
     @EnvironmentObject var authManager: AuthManager
     @Binding var isPresented: Bool
-    @Binding var isNextView: Bool
     
     var body: some View {
         Button(action: {
             Task {
-                let googleLoginCancel = await authManager.signInWithGoogle()
-                let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
-                
-                if googleLoginCancel && nicknameExists {
-                    isNextView = true  // 닉네임이 있으면 ContentView로
-                } else if !googleLoginCancel { // 구글로그인 취소할 때 sheet 안뜸
-                    isPresented = false
-                } else if googleLoginCancel && !nicknameExists {
-                    isPresented = true // 닉네임이 없으면 Sheet 띄움
+                let loginSuccess = await authManager.signInWithGoogle()
+                if loginSuccess {
+                    let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
+                    if nicknameExists {
+                        isPresented = false
+                        authManager.authenticationState = .authenticated  // 닉네임이 존재하면 로그인 성공
+                    } else {
+                        isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+                    }
                 }
             }
         }) {
@@ -43,7 +42,6 @@ struct GoogleButtonView: View {
                     .font(.system(size: 21))
                     .foregroundColor(.black)
                     .opacity(0.54)
-                
             }
             .frame(width: 300)
             .padding()
@@ -57,7 +55,6 @@ struct AppleButtonView: View {
     @StateObject private var appleAuth = AppleAuth()
     @EnvironmentObject var authManager: AuthManager
     @Binding var isPresented: Bool
-    @Binding var isNextView: Bool
     
     var body: some View {
         SignInWithAppleButton(
@@ -69,13 +66,12 @@ struct AppleButtonView: View {
                 appleAuth.handleAuthorization(result) {
                     Task {
                         let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
-                        
                         if appleAuth.isSignedIn && nicknameExists {
-                            isNextView = true  // 닉네임이 있으면 ContentView로
-                        } else if !appleAuth.isSignedIn { // 구글로그인 취소할 때 sheet 안뜸
-                            isPresented = false
+                            authManager.authenticationState = .authenticated  // 닉네임이 있으면 로그인 성공
+                        } else if !appleAuth.isSignedIn {
+                            isPresented = false  // 로그인 실패 시 Sheet 닫기
                         } else if appleAuth.isSignedIn && !nicknameExists {
-                            isPresented = true // 닉네임이 없으면 Sheet 띄움
+                            isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
                         }
                     }
                 }
