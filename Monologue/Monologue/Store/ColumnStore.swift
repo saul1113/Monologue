@@ -78,6 +78,23 @@ class ColumnStore: ObservableObject {
             }
     }
     
+    func loadColumnsByUserNickname(userNickname: String) async throws -> [Column] {
+        let db = Firestore.firestore()
+        
+        let querySnapshot = try await db.collection("Column")
+            .whereField("userNickname", isEqualTo: userNickname)
+            .getDocuments()
+        
+        var columns: [Column] = []
+        
+        for document in querySnapshot.documents {
+            let column = Column(document: document)
+            columns.append(column)
+        }
+        
+        return columns
+    }
+    
     // MARK: - 칼럼 카테고리들로 로드
     func loadColumnsByCategories(categories: [String], completion: @escaping ([Column]?, Error?) -> Void) {
         let db = Firestore.firestore()

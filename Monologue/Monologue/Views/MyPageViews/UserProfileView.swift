@@ -38,7 +38,6 @@ struct UserProfileView: View {
                 VStack {
                     // 프사, 닉, 상메
                     HStack {
-                        // 프로필 사진
                         ProfileImageView(profileImageName: userInfo.profileImageName,
                                          size: 77)
                         .padding(.trailing, 24)
