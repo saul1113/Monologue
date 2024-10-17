@@ -53,9 +53,6 @@ extension AuthManager {
         do {
             try Auth.auth().signOut()
             self.authenticationState = .unauthenticated
-            self.email = ""
-            self.userID = ""
-            self.user = nil
             print("로그아웃 성공")
         } catch {
             print("Error signing out: \(error.localizedDescription)")

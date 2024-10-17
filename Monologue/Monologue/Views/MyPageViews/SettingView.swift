@@ -36,7 +36,7 @@ struct SettingView: View {
                             
                             Button("로그아웃") {
                                 authManager.signOut()
-                                
+                                dismiss()
                                 // 파베 로그아웃 로직
                                 print("로그아웃")
                             }
