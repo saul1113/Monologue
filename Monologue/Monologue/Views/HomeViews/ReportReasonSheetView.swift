@@ -4,14 +4,17 @@
 //
 //  Created by 강희창 on 10/17/24.
 //
+
 import SwiftUI
 
 struct ReportReasonSheetView: View {
     @Binding var isPresented: Bool
-    var onReport: ((String) -> Void)?  // 신고 사유를 전달하는 클로저
+    var onReport: ((String) -> Void)?
     
     var body: some View {
         VStack(spacing: 0) {
+            Spacer().frame(height: 16) // 상단 여백
+            
             Text("신고하기")
                 .font(.headline)
                 .padding(.top, 16)
@@ -19,6 +22,7 @@ struct ReportReasonSheetView: View {
             Text("이 칼럼을 신고하는 이유를 선택해 주세요. 회원님의 신고는 익명으로 처리됩니다.")
                 .font(.subheadline)
                 .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
                 .padding(.horizontal)
                 .padding(.bottom, 16)
             
@@ -47,10 +51,15 @@ struct ReportReasonSheetView: View {
                     .background(Color.white)
                     .foregroundColor(.black)
             }
+            
+            Spacer().frame(height: 16) // 하단 여백
         }
         .background(Color(UIColor.systemGray6))
-        .cornerRadius(12)
-        .padding()
+        .cornerRadius(16, corners: [.topLeft, .topRight])
+        .padding(.horizontal)
+        .padding(.top, 16) // 상단 패딩 추가
         .frame(maxWidth: .infinity)
+        .presentationDetents([.medium, .large]) // 시트 높이 자동 조절
+        .presentationDragIndicator(.visible)
     }
 }

@@ -14,6 +14,8 @@ struct DeleteSheetView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            Spacer().frame(height: 16) // 상단에 고정된 여백 추가
+            
             Button(action: {
                 onDelete?()
                 isPresented = false
@@ -48,17 +50,22 @@ struct DeleteSheetView: View {
                     .background(Color.white)
                     .foregroundColor(.black)
             }
+            
+            Spacer().frame(height: 16) // 하단 여백 추가
         }
         .background(Color(UIColor.systemGray6))
-        .cornerRadius(12)
-        .padding()
+        .cornerRadius(16, corners: [.topLeft, .topRight])
+        .padding(.horizontal)
+        .padding(.top, 16) // 추가적으로 상단 여백 설정
         .frame(maxWidth: .infinity)
+        .presentationDetents([.medium, .large]) // 시트 높이 자동 조절
+        .presentationDragIndicator(.visible)
         .sheet(isPresented: $showReportSheet) {
             ReportReasonSheetView(isPresented: $showReportSheet) { reason in
                 print("신고 사유: \(reason)")
             }
-            .presentationDetents([.height(300)])
-            .presentationDragIndicator(.hidden)
+            .presentationDetents([.fraction(0.5), .large])
+            .presentationDragIndicator(.visible)
         }
     }
 }
