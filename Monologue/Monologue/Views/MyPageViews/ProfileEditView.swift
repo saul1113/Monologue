@@ -127,18 +127,20 @@ struct ProfileEditView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("완료") {
                     handleComplete()
+                    dismiss()
                 }
             }
         }
     }
     
     // 완료 버튼 핸들링
-    func handleComplete() {
+    private func handleComplete() {
         if nickname.isEmpty {
             nicknameCheckWarning = true
             nicknameDuplicateWarning = false
         } else {
             nicknameCheckWarning = false
+            
             Task {
                 // 닉네임이 변경된 경우에만 중복 검사
                 if nickname != userInfoStore.userInfo?.nickname {
@@ -155,14 +157,14 @@ struct ProfileEditView: View {
     }
     
     // 유저 정보 저장
-    func saveUserInfo() {
+    private func saveUserInfo() {
         if var userInfo = userInfoStore.userInfo {
             userInfo.nickname = nickname
             userInfo.introduction = introduction
             userInfo.profileImageName = selectedImageName
+            
             Task {
                 await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
-                dismiss()
             }
         }
     }
@@ -171,5 +173,7 @@ struct ProfileEditView: View {
 #Preview {
     NavigationStack {
         ProfileEditView()
+            .environmentObject(AuthManager())
+            .environmentObject(UserInfoStore())
     }
 }
