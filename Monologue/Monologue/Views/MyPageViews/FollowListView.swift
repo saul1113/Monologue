@@ -112,27 +112,34 @@ struct FollowListView: View {
                 }
             }
         }
-        .task {
-            if let userInfo = userInfoStore.userInfo {
-                do {
-                    // 팔로워 목록 불러오기
-                    followers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers)
-                    // 각 팔로워의 메모 및 칼럼 개수 로드
-                    for follower in followers {
-                        memoCount[follower.nickname] = try await userInfoStore.getMemoCount(userNickname: follower.nickname)
-                        columnCount[follower.nickname] = try await userInfoStore.getColumnCount(userNickname: follower.nickname)
-                    }
-                    
-                    // 팔로잉 목록 불러오기
-                    followings = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings)
-                    // 각 팔로잉의 메모 및 칼럼 개수 로드
-                    for following in followings {
-                        memoCount[following.nickname] = try await userInfoStore.getMemoCount(userNickname: following.nickname)
-                        columnCount[following.nickname] = try await userInfoStore.getColumnCount(userNickname: following.nickname)
-                    }
-                } catch {
-                    print("Error loading followers or followings: \(error.localizedDescription)")
+        .onAppear {
+            Task {
+                await loadFollowersAndFollowings()
+            }
+        }
+    }
+    
+    // 팔로워, 팔로잉 목록 불러오고 각 메모 및 칼럼 개수 로드 함수
+    private func loadFollowersAndFollowings() async {
+        if let userInfo = userInfoStore.userInfo {
+            do {
+                // 팔로워
+                followers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers)
+                
+                for follower in followers {
+                    memoCount[follower.nickname] = try await userInfoStore.getMemoCount(userNickname: follower.nickname)
+                    columnCount[follower.nickname] = try await userInfoStore.getColumnCount(userNickname: follower.nickname)
                 }
+                
+                // 팔로잉
+                followings = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings)
+                
+                for following in followings {
+                    memoCount[following.nickname] = try await userInfoStore.getMemoCount(userNickname: following.nickname)
+                    columnCount[following.nickname] = try await userInfoStore.getColumnCount(userNickname: following.nickname)
+                }
+            } catch {
+                print("Error loading followers or followings: \(error.localizedDescription)")
             }
         }
     }

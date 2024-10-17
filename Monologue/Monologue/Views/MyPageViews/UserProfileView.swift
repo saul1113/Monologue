@@ -185,19 +185,19 @@ struct UserProfileView: View {
             }
             .onAppear {
                 Task {
-                    memoStore.loadMemosByUserNickname(userNickname: userInfo.nickname) { memos, error in
-                        if let memos = memos {
-                            userMemos = memos
-                        }
-                    }
-                    
-                    columnStore.loadColumnsByUserNickname(userNickname: userInfo.nickname) { columns, error in
-                        if let columns = columns {
-                            userColumns = columns
-                        }
-                    }
+                    await loadUserInfo()
                 }
             }
+        }
+    }
+    
+    // 유저 메모 및 칼럼 업데이트
+    private func loadUserInfo() async {
+        do {
+            userMemos = try await memoStore.loadMemosByUserNickname(userNickname: userInfo.nickname)
+            userColumns = try await columnStore.loadColumnsByUserNickname(userNickname: userInfo.nickname)
+        } catch {
+            print("Error loading memos or columns: \(error.localizedDescription)")
         }
     }
 }

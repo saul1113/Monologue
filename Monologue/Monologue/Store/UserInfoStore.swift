@@ -17,6 +17,12 @@ class UserInfoStore: ObservableObject {
     private var columnStore: ColumnStore = .init()
     @Published var userInfo: UserInfo? = nil
     
+    @Published var followers: [UserInfo] = []
+    @Published var followings: [UserInfo] = []
+    
+    @Published var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
+    @Published var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    
     // 로그인 시 사용자(닉네임, 가입날짜) 파베에 추가
     func addUserInfo(_ user: UserInfo, email: String) async {
         do {
@@ -102,7 +108,7 @@ class UserInfoStore: ObservableObject {
         }
     }
     
-    // 팔로워, 팔로잉, 차단 목록 로드
+    // 이메일에 따른 유저들의 정보를 배열로 불러오는 함수(유저 목록에 사용)
     func loadUsersInfoByEmail(emails: [String]) async throws -> [UserInfo] {
         guard !emails.isEmpty else {
             return []

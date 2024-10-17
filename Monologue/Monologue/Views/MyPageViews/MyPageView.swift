@@ -163,24 +163,23 @@ struct MyPageView: View {
             }
             .onAppear {
                 Task {
-                    // 유저의 정보 로드
-                    await userInfoStore.loadUserInfo(email: authManager.email)
-                    
-                    // 유저의 메모 로드 및 메모 수 업데이트
-                    memoStore.loadMemosByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { memos, error in
-                        if let memos = memos {
-                            userMemos = memos
-                        }
-                    }
-                    
-                    // 유저의 칼럼 로드 및 칼럼 수 업데이트
-                    columnStore.loadColumnsByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { columns, error in
-                        if let columns = columns {
-                            userColumns = columns
-                        }
-                    }
+                    await loadUserContent()
                 }
             }
+        }
+    }
+    
+    // 유저 정보, 메모, 칼럼 로드 함수
+    private func loadUserContent() async {
+        do {
+            await userInfoStore.loadUserInfo(email: authManager.email)
+            
+            if let nickname = userInfoStore.userInfo?.nickname {
+                userMemos = try await memoStore.loadMemosByUserNickname(userNickname: nickname)
+                userColumns = try await columnStore.loadColumnsByUserNickname(userNickname: nickname)
+            }
+        } catch {
+            print("Error: \(error.localizedDescription)")
         }
     }
 }

@@ -70,18 +70,25 @@ struct BlockedUsersListView: View {
                 }
             }
         }
-        .task {
-            if let userInfo = userInfoStore.userInfo {
-                do {
-                    // 블락 유저 목록 로드
-                    blockedUsers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked)
-                    for blockedUser in blockedUsers {
-                        memoCount[blockedUser.nickname] = try await userInfoStore.getMemoCount(userNickname: blockedUser.nickname)
-                        columnCount[blockedUser.nickname] = try await userInfoStore.getColumnCount(userNickname: blockedUser.nickname)
-                    }
-                } catch {
-                    print("Error: \(error.localizedDescription)")
+        .onAppear {
+            Task {
+                await loadBlockedUsersAndCounts()
+            }
+        }
+    }
+    
+    // 블락 유저 목록 및 해당 유저의 메모, 칼럼 개수 로드하는 함수
+    private func loadBlockedUsersAndCounts() async {
+        if let userInfo = userInfoStore.userInfo {
+            do {
+                blockedUsers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked)
+                
+                for blockedUser in blockedUsers {
+                    memoCount[blockedUser.nickname] = try await userInfoStore.getMemoCount(userNickname: blockedUser.nickname)
+                    columnCount[blockedUser.nickname] = try await userInfoStore.getColumnCount(userNickname: blockedUser.nickname)
                 }
+            } catch {
+                print("Error loading blocked users or counts: \(error.localizedDescription)")
             }
         }
     }
