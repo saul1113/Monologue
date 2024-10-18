@@ -145,18 +145,30 @@ struct MyPageView: View {
                     
                     CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
                     
-                    if selectedSegment == "메모" {
-                        // 메모 뷰
-                        MemoView(filters: $filters, userMemos: userMemos)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
-                        
-                    } else if selectedSegment == "칼럼" {
-                        // 칼럼 뷰
-                        ColumnView(filteredColumns: userColumns)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
+                    // 버튼 & 스와이프 제스처 사용
+                    GeometryReader { geometry in
+                        HStack(spacing: 0) {
+                            MemoView(filters: $filters, userMemos: userMemos)
+                                .frame(width: geometry.size.width)
+
+                            ColumnView(filteredColumns: userColumns)
+                                .frame(width: geometry.size.width)
+                        }
+                        .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                        .animation(.easeInOut, value: selectedSegment)
+                        .gesture(
+                            DragGesture()
+                                .onEnded { value in
+                                    if value.translation.width > 100 {
+                                        selectedSegment = "메모"
+                                    } else if value.translation.width < -100 {
+                                        selectedSegment = "칼럼"
+                                    }
+                                }
+                        )
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, -16)
                 }
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
