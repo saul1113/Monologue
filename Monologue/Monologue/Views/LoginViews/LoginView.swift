@@ -5,6 +5,11 @@
 //  Created by 김종혁 on 10/14/24.
 //
 
+//
+//  LoginView.swift
+//  Monologue
+//
+
 import SwiftUI
 
 struct LoginView: View {
@@ -12,13 +17,8 @@ struct LoginView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var userInfoStore: UserInfoStore
     
-    @State private var isNextView: Bool = false
-    
     var body: some View {
         NavigationStack {
-            if isNextView {
-                MainView()
-            } else {
                 ZStack {
                     Color(.background).ignoresSafeArea()
                     
@@ -29,19 +29,19 @@ struct LoginView: View {
                             .foregroundStyle(.accent)
                             .bold()
                         
-                        GoogleButtonView(isPresented: $isPresented, isNextView: $isNextView)
+                        GoogleButtonView(isPresented: $isPresented)
                             .environmentObject(authManager)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2)
                             .padding()
                         
-                        AppleButtonView(isPresented: $isPresented, isNextView: $isNextView)
+                        AppleButtonView(isPresented: $isPresented)
                             .environmentObject(authManager)
                     }
                 }
-            }
+                .navigationBarHidden(true)  // 네비게이션 바 숨김
         }
         .sheet(isPresented: $isPresented) {
-            AddUserInfoView(isPresented: $isPresented, isNextView: $isNextView)
+            AddUserInfoView(isPresented: $isPresented)
                 .presentationDetents([.medium])
         }
     }
