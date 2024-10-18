@@ -21,8 +21,17 @@ struct ProfileImageView: View {
                 .clipShape(Circle())
                 .frame(width: size, height: size)
         } else {
-            Circle()
-                .frame(width: size, height: size)
+            ZStack {
+                Circle()
+                    .frame(width: size, height: size)
+                    .foregroundStyle(.accent.opacity(0.6))
+                
+                Image(systemName: "person.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: size * 0.6, height: size * 0.6)
+                    .foregroundColor(.white)
+            }
         }
     }
 }
