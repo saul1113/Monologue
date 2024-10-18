@@ -41,7 +41,7 @@ class AuthManager: ObservableObject {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
-                self.authenticationState = user == nil ? .unauthenticated : .authenticated
+                //self.authenticationState = user == nil ? .unauthenticated : .authenticated
                 self.email = user?.email ?? ""
             }
         }
@@ -114,7 +114,6 @@ extension AuthManager {
     func checkNicknameExists(email: String) async -> Bool {
         let db = Firestore.firestore()
         let docRef = db.collection("User").document(email)
-        
         do {
             let document = try await docRef.getDocument()
             if let data = document.data(), let nickname = data["nickname"] as? String, !nickname.isEmpty {
@@ -122,6 +121,7 @@ extension AuthManager {
             }
         } catch {
             print("Error checking nickname: \(error)")
+            return false
         }
         return false
     }

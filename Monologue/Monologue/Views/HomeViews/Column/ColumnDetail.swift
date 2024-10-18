@@ -68,7 +68,7 @@ struct ColumnDetail: View {
             }
             .onAppear {
                 likesCount = column.likes.count
-                displayedComments = column.comments
+                //displayedComments = column.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -136,6 +136,6 @@ extension Color {
 }
 
 #Preview {
-    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2"], date: Date()))
+    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", email: "Test Email", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], date: Date(), comments: []))
         .environmentObject(ColumnStore())
 }

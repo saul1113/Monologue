@@ -133,16 +133,16 @@ struct FollowListView: View {
                 followers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers)
                 
                 for follower in followers {
-                    memoCount[follower.nickname] = try await userInfoStore.getMemoCount(userNickname: follower.nickname)
-                    columnCount[follower.nickname] = try await userInfoStore.getColumnCount(userNickname: follower.nickname)
+                    memoCount[follower.email] = try await userInfoStore.getMemoCount(email: follower.email)
+                    columnCount[follower.email] = try await userInfoStore.getColumnCount(email: follower.email)
                 }
                 
                 // 팔로잉
                 followings = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings)
                 
                 for following in followings {
-                    memoCount[following.nickname] = try await userInfoStore.getMemoCount(userNickname: following.nickname)
-                    columnCount[following.nickname] = try await userInfoStore.getColumnCount(userNickname: following.nickname)
+                    memoCount[following.email] = try await userInfoStore.getMemoCount(email: following.email)
+                    columnCount[following.email] = try await userInfoStore.getColumnCount(email: following.email)
                 }
             } catch {
                 print("Error loading followers or followings: \(error.localizedDescription)")

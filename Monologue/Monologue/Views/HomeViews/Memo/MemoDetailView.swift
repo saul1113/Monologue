@@ -20,7 +20,7 @@ struct MemoDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    var memo: Memo = Memo(content: "안녕하세요", userNickname: "김종혁", font: "나눔고딕", backgroundImageName: "image1", categories: ["전체"], likes: ["23", "12"], comments: ["ㄴㅇ", "ㄴㅇ"], date: Date(), lineCount: 2)
+    var memo: Memo = Memo(content: "안녕하세요", email: "김종혁", userNickname: "나눔고딕", font: "나눔고딕", backgroundImageName: "아무튼 이미지", categories: ["전체"], likes: ["ㄴㅇ", "ㄴㅇ"], date: Date(), lineCount: 2, comments: [])
     
     var body: some View {
         GeometryReader { geometry in
@@ -76,7 +76,7 @@ struct MemoDetailView: View {
             }
             .onAppear {
                 likesCount = memo.likes.count
-                displayedComments = memo.comments
+                //displayedComments = memo.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -115,7 +115,7 @@ struct MemoDetailView: View {
     func addComment() {
         if !newComment.isEmpty {
             displayedComments.append(newComment)
-            memoStore.updateComment(memoId: memo.id, userNickname: "사용자닉네임") { error in
+            memoStore.updateComment(memoId: memo.id, email: memo.email) { error in
                 if let error = error {
                     print("Error updating comment: \(error.localizedDescription)")
                 } else {
@@ -129,7 +129,7 @@ struct MemoDetailView: View {
     func deleteComment() {
         guard let commentToDelete = selectedComment else { return }
         displayedComments.removeAll { $0 == commentToDelete }
-        memoStore.updateComment(memoId: memo.id, userNickname: commentToDelete) { error in
+        memoStore.updateComment(memoId: memo.id, email: memo.email) { error in
             if let error = error {
                 print("Error deleting comment: \(error.localizedDescription)")
             } else {

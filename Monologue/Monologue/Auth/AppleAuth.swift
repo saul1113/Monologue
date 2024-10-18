@@ -52,7 +52,6 @@ class AppleAuth: ObservableObject {
                     Task { @MainActor in
                         // 로그인 성공 시 이메일 저장 및 화면 전환
                         self.userEmail = authResult?.user.email
-                        
                         // 로그인 상태를 업데이트
                         self.isSignedIn = true
                         

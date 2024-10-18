@@ -190,9 +190,9 @@ struct MyPageView: View {
         do {
             await userInfoStore.loadUserInfo(email: authManager.email)
             
-            if let nickname = userInfoStore.userInfo?.nickname {
-                userMemos = try await memoStore.loadMemosByUserNickname(userNickname: nickname)
-                userColumns = try await columnStore.loadColumnsByUserNickname(userNickname: nickname)
+            if let email = userInfoStore.userInfo?.email {
+                userMemos = try await memoStore.loadMemosByUserEmail(email: email)
+                userColumns = try await columnStore.loadColumnsByUserEmail(email: email)
             }
         } catch {
             print("Error: \(error.localizedDescription)")

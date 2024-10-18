@@ -79,7 +79,7 @@ struct PostRow: View {
                 HStack {
                     Image(systemName: "bubble.right")
                         .foregroundColor(.gray)
-                    Text("\(column.comments.count)")  // 댓글 수 표시
+                    Text("\(String(describing: column.comments?.count))")  // 댓글 수 표시
                         .font(.subheadline)
                 }
                 
