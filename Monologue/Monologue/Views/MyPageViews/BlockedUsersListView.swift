@@ -13,6 +13,9 @@ struct BlockedUsersListView: View {
     @State private var blockedUsers: [UserInfo] = []
     @State private var isActionActive = true // 차단 상태 관리
     
+    @State private var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
+    @State private var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    
     var body: some View {
         ZStack {
             Color(.background)
@@ -32,8 +35,8 @@ struct BlockedUsersListView: View {
                                 UserRow(
                                     profileImageName: blockedUser.profileImageName,
                                     nickname: blockedUser.nickname,
-                                    memoCount: userInfoStore.getMemoCount(userNickname: blockedUser.nickname),
-                                    columnCount: userInfoStore.getMemoCount(userNickname: blockedUser.nickname),
+                                    memoCount: memoCount[blockedUser.nickname] ?? 0,
+                                    columnCount: columnCount[blockedUser.nickname] ?? 0,
                                     activeButtonText: "차단",
                                     inactiveButtonText: "차단 해제",
                                     onActive: {
@@ -68,10 +71,24 @@ struct BlockedUsersListView: View {
             }
         }
         .onAppear {
-            if let userInfo = userInfoStore.userInfo {
-                userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked, completion: { usersInfo, error in
-                    blockedUsers = usersInfo ?? []
-                })
+            Task {
+                await loadBlockedUsersAndCounts()
+            }
+        }
+    }
+    
+    // 블락 유저 목록 및 해당 유저의 메모, 칼럼 개수 로드하는 함수
+    private func loadBlockedUsersAndCounts() async {
+        if let userInfo = userInfoStore.userInfo {
+            do {
+                blockedUsers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked)
+                
+                for blockedUser in blockedUsers {
+                    memoCount[blockedUser.nickname] = try await userInfoStore.getMemoCount(userNickname: blockedUser.nickname)
+                    columnCount[blockedUser.nickname] = try await userInfoStore.getColumnCount(userNickname: blockedUser.nickname)
+                }
+            } catch {
+                print("Error loading blocked users or counts: \(error.localizedDescription)")
             }
         }
     }

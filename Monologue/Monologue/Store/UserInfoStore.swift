@@ -17,6 +17,12 @@ class UserInfoStore: ObservableObject {
     private var columnStore: ColumnStore = .init()
     @Published var userInfo: UserInfo? = nil
     
+    @Published var followers: [UserInfo] = []
+    @Published var followings: [UserInfo] = []
+    
+    @Published var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
+    @Published var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    
     // 로그인 시 사용자(닉네임, 가입날짜) 파베에 추가
     func addUserInfo(_ user: UserInfo, email: String) async {
         do {
@@ -102,56 +108,37 @@ class UserInfoStore: ObservableObject {
         }
     }
     
-    // 팔로워, 팔로잉, 차단 목록 로드
-    func loadUsersInfoByEmail(emails: [String], completion: @escaping ([UserInfo]?, Error?) -> Void) {
+    // 이메일에 따른 유저들의 정보를 배열로 불러오는 함수(유저 목록에 사용)
+    func loadUsersInfoByEmail(emails: [String]) async throws -> [UserInfo] {
         guard !emails.isEmpty else {
-            completion([], nil) // 이메일 배열이 비어있으면 빈 배열을 반환
-            return
+            return []
         }
         
         let db = Firestore.firestore()
         
-        db.collection("User")
+        let querySnapshot = try await db.collection("User")
             .whereField(FieldPath.documentID(), in: emails) // 배열로 변경
-            .getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                
-                var usersInfo: [UserInfo] = []
-                
-                for document in querySnapshot!.documents {
-                    
-                    let userInfo = UserInfo(document: document)
-                    
-                    usersInfo.append(userInfo)
-                }
-                
-                completion(usersInfo, nil)
-            }
+            .getDocuments()
+        
+        var usersInfo: [UserInfo] = []
+        
+        for document in querySnapshot.documents {
+            let userInfo = UserInfo(document: document)
+            usersInfo.append(userInfo)
+        }
+        
+        return usersInfo
     }
     
     // 메모 개수
-    func getMemoCount(userNickname: String) -> Int {
-        var count = 0
-        
-        memoStore.loadMemosByUserNickname(userNickname: userNickname) { memos, error in
-            count = memos?.count ?? 0
-        }
-        
-        return count
+    func getMemoCount(userNickname: String) async throws -> Int {
+        let memos = try await memoStore.loadMemosByUserNickname(userNickname: userNickname)
+        return memos.count
     }
     
     // 칼럼 개수
-    
-    func getColumnCount(userNickname: String) -> Int {
-        var count = 0
-        
-        columnStore.loadColumnsByUserNickname(userNickname: userNickname) { columns, error in
-            count = columns?.count ?? 0
-        }
-        
-        return count
+    func getColumnCount(userNickname: String) async throws -> Int {
+        let columns = try await columnStore.loadColumnsByUserNickname(userNickname: userNickname)
+        return columns.count
     }
 }

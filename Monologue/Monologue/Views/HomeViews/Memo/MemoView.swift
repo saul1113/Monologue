@@ -103,6 +103,7 @@ struct MemoView: View {
             }
         }
         .onChange(of: filters) {
+            print(filters)
             if let tempFilters = filters {
                 filteredMemoStore.setFilteredMemos(filters: tempFilters)
             }

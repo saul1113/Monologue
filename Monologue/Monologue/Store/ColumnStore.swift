@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 class ColumnStore: ObservableObject {
     @Published var columns: [Column] = []
-        
+    
     // MARK: - 칼럼 전체 추가, 수정
     func addColumn(column: Column, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -39,20 +39,20 @@ class ColumnStore: ObservableObject {
         let db = Firestore.firestore()
         
         db.collection("Column").getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                
-                var columns: [Column] = []
-                
-                for document in querySnapshot!.documents {
-                    let column = Column(document: document)
-                    
-                    columns.append(column)
-                }
-                completion(columns, nil)
+            if let error = error {
+                completion(nil, error)
+                return
             }
+            
+            var columns: [Column] = []
+            
+            for document in querySnapshot!.documents {
+                let column = Column(document: document)
+                
+                columns.append(column)
+            }
+            completion(columns, nil)
+        }
     }
     
     // MARK: - 칼럼 유저 닉네임으로 로드
@@ -78,28 +78,45 @@ class ColumnStore: ObservableObject {
             }
     }
     
+    func loadColumnsByUserNickname(userNickname: String) async throws -> [Column] {
+        let db = Firestore.firestore()
+        
+        let querySnapshot = try await db.collection("Column")
+            .whereField("userNickname", isEqualTo: userNickname)
+            .getDocuments()
+        
+        var columns: [Column] = []
+        
+        for document in querySnapshot.documents {
+            let column = Column(document: document)
+            columns.append(column)
+        }
+        
+        return columns
+    }
+    
     // MARK: - 칼럼 카테고리들로 로드
     func loadColumnsByCategories(categories: [String], completion: @escaping ([Column]?, Error?) -> Void) {
         let db = Firestore.firestore()
-            
-            db.collection("Column")
+        
+        db.collection("Column")
             .whereField("categories", arrayContains: categories[0])
-                .getDocuments { (querySnapshot, error) in
-                    if let error = error {
-                        completion(nil, error)
-                        return
-                    }
-                    
-                    var columns: [Column] = []
-                    
-                    for document in querySnapshot!.documents {
-                        let column = Column(document: document)
-                        
-                        columns.append(column)
-                    }
-                    
-                    completion(columns, nil)
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    completion(nil, error)
+                    return
                 }
+                
+                var columns: [Column] = []
+                
+                for document in querySnapshot!.documents {
+                    let column = Column(document: document)
+                    
+                    columns.append(column)
+                }
+                
+                completion(columns, nil)
+            }
     }
     
     // MARK: - 칼럼 아이디로 메모 삭제
@@ -193,7 +210,7 @@ class ColumnStore: ObservableObject {
             }
         }
     }
-
+    
     private func loadColumnComment(columnId: String, completion: @escaping ([String]?, Error?) -> Void) {
         let db = Firestore.firestore()
         
