@@ -11,14 +11,16 @@ import OrderedCollections
 struct MemoDetailView: View {
     @State var memo: Memo
     @EnvironmentObject var memoStore: MemoStore
+    @State var commentStore:CommentStore
     //    @EnvironmentObject var userInfoStore: UserInfoStore
     //    @EnvironmentObject private var authManager:AuthManager
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0  // 좋아요 수를 관리할 상태 변수
     @State private var showAllComments = false  // 전체 댓글 보기 시트를 열기 위한 상태
-    @State private var newComment = ""  // 새 댓글을 저장할 상태
-    @State private var selectedComment: String?
-    @State private var displayedComments: [String] = []  // 현재 보여지는 댓글 리스트
+//    @State private var newComment = ""  // 새 댓글을 저장할 상태
+    @State private var newComment: Comment
+    @State private var selectedComment: Comment?
+    @State private var displayedComments: [Comment] = []  // 현재 보여지는 댓글 리스트
     @State private var showShareSheet: Bool = false  // 공유하기 시트 표시 여부 상태
     @State private var showDeleteSheet: Bool = false  // 삭제하기 시트 표시 여부 상태
     @State private var scrollViewProxy: ScrollViewProxy? // ScrollView 포커싱을 위한 Proxy
@@ -141,15 +143,15 @@ struct MemoDetailView: View {
                                             .resizable()
                                             .frame(width: 30, height: 30)
                                         VStack(alignment: .leading) {
-                                            Text(comment.userNickname)
-                                                .font(.subheadline)
-                                                .bold()
+//                                            Text(comment.userNickname)
+//                                                .font(.subheadline)
+//                                                .bold()
 //                                            Text(comment.date, style: .date)  // 게시 시간
 //                                                .font(.footnote)
 //                                                .foregroundColor(.gray)
-                                            Text(comment.content)
-                                                .font(.caption)
-                                                .foregroundColor(.black)
+//                                            Text(comment.content)
+//                                                .font(.caption)
+//                                                .foregroundColor(.black)
                                         }
                                         Spacer()
                                         Button(action: {
@@ -190,7 +192,7 @@ struct MemoDetailView: View {
                 
                 // MARK: - 댓글 입력창
                 HStack {
-                    TextField("댓글을 입력하세요", text: $newComment, onCommit: {
+                    TextField("댓글을 입력하세요", text: $newComment.content, onCommit: {
                         addComment()  // Enter를 눌렀을 때 댓글 추가
                     })
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -200,12 +202,12 @@ struct MemoDetailView: View {
                     }
                     
                     // 업로드 버튼 (텍스트가 비어있지 않으면 나타남)
-                    if !newComment.isEmpty {
+                    if !newComment.content.isEmpty {
                         Button(action: {
-                            if !newComment.isEmpty {
+                            if !newComment.content.isEmpty {
                                 // 새로운 댓글 추가
                                 addComment()
-                                newComment = ""
+                                newComment.content = ""
                             }
                         }) {
                             Image(systemName: "arrowshape.up.circle.fill")
@@ -263,7 +265,7 @@ struct MemoDetailView: View {
     
     // 댓글을 추가하는 함수
     func addComment() {
-        if !newComment.isEmpty {
+        if !newComment.content.isEmpty {
             // 새로운 댓글을 배열에 추가
             displayedComments.insert(newComment, at: 0)
             
@@ -275,14 +277,15 @@ struct MemoDetailView: View {
                     print("Comment updated successfully.")
                 }
             }
-            newComment = ""
+            // 삭제
+            newComment.content = ""
         }
     }
     func deleteComment() {
         guard let commentToDelete = selectedComment else { return }
         // 클라이언트에서 삭제
-        displayedComments.removeAll { $0 == commentToDelete }
-        memoStore.updateComment(memoId: memo.id, userNickname: commentToDelete) { error in
+        displayedComments.removeAll { $0.id == commentToDelete.id}
+        memoStore.updateComment(memoId: memo.id, userNickname: commentToDelete.userNickname) { error in
             if let error = error {
                 print("Error deleting comment: \(error.localizedDescription)")
             } else {
