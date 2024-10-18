@@ -212,4 +212,6 @@ struct UserProfileView: View {
                                        followings: [],
                                        blocked: [],
                                        likes: []))
+    .environmentObject(MemoStore())
+    .environmentObject(ColumnStore())
 }
