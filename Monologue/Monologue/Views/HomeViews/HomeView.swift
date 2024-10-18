@@ -34,7 +34,7 @@ struct HomeView: View {
     ]
     
     var filteredColumns: [Column] {
-        guard !columnStore.columns.isEmpty else { return [] }
+//        guard !columnStore.columns.isEmpty else { return [] }
         if selectedCategories == ["전체"] {
             columnStore.loadColumn { columns, error in
                 columnStore.columns = columns ?? []
@@ -84,6 +84,7 @@ struct HomeView: View {
                     } else if selectedSegment == "칼럼" {
                         ColumnView(filteredColumns: filteredColumns)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(.horizontal, -16)
                     }
                 }
                 VStack {
@@ -100,11 +101,11 @@ struct HomeView: View {
     }
 }
 
-#Preview {
-    HomeView()
-        .environmentObject(AuthManager())
-        .environmentObject(UserInfoStore())
-        .environmentObject(MemoStore())
-        .environmentObject(ColumnStore())
-        .environmentObject(CommentStore())
-}
+//#Preview {
+//    HomeView()
+//        .environmentObject(AuthManager())
+//        .environmentObject(UserInfoStore())
+//        .environmentObject(MemoStore())
+//        .environmentObject(ColumnStore())
+//        .environmentObject(CommentStore())
+//}
