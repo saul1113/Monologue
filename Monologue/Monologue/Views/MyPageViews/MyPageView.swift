@@ -16,8 +16,6 @@ struct MyPageView: View {
     @State var selectedSegment: String = "메모"
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
-    @State private var memoCount: Int = 0 // 메모 개수
-    @State private var columnCount: Int = 0 // 칼럼 개수
     
     private var sharedString: String = "MONOLOG" // 변경 예정
     
@@ -77,7 +75,7 @@ struct MyPageView: View {
                     HStack(spacing: 20) {
                         HStack {
                             Text("메모")
-                            Text("\(memoCount)") // Memo 개수
+                            Text("\(userMemos.count)") // Memo 개수
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -86,7 +84,7 @@ struct MyPageView: View {
                         
                         HStack {
                             Text("칼럼")
-                            Text("\(columnCount)") // Column 개수
+                            Text("\(userColumns.count)") // Column 개수
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -147,44 +145,57 @@ struct MyPageView: View {
                     
                     CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
                     
-                    if selectedSegment == "메모" {
-                        // 메모 뷰
-                        MemoView(filters: $filters, userMemos: userMemos)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
-                        
-                    } else if selectedSegment == "칼럼" {
-                        // 칼럼 뷰
-                        ColumnView(filteredColumns: userColumns)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
+                    // 버튼 & 스와이프 제스처 사용
+                    GeometryReader { geometry in
+                        HStack(spacing: 0) {
+                            MemoView(filters: $filters, userMemos: userMemos)
+                                .frame(width: geometry.size.width)
+
+                            ColumnView(filteredColumns: userColumns)
+                                .frame(width: geometry.size.width)
+                        }
+                        .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                        .animation(.easeInOut, value: selectedSegment)
+                        .gesture(
+                            DragGesture()
+                                .onEnded { value in
+                                    if value.translation.width > 100 {
+                                        selectedSegment = "메모"
+                                    } else if value.translation.width < -100 {
+                                        selectedSegment = "칼럼"
+                                    }
+                                }
+                        )
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, -16)
                 }
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
             }
             .onAppear {
                 Task {
-                    // 유저의 정보 로드
-                    await userInfoStore.loadUserInfo(email: authManager.email)
-                    
-                    // 유저의 메모 로드 및 메모 수 업데이트
-                    memoStore.loadMemosByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { memos, error in
-                        if let memos = memos {
-                            userMemos = memos
-                            memoCount = memos.count
-                        }
-                    }
-                    
-                    // 유저의 칼럼 로드 및 칼럼 수 업데이트
-                    columnStore.loadColumnsByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { columns, error in
-                        if let columns = columns {
-                            userColumns = columns
-                            columnCount = columns.count
-                        }
+                    // 사용자 인증 상태가 인증 완료 상태인 경우에만 Firestore 데이터 로드
+                    if authManager.authenticationState == .authenticated {
+                        // 유저의 정보 로드
+                         await loadUserContent()
                     }
                 }
             }
+        }
+    }
+    
+    // 유저 정보, 메모, 칼럼 로드 함수
+    private func loadUserContent() async {
+        do {
+            await userInfoStore.loadUserInfo(email: authManager.email)
+            
+            if let nickname = userInfoStore.userInfo?.nickname {
+                userMemos = try await memoStore.loadMemosByUserNickname(userNickname: nickname)
+                userColumns = try await columnStore.loadColumnsByUserNickname(userNickname: nickname)
+            }
+        } catch {
+            print("Error: \(error.localizedDescription)")
         }
     }
 }

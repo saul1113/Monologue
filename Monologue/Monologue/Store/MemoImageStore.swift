@@ -10,6 +10,8 @@ import FirebaseStorage
 import SwiftUI
 
 class MemoImageStore: ObservableObject {
+    private var imageCache = NSCache<NSString, UIImage>()
+    
     @Published var images: [UIImage] = [] // 이미지 이름이 추적이 안됨 -> index로 매칭을 했다.
     
     // 스토리지에 이미지 파일
@@ -29,6 +31,11 @@ class MemoImageStore: ObservableObject {
     }
     
     func loadImage(imageName: String, completion: @escaping (UIImage?) -> Void) {
+        if let cachedImage = imageCache.object(forKey: imageName as NSString) {
+            completion(cachedImage)
+            return
+        }
+        
         let storagRef = Storage.storage().reference(withPath: "img/\(imageName)")
         storagRef.getData(maxSize: 4 * 1024 * 1024) { (data, error) in
             if let error = error {
@@ -44,8 +51,13 @@ class MemoImageStore: ObservableObject {
             self.images.append(tempImage)
             print(tempImage)
             
-            completion(tempImage) // 성공적으로 로드된 이미지 반환
+            self.imageCache.setObject(tempImage, forKey: imageName as NSString)
+            completion(tempImage)
         }
+    }
+    
+    func deleteImageFromCache(imageName: String) {
+        imageCache.removeObject(forKey: imageName as NSString)
     }
 }
 

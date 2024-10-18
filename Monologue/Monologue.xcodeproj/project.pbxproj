@@ -23,6 +23,10 @@
 		8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93F2CBD216C00E5D42A /* MainView.swift */; };
 		8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9402CBD216C00E5D42A /* MyPageView.swift */; };
 		8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9412CBD216C00E5D42A /* PostView.swift */; };
+		8E78FE9F2CC236DD00565C15 /* NanumBarunpenR.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E78FE9E2CC236DD00565C15 /* NanumBarunpenR.otf */; };
+		8E78FEA12CC2373400565C15 /* NanumSquareR.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E78FEA02CC2373400565C15 /* NanumSquareR.otf */; };
+		8E78FEA32CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E78FEA22CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf */; };
+		8E78FEA52CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E78FEA42CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf */; };
 		8E91AED22CBE3739009889D4 /* MemoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E91AED12CBE3739009889D4 /* MemoStore.swift */; };
 		8E91AED42CBE3749009889D4 /* ColumnStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E91AED32CBE3749009889D4 /* ColumnStore.swift */; };
 		8E91AED62CBE3762009889D4 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E91AED52CBE3762009889D4 /* CommentStore.swift */; };
@@ -68,6 +72,11 @@
 		EAC7D8A02CBEDE04008A8074 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D89F2CBEDE04008A8074 /* FirebaseStorageCombine-Community */; };
 		EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */; };
 		EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */; };
+		EB5F803D2CC0DAD60019A863 /* ColumnHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F803C2CC0DAD60019A863 /* ColumnHeaderView.swift */; };
+		EB5F803F2CC0DB620019A863 /* CommentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F803E2CC0DB620019A863 /* CommentListView.swift */; };
+		EB5F80412CC0DBD80019A863 /* CommentTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F80402CC0DBD80019A863 /* CommentTextInputView.swift */; };
+		EB5F80432CC0DCB00019A863 /* CommentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F80422CC0DCB00019A863 /* CommentRowView.swift */; };
+		EB5F80452CC0DEB20019A863 /* LikeCommentButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F80442CC0DEB20019A863 /* LikeCommentButtons.swift */; };
 		EBA90F662CC0195C00710E54 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F652CC0195C00710E54 /* ShareSheetView.swift */; };
 		EBA90F682CC0242F00710E54 /* DeleteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */; };
 		EBA90F6A2CC02CC900710E54 /* ReportReasonSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */; };
@@ -91,6 +100,10 @@
 		8E52D93F2CBD216C00E5D42A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		8E52D9402CBD216C00E5D42A /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		8E52D9412CBD216C00E5D42A /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		8E78FE9E2CC236DD00565C15 /* NanumBarunpenR.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumBarunpenR.otf; sourceTree = "<group>"; };
+		8E78FEA02CC2373400565C15 /* NanumSquareR.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NanumSquareR.otf; sourceTree = "<group>"; };
+		8E78FEA22CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "KoPubWorld Batang_Pro Medium.otf"; sourceTree = "<group>"; };
+		8E78FEA42CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSerifKR-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		8E91AED12CBE3739009889D4 /* MemoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoStore.swift; sourceTree = "<group>"; };
 		8E91AED32CBE3749009889D4 /* ColumnStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnStore.swift; sourceTree = "<group>"; };
 		8E91AED52CBE3762009889D4 /* CommentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentStore.swift; sourceTree = "<group>"; };
@@ -128,6 +141,11 @@
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
 		EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoImageStore.swift; sourceTree = "<group>"; };
 		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
+		EB5F803C2CC0DAD60019A863 /* ColumnHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnHeaderView.swift; sourceTree = "<group>"; };
+		EB5F803E2CC0DB620019A863 /* CommentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentListView.swift; sourceTree = "<group>"; };
+		EB5F80402CC0DBD80019A863 /* CommentTextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTextInputView.swift; sourceTree = "<group>"; };
+		EB5F80422CC0DCB00019A863 /* CommentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRowView.swift; sourceTree = "<group>"; };
+		EB5F80442CC0DEB20019A863 /* LikeCommentButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCommentButtons.swift; sourceTree = "<group>"; };
 		EBA90F652CC0195C00710E54 /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
 		EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSheetView.swift; sourceTree = "<group>"; };
 		EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportReasonSheetView.swift; sourceTree = "<group>"; };
@@ -157,6 +175,7 @@
 		8E52D90D2CBD100A00E5D42A /* Monologue */ = {
 			isa = PBXGroup;
 			children = (
+				8E78FE9D2CC236C700565C15 /* Fonts */,
 				EA50F6132CC00FFF00D468C4 /* Monologue.entitlements */,
 				EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */,
 				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
@@ -189,6 +208,17 @@
 				8E902D8F2CBEC61200562071 /* MyPageViews */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8E78FE9D2CC236C700565C15 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8E78FEA42CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf */,
+				8E78FEA22CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf */,
+				8E78FEA02CC2373400565C15 /* NanumSquareR.otf */,
+				8E78FE9E2CC236DD00565C15 /* NanumBarunpenR.otf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		8E902D8C2CBEC57B00562071 /* LoginViews */ = {
@@ -265,6 +295,11 @@
 			children = (
 				EBB84EC52CBEE06700AC006A /* ColumnView.swift */,
 				EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */,
+				EB5F803C2CC0DAD60019A863 /* ColumnHeaderView.swift */,
+				EB5F803E2CC0DB620019A863 /* CommentListView.swift */,
+				EB5F80402CC0DBD80019A863 /* CommentTextInputView.swift */,
+				EB5F80422CC0DCB00019A863 /* CommentRowView.swift */,
+				EB5F80442CC0DEB20019A863 /* LikeCommentButtons.swift */,
 			);
 			path = Column;
 			sourceTree = "<group>";
@@ -388,6 +423,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E78FEA52CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf in Resources */,
+				8E78FE9F2CC236DD00565C15 /* NanumBarunpenR.otf in Resources */,
+				8E78FEA32CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf in Resources */,
+				8E78FEA12CC2373400565C15 /* NanumSquareR.otf in Resources */,
 				8E52D93C2CBD215600E5D42A /* Assets.xcassets in Resources */,
 				EA50F61B2CC014AB00D468C4 /* GoogleService-Info.plist in Resources */,
 			);
@@ -416,12 +455,14 @@
 				EAC7D86C2CBE2EC1008A8074 /* UserInfoStore.swift in Sources */,
 				8B682BFD2CC237680019617B /* LikeCommentButtons.swift in Sources */,
 				97594F4C2CBFB9B20001B6D2 /* ProfileImageEditView.swift in Sources */,
+				EB5F80452CC0DEB20019A863 /* LikeCommentButtons.swift in Sources */,
 				8EF50D612CBDFD01000CABAA /* AddUserInfoView.swift in Sources */,
 				8EF50D6E2CBE0432000CABAA /* Memo.swift in Sources */,
 				8B1194C32CBFD5C300D9B28B /* SearchView.swift in Sources */,
 				8EF50D722CBE0467000CABAA /* Comment.swift in Sources */,
 				EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */,
 				8E91AED82CBE376B009889D4 /* ComplainStore.swift in Sources */,
+				EB5F80432CC0DCB00019A863 /* CommentRowView.swift in Sources */,
 				8E91AED22CBE3739009889D4 /* MemoStore.swift in Sources */,
 				97594F502CBFE9CA0001B6D2 /* ProfileImageSelectionView.swift in Sources */,
 				8EF50D622CBDFD01000CABAA /* ContentView.swift in Sources */,
@@ -444,15 +485,18 @@
 				97F5E7452CBE3CDC00C98340 /* FollowListView.swift in Sources */,
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				8B682BF52CC2370B0019617B /* MemoHeaderView.swift in Sources */,
+				EB5F80412CC0DBD80019A863 /* CommentTextInputView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
 				97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */,
 				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
 				97594F4E2CBFE6360001B6D2 /* ProfileImageView.swift in Sources */,
 				EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */,
+				EB5F803D2CC0DAD60019A863 /* ColumnHeaderView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
 				BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */,
 				97594F522CC017F00001B6D2 /* NotificationView.swift in Sources */,
+				EB5F803F2CC0DB620019A863 /* CommentListView.swift in Sources */,
 				EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

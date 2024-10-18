@@ -17,6 +17,12 @@ class UserInfoStore: ObservableObject {
     private var columnStore: ColumnStore = .init()
     @Published var userInfo: UserInfo? = nil
     
+    @Published var followers: [UserInfo] = []
+    @Published var followings: [UserInfo] = []
+    
+    @Published var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
+    @Published var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    
     // 로그인 시 사용자(닉네임, 가입날짜) 파베에 추가
     func addUserInfo(_ user: UserInfo, email: String) async {
         do {
@@ -78,7 +84,7 @@ class UserInfoStore: ObservableObject {
             let preferredCategories: [String] = docData["preferredCategories"] as? [String] ?? []
             let profileImageName: String = docData["profileImageName"] as? String ?? ""
             let introduction: String = docData["introduction"] as? String ?? ""
-            let following: [String] = docData["followings"] as? [String] ?? []
+            let followings: [String] = docData["followings"] as? [String] ?? []
             let followers: [String] = docData["followers"] as? [String] ?? []
             let blocked: [String] = docData["blocked"] as? [String] ?? []
             let likes: [String] = docData["likes"] as? [String] ?? []
@@ -90,8 +96,8 @@ class UserInfoStore: ObservableObject {
                 preferredCategories: preferredCategories,
                 profileImageName: profileImageName,
                 introduction: introduction,
-                followers: following,
-                followings: followers,
+                followers: followers,
+                followings: followings,
                 blocked: blocked,
                 likes: likes
             )
@@ -102,56 +108,100 @@ class UserInfoStore: ObservableObject {
         }
     }
     
-    // 팔로워, 팔로잉, 차단 목록 로드
-    func loadUsersInfoByEmail(emails: [String], completion: @escaping ([UserInfo]?, Error?) -> Void) {
+    // 이메일에 따른 유저들의 정보를 배열로 불러오는 함수(유저 목록에 사용)
+    func loadUsersInfoByEmail(emails: [String]) async throws -> [UserInfo] {
         guard !emails.isEmpty else {
-            completion([], nil) // 이메일 배열이 비어있으면 빈 배열을 반환
-            return
+            return []
         }
         
         let db = Firestore.firestore()
         
-        db.collection("User")
+        let querySnapshot = try await db.collection("User")
             .whereField(FieldPath.documentID(), in: emails) // 배열로 변경
-            .getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                
-                var usersInfo: [UserInfo] = []
-                
-                for document in querySnapshot!.documents {
-                    
-                    let userInfo = UserInfo(document: document)
-                    
-                    usersInfo.append(userInfo)
-                }
-                
-                completion(usersInfo, nil)
-            }
+            .getDocuments()
+        
+        var usersInfo: [UserInfo] = []
+        
+        for document in querySnapshot.documents {
+            let userInfo = UserInfo(document: document)
+            usersInfo.append(userInfo)
+        }
+        
+        return usersInfo
     }
     
     // 메모 개수
-    func getMemoCount(userNickname: String) -> Int {
-        var count = 0
-        
-        memoStore.loadMemosByUserNickname(userNickname: userNickname) { memos, error in
-            count = memos?.count ?? 0
-        }
-        
-        return count
+    func getMemoCount(userNickname: String) async throws -> Int {
+        let memos = try await memoStore.loadMemosByUserNickname(userNickname: userNickname)
+        return memos.count
     }
     
     // 칼럼 개수
-    
-    func getColumnCount(userNickname: String) -> Int {
-        var count = 0
-        
-        columnStore.loadColumnsByUserNickname(userNickname: userNickname) { columns, error in
-            count = columns?.count ?? 0
-        }
-        
-        return count
+    func getColumnCount(userNickname: String) async throws -> Int {
+        let columns = try await columnStore.loadColumnsByUserNickname(userNickname: userNickname)
+        return columns.count
     }
+    
+    // MARK: - Follow 관련 로직
+    // 팔로우 로직
+//    func followUser(targetUserEmail: String) async {
+//        guard let currentUserEmail = userInfo?.email else {
+//            return
+//        }
+//
+//        let db = Firestore.firestore()
+//        let currentUserRef = db.collection("User").document(currentUserEmail)
+//        let targetUserRef = db.collection("User").document(targetUserEmail)
+//
+//        do {
+//            _ = try await db.runTransaction { transaction, errorPointer in
+//                // 현재 유저의 followings에 타겟 유저 추가
+//                transaction.updateData([
+//                    "followings": FieldValue.arrayUnion([targetUserEmail])
+//                ], forDocument: currentUserRef)
+//                
+//                // 타겟 유저의 followers에 현재 유저 추가
+//                transaction.updateData([
+//                    "followers": FieldValue.arrayUnion([currentUserEmail])
+//                ], forDocument: targetUserRef)
+//
+//                return nil
+//            }
+//
+//            print("Successfully followed \(targetUserEmail)")
+//        } catch {
+//            print("Error following user: \(error)")
+//        }
+//    }
+    
+    // 언팔로우 로직
+//    func unfollowUser(targetUserEmail: String) async {
+//        guard let currentUserEmail = userInfo?.email else {
+//            return
+//        }
+//
+//        let db = Firestore.firestore()
+//        let currentUserRef = db.collection("User").document(currentUserEmail)
+//        let targetUserRef = db.collection("User").document(targetUserEmail)
+//
+//        do {
+//            _ = try await db.runTransaction { transaction, errorPointer in
+//                // 현재 유저의 followings에서 타겟 유저 제거
+//                transaction.updateData([
+//                    "followings": FieldValue.arrayRemove([targetUserEmail])
+//                ], forDocument: currentUserRef)
+//                
+//                // 타겟 유저의 followers에서 현재 유저 제거
+//                transaction.updateData([
+//                    "followers": FieldValue.arrayRemove([currentUserEmail])
+//                ], forDocument: targetUserRef)
+//
+//                return nil
+//            }
+//
+//            print("Successfully unfollowed \(targetUserEmail)")
+//        } catch {
+//            print("Error unfollowing user: \(error)")
+//        }
+//    }
 }

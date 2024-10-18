@@ -52,7 +52,7 @@ struct PostRow: View {
                     .frame(width: 15, height: 15)
                     .clipShape(Circle())
                 
-                Text("임시 닉네임")
+                Text(column.userNickname)
                     .font(.caption2)
                     .foregroundStyle(.black)
                     .font(Font.headline.weight(.bold))
