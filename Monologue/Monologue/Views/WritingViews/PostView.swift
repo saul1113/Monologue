@@ -61,7 +61,7 @@ struct PostView: View {
                                         }
                                     }
                                     
-                                    memoImageStore.UploadImage(image: .EB_16_DFE_8_47_DF_4_F_86_B_4_F_9_476_A_05_CBB_390, imageName: newMemo.id)
+                                    memoImageStore.UploadImage(image: .jery1, imageName: newMemo.id)
                                     
                                 } else if selectedSegment == "칼럼" {
                                     let newColumn = Column(
