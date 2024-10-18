@@ -79,14 +79,21 @@ struct MemoView: View {
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
                         NavigationLink(destination: MemoDetailView(memo: filteredMemoStore.filteredMemos[index])) {
                             ZStack {
-                                let image = filteredMemoStore.images[index]
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: UIScreen.main.bounds.width / 2 - 24, height: nil)
-                                    .clipped()
-                                    .cornerRadius(12)
-                                    .scaledToFit()                            }
+                                VStack(alignment: .trailing) {
+                                    let image = filteredMemoStore.images[index]
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: UIScreen.main.bounds.width / 2 - 24, height: nil)
+                                        .clipped()
+                                        .cornerRadius(12)
+                                    .scaledToFit()
+                                    Text("\(filteredMemoStore.filteredMemos[index].userNickname)")
+                                        .font(.caption2)
+                                        .padding(.trailing, 8)
+                                }
+                                
+                            }
                         }
                     }
                 }
