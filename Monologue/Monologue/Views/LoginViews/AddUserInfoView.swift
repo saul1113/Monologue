@@ -27,7 +27,7 @@ struct AddUserInfoView: View {
         "기타": false,
     ]
     @Binding var isPresented: Bool
-    @Binding var isNextView: Bool
+//    @Binding var isNextView: Bool
     
     var body: some View {
         NavigationStack {
@@ -94,7 +94,7 @@ struct AddUserInfoView: View {
                             } else {
                                 nicknameDuplicateWarning = false
                                 isPresented = false
-                                isNextView = true
+//                                isNextView = true
                                 
                                 // 선택된 카테고리 가져오기
                                 let selectedCategories = dict
@@ -114,6 +114,7 @@ struct AddUserInfoView: View {
                                 )
                                 
                                 await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                                authManager.authenticationState = .authenticated // 메인뷰로 이동
                             }
                         }
                     }
@@ -132,7 +133,7 @@ struct AddUserInfoView: View {
 }
 
 #Preview {
-    AddUserInfoView(isPresented: .constant(false), isNextView: .constant(false))
+    AddUserInfoView(isPresented: .constant(false))
         .environmentObject(AuthManager())
         .environmentObject(UserInfoStore())
         .environmentObject(MemoStore())

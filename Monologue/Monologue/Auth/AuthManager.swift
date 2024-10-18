@@ -1,23 +1,13 @@
-//
-//  AuthManager.swift
-//  Monologue
-//
-//  Created by 김종혁 on 10/14/24.
-//
-
 import Foundation
-import Observation
-
-import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
-import GoogleSignInSwift
 import FirebaseFirestore
+import FirebaseCore
 
 enum AuthenticationState {
-    case unauthenticated
-    case authenticating
-    case authenticated
+    case unauthenticated // 로그인 전
+    case authenticating  // 로그인 중
+    case authenticated   // 로그인 후
 }
 
 enum AuthenticationFlow {
@@ -31,10 +21,8 @@ class AuthManager: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
-    
     @Published var flow: AuthenticationFlow = .login
-    
-    @Published var isValid: Bool  = false
+    @Published var isValid: Bool = false
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var errorMessage: String = ""
     @Published var user: User?
@@ -44,6 +32,7 @@ class AuthManager: ObservableObject {
     
     init() {
         registerAuthStateHandler()
+
     }
     
     private var authStateHandler: AuthStateDidChangeListenerHandle?
@@ -53,10 +42,7 @@ class AuthManager: ObservableObject {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
                 self.authenticationState = user == nil ? .unauthenticated : .authenticated
-                self.displayName = user?.displayName ?? ""
-                self.photoURL = user?.photoURL
-                self.email = user?.email ?? "" // 사용자 이메일 설정
-                
+                self.email = user?.email ?? ""
             }
         }
     }
@@ -65,23 +51,19 @@ class AuthManager: ObservableObject {
 extension AuthManager {
     func signOut() {
         do {
-//            try Auth.auth().signOut()
-
-            self.authenticationState = .unauthenticated  // 상태를 로그아웃 상태로 업데이트
-            print("로그아웃 성공")
+            try Auth.auth().signOut()
         }
-//        catch {
-//            print("Error signing out: \(error.localizedDescription)")
-//            self.errorMessage = error.localizedDescription
-//        }
+        catch {
+            print(error)
+            errorMessage = error.localizedDescription
+        }
     }
     
     func deleteAccount() async -> Bool {
         do {
             try await user?.delete()
             return true
-        }
-        catch {
+        } catch {
             errorMessage = error.localizedDescription
             return false
         }
@@ -104,7 +86,6 @@ extension AuthManager {
               let window = windowScene.windows.first,
               let rootViewController = window.rootViewController else {
             print("There is no root view controller!")
-            
             return false
         }
         
@@ -121,15 +102,6 @@ extension AuthManager {
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
-            
-            self.userID = firebaseUser.uid
-            
-            self.email = firebaseUser.email ?? ""  // 구글 로그인하면 이메일 설정
-            
-            //            authenticationState = .authenticated
-            //            return true
-            
-//            return await checkNicknameExists(email: self.email)
             return true
         }
         catch {
@@ -139,7 +111,6 @@ extension AuthManager {
         }
     }
     
-    // 처음 가입할 때 닉네임 존재 여부 확인 메서드 추가 -> 있다면 바로 로그인, 없다면 가입으로
     func checkNicknameExists(email: String) async -> Bool {
         let db = Firestore.firestore()
         let docRef = db.collection("User").document(email)
@@ -155,19 +126,16 @@ extension AuthManager {
         return false
     }
     
-    // 가입할 때, 닉네임 입력 시 중복된 것이 있는 지 확인 -> 중복이라면 다른 닉네임 입력
     func NicknameDuplicate(nickname: String) async -> Bool {
         let db = Firestore.firestore()
         let query = db.collection("User").whereField("nickname", isEqualTo: nickname)
         
         do {
             let snapshot = try await query.getDocuments()
-            return !snapshot.documents.isEmpty // 중복된 닉네임이 있으면 true
+            return !snapshot.documents.isEmpty
         } catch {
             print("Error checking nickname: \(error)")
             return false
         }
     }
 }
-
-

@@ -163,7 +163,11 @@ struct MyPageView: View {
             }
             .onAppear {
                 Task {
-                    await loadUserContent()
+                    // 사용자 인증 상태가 인증 완료 상태인 경우에만 Firestore 데이터 로드
+                    if authManager.authenticationState == .authenticated {
+                        // 유저의 정보 로드
+                         await loadUserContent()
+                    }
                 }
             }
         }
