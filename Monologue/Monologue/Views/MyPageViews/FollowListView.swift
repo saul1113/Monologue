@@ -36,7 +36,7 @@ struct FollowListView: View {
             ScrollView {
                 VStack {
                     if selectedSegment == "팔로워" {
-                        // 팔로워 뷰
+                        // MARK: - 팔로워 뷰
                         if followers.isEmpty {
                             Text("팔로워가 없습니다.")
                         } else {
@@ -53,18 +53,22 @@ struct FollowListView: View {
                                         inactiveButtonText: "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
-                                            print("\(follower.nickname) 다시 팔로우")
+//                                            Task {
+//                                                await userInfoStore.followUser(targetUserEmail: follower.email)
+//                                            }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
-                                            print("\(follower.nickname) 언팔")
+//                                            Task {
+//                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
+//                                            }
                                         }
                                     )
                                 }
                             }
                         }
                     } else {
-                        // 팔로잉 뷰
+                        // MARK: - 팔로잉 뷰
                         if followings.isEmpty {
                             Text("팔로잉이 없습니다.")
                         } else {
@@ -81,11 +85,15 @@ struct FollowListView: View {
                                         inactiveButtonText: "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
-                                            print("\(following.nickname) 다시 팔로우")
+//                                            Task {
+//                                                await userInfoStore.followUser(targetUserEmail: follower.email)
+//                                            }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
-                                            print("\(following.nickname) 언팔")
+//                                            Task {
+//                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
+//                                            }
                                         }
                                     )
                                 }

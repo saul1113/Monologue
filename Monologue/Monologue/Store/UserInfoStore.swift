@@ -84,7 +84,7 @@ class UserInfoStore: ObservableObject {
             let preferredCategories: [String] = docData["preferredCategories"] as? [String] ?? []
             let profileImageName: String = docData["profileImageName"] as? String ?? ""
             let introduction: String = docData["introduction"] as? String ?? ""
-            let following: [String] = docData["followings"] as? [String] ?? []
+            let followings: [String] = docData["followings"] as? [String] ?? []
             let followers: [String] = docData["followers"] as? [String] ?? []
             let blocked: [String] = docData["blocked"] as? [String] ?? []
             let likes: [String] = docData["likes"] as? [String] ?? []
@@ -96,8 +96,8 @@ class UserInfoStore: ObservableObject {
                 preferredCategories: preferredCategories,
                 profileImageName: profileImageName,
                 introduction: introduction,
-                followers: following,
-                followings: followers,
+                followers: followers,
+                followings: followings,
                 blocked: blocked,
                 likes: likes
             )
@@ -141,4 +141,67 @@ class UserInfoStore: ObservableObject {
         let columns = try await columnStore.loadColumnsByUserNickname(userNickname: userNickname)
         return columns.count
     }
+    
+    // MARK: - Follow 관련 로직
+    // 팔로우 로직
+//    func followUser(targetUserEmail: String) async {
+//        guard let currentUserEmail = userInfo?.email else {
+//            return
+//        }
+//
+//        let db = Firestore.firestore()
+//        let currentUserRef = db.collection("User").document(currentUserEmail)
+//        let targetUserRef = db.collection("User").document(targetUserEmail)
+//
+//        do {
+//            _ = try await db.runTransaction { transaction, errorPointer in
+//                // 현재 유저의 followings에 타겟 유저 추가
+//                transaction.updateData([
+//                    "followings": FieldValue.arrayUnion([targetUserEmail])
+//                ], forDocument: currentUserRef)
+//                
+//                // 타겟 유저의 followers에 현재 유저 추가
+//                transaction.updateData([
+//                    "followers": FieldValue.arrayUnion([currentUserEmail])
+//                ], forDocument: targetUserRef)
+//
+//                return nil
+//            }
+//
+//            print("Successfully followed \(targetUserEmail)")
+//        } catch {
+//            print("Error following user: \(error)")
+//        }
+//    }
+    
+    // 언팔로우 로직
+//    func unfollowUser(targetUserEmail: String) async {
+//        guard let currentUserEmail = userInfo?.email else {
+//            return
+//        }
+//
+//        let db = Firestore.firestore()
+//        let currentUserRef = db.collection("User").document(currentUserEmail)
+//        let targetUserRef = db.collection("User").document(targetUserEmail)
+//
+//        do {
+//            _ = try await db.runTransaction { transaction, errorPointer in
+//                // 현재 유저의 followings에서 타겟 유저 제거
+//                transaction.updateData([
+//                    "followings": FieldValue.arrayRemove([targetUserEmail])
+//                ], forDocument: currentUserRef)
+//                
+//                // 타겟 유저의 followers에서 현재 유저 제거
+//                transaction.updateData([
+//                    "followers": FieldValue.arrayRemove([currentUserEmail])
+//                ], forDocument: targetUserRef)
+//
+//                return nil
+//            }
+//
+//            print("Successfully unfollowed \(targetUserEmail)")
+//        } catch {
+//            print("Error unfollowing user: \(error)")
+//        }
+//    }
 }
