@@ -6,29 +6,29 @@
 //
 
 import SwiftUI
-import OrderedCollections
-
 
 struct MemoWritingView: View {
     @Binding var text: String
     @Binding var selectedFont: String
-    @Binding var selectedMemoCategories: [String] // Multiple selection
+    @Binding var selectedMemoCategories: [String]
     @Binding var selectedBackgroundImageName: String
     @Binding var lineCount: Int
-    
+
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
-    @EnvironmentObject private var authManager:AuthManager
-    
+    @EnvironmentObject private var authManager: AuthManager
+
     let rows = [GridItem(.fixed(50))]
     
     let placeholder: String = "문장을 입력해 주세요."
     let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
     let categoryOptions = ["오늘의 주제", "에세이", "사랑", "자연", "시", "자기계발", "추억", "소설", "SF", "IT", "기타"]
     let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"]
+
+    let lineHeight: CGFloat = 24
     
-    let lineHeight: CGFloat = 24 // 라인 높이 정의
-    
+    // FocusState 변수를 선언하여 TextEditor의 포커스 상태를 추적
+    @FocusState private var isTextEditorFocused: Bool
     
     var body: some View {
         ScrollView {
@@ -39,7 +39,7 @@ struct MemoWritingView: View {
                             Image(selectedBackgroundImageName)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(maxWidth: .infinity ,maxHeight: 500)
+                                .frame(maxWidth: .infinity, maxHeight: 500)
                                 .cornerRadius(8)
                                 .clipped()
                             
@@ -48,8 +48,9 @@ struct MemoWritingView: View {
                                     .font(.system(.title2, design: .default, weight: .regular))
                                     .scrollContentBackground(.hidden)
                                     .background(Color.white.opacity(0.8))
-                                    .frame(maxWidth: .infinity ,maxHeight: 500)
+                                    .frame(maxWidth: .infinity, maxHeight: 500)
                                     .cornerRadius(8)
+                                    .focused($isTextEditorFocused) // TextEditor에 포커스 상태 연결
                                     .overlay {
                                         Text(placeholder)
                                             .font(.title2)
@@ -73,7 +74,6 @@ struct MemoWritingView: View {
                     .padding(.bottom, -5)
                     .padding(.horizontal, 16)
                     
-                    
                     HStack {
                         HStack(spacing: 10) {
                             Image(systemName: "a.square")
@@ -89,12 +89,12 @@ struct MemoWritingView: View {
                                     ForEach(fontOptions, id: \.self) { font in
                                         FontButton(title: font, isSelected: selectedFont == font) {
                                             selectedFont = font
+                                        } onFocusChange: {
+                                            isTextEditorFocused = false // 포커스를 해제하여 키보드를 내리기
                                         }
                                     }
                                     .padding(.horizontal, 2)
                                 }
-                                
-                                
                             }
                         }
                     }
@@ -116,13 +116,14 @@ struct MemoWritingView: View {
                                     ForEach(backgroundImageNames, id: \.self) { imageName in
                                         BackgroundButton(imageName: imageName) {
                                             selectedBackgroundImageName = imageName
+                                        } onFocusChange: {
+                                            isTextEditorFocused = false
                                         }
                                     }
                                     .padding(.horizontal, 2)
                                 }
                             }
                         }
-                        
                     }
                     .padding(.leading, 16)
                     
@@ -146,6 +147,8 @@ struct MemoWritingView: View {
                                             } else {
                                                 selectedMemoCategories.append(category)
                                             }
+                                        } onFocusChange: {
+                                            isTextEditorFocused = false
                                         }
                                         .padding(.horizontal, 2)
                                     }
@@ -155,39 +158,44 @@ struct MemoWritingView: View {
                     }
                     .padding(.leading, 16)
                 }
-                
-                
+            }
+            .contentShape(Rectangle()) // 전체 뷰가 터치 가능하도록 설정
+            .onTapGesture {
+                isTextEditorFocused = false // 다른 곳을 클릭하면 포커스 해제
+            }
+        }
+        .toolbar {
+            // 키보드 위에 '완료' 버튼 추가
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                Button("완료") {
+                    isTextEditorFocused = false // 키보드 숨기기
+                }
             }
         }
     }
+    
     private func calculateLineCount(in width: CGFloat) {
         let size = CGSize(width: width, height: .infinity)
-        
-        // 텍스트 속성 설정 (현재 선택된 폰트에 맞게)
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont(name: selectedFont, size: 17) ?? UIFont.systemFont(ofSize: 17)
         ]
-        
-        // 텍스트 높이 계산
         let textHeight = (text as NSString).boundingRect(with: size, options: [.usesLineFragmentOrigin], attributes: attributes, context: nil).height
-        
-        // 라인 수 계산
         lineCount = Int(ceil(textHeight / lineHeight))
     }
-    
-    
-    
 }
-
-
 
 struct FontButton: View {
     var title: String
     var isSelected: Bool
     var action: () -> Void
+    var onFocusChange: () -> Void // 포커스 상태 변경을 위한 클로저 추가
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            onFocusChange() // 포커스 상태 변경 호출
+            action() // 기존의 action 실행
+        }) {
             Text(title)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(isSelected ? .white : .brown)
@@ -205,10 +213,14 @@ struct FontButton: View {
 struct BackgroundButton: View {
     var imageName: String
     var action: () -> Void
+    var onFocusChange: () -> Void // 포커스 상태 변경을 위한 클로저 추가
     
     var body: some View {
-        Button(action: action) {
-            Image(imageName) 
+        Button(action: {
+            onFocusChange()
+            action()
+        }) {
+            Image(imageName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 70, height: 30)
@@ -221,9 +233,13 @@ struct CategoryMemoButton: View {
     var title: String
     var isSelected: Bool
     var action: () -> Void
+    var onFocusChange: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            onFocusChange()
+            action()
+        }) {
             Text(title)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(isSelected ? .white : .brown)

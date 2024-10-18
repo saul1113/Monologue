@@ -21,8 +21,8 @@ struct PostView: View {
     @State private var selectedBackgroundImageName: String = "jery1"
     
     @State private var title: String = ""
-    @State private var selectedMemoCategories: [String] = []
-    @State private var selectedColumnCategories: [String] = []
+    @State private var selectedMemoCategories: [String] = ["오늘의 주제"]
+    @State private var selectedColumnCategories: [String] = ["오늘의 주제"]
     @State private var lineCount: Int = 0
     
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
@@ -129,8 +129,8 @@ struct PostView: View {
         }
         .onChange(of: selectedSegment) { newSegment in
             text = ""
-            selectedMemoCategories = []
-            selectedColumnCategories = []
+            selectedMemoCategories = ["오늘의 주제"]
+            selectedColumnCategories = ["오늘의 주제"]
             
             if newSegment == "메모" {
                 selectedFont = "기본서체"
@@ -140,9 +140,10 @@ struct PostView: View {
     }
     
     private func restFields() {
+        title = ""
         text = ""
-        selectedMemoCategories = []
-        selectedColumnCategories = []
+        selectedMemoCategories = ["오늘의 주제"]
+        selectedColumnCategories = ["오늘의 주제"]
         
         if selectedSegment == "메모" {
             selectedFont = "기본서체"
