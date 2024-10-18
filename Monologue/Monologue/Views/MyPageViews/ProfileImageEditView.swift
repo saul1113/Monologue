@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ProfileImageEditView: View {
-    @Environment(\.dismiss) private var dismiss
     @Binding var selectedImageName: String
 
     var body: some View {
