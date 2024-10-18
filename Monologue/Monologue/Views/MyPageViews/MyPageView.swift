@@ -150,18 +150,18 @@ struct MyPageView: View {
                         HStack(spacing: 0) {
                             MemoView(filters: $filters, userMemos: userMemos)
                                 .frame(width: geometry.size.width)
-
+                            
                             ColumnView(filteredColumns: userColumns)
                                 .frame(width: geometry.size.width)
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
                         .animation(.easeInOut, value: selectedSegment)
                         .gesture(
-                            DragGesture()
-                                .onEnded { value in
-                                    if value.translation.width > 100 {
+                            DragGesture(minimumDistance: 35)
+                                .onChanged { value in
+                                    if value.translation.width > 0 {
                                         selectedSegment = "메모"
-                                    } else if value.translation.width < -100 {
+                                    } else if value.translation.width < 0 {
                                         selectedSegment = "칼럼"
                                     }
                                 }

@@ -145,11 +145,11 @@ struct UserProfileView: View {
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
                         .animation(.easeInOut, value: selectedSegment)
                         .gesture(
-                            DragGesture()
-                                .onEnded { value in
-                                    if value.translation.width > 100 {
+                            DragGesture(minimumDistance: 35)
+                                .onChanged { value in
+                                    if value.translation.width > 0 {
                                         selectedSegment = "메모"
-                                    } else if value.translation.width < -100 {
+                                    } else if value.translation.width < 0 {
                                         selectedSegment = "칼럼"
                                     }
                                 }
