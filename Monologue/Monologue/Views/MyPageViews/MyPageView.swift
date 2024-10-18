@@ -17,7 +17,7 @@ struct MyPageView: View {
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     
-    private var sharedString: String = "MONOLOG" // 변경 예정
+    private let sharedImage: Image = Image(.appLogo)
     
     @State var filters: [String]? = nil
     
@@ -132,7 +132,10 @@ struct MyPageView: View {
                                 )
                         }
                         
-                        ShareLink(item: sharedString) {
+                        ShareLink(
+                            item: sharedImage,
+                            preview: SharePreview(userInfoStore.userInfo?.nickname ?? "", image: sharedImage)
+                        ) {
                             Text("프로필 공유")
                                 .font(.system(size: 15))
                                 .frame(maxWidth: .infinity, minHeight: 30)
