@@ -19,10 +19,6 @@ struct LoginView: View {
     
     var body: some View {
         NavigationStack {
-            switch authManager.authenticationState {
-            case .authenticated:
-                MainView()
-            case .unauthenticated, .authenticating:
                 ZStack {
                     Color(.background).ignoresSafeArea()
                     
@@ -43,7 +39,6 @@ struct LoginView: View {
                     }
                 }
                 .navigationBarHidden(true)  // 네비게이션 바 숨김
-            }
         }
         .sheet(isPresented: $isPresented) {
             AddUserInfoView(isPresented: $isPresented)

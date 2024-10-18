@@ -165,22 +165,25 @@ struct MyPageView: View {
             }
             .onAppear {
                 Task {
-                    // 유저의 정보 로드
-                    await userInfoStore.loadUserInfo(email: authManager.email)
-                    
-                    // 유저의 메모 로드 및 메모 수 업데이트
-                    memoStore.loadMemosByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { memos, error in
-                        if let memos = memos {
-                            userMemos = memos
-                            memoCount = memos.count
+                    // 사용자 인증 상태가 인증 완료 상태인 경우에만 Firestore 데이터 로드
+                    if authManager.authenticationState == .authenticated {
+                        // 유저의 정보 로드
+                        await userInfoStore.loadUserInfo(email: authManager.email)
+                        
+                        // 유저의 메모 로드 및 메모 수 업데이트
+                        memoStore.loadMemosByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { memos, error in
+                            if let memos = memos {
+                                userMemos = memos
+                                memoCount = memos.count
+                            }
                         }
-                    }
-                    
-                    // 유저의 칼럼 로드 및 칼럼 수 업데이트
-                    columnStore.loadColumnsByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { columns, error in
-                        if let columns = columns {
-                            userColumns = columns
-                            columnCount = columns.count
+                        
+                        // 유저의 칼럼 로드 및 칼럼 수 업데이트
+                        columnStore.loadColumnsByUserNickname(userNickname: userInfoStore.userInfo?.nickname ?? "") { columns, error in
+                            if let columns = columns {
+                                userColumns = columns
+                                columnCount = columns.count
+                            }
                         }
                     }
                 }

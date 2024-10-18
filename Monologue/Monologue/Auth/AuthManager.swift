@@ -5,9 +5,9 @@ import FirebaseFirestore
 import FirebaseCore
 
 enum AuthenticationState {
-    case unauthenticated
-    case authenticating
-    case authenticated
+    case unauthenticated // 로그인 전
+    case authenticating  // 로그인 중
+    case authenticated   // 로그인 후
 }
 
 enum AuthenticationFlow {
@@ -31,19 +31,19 @@ class AuthManager: ObservableObject {
     @Published var userID: String = ""
     
     init() {
-//        registerAuthStateHandler()
+        registerAuthStateHandler()
+
     }
     
     private var authStateHandler: AuthStateDidChangeListenerHandle?
     
     func registerAuthStateHandler() {
-        authStateHandler = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
-            guard let self = self else { return }
-            self.user = user
-            self.authenticationState = user == nil ? .unauthenticated : .authenticated
-            self.displayName = user?.displayName ?? ""
-            self.photoURL = user?.photoURL
-            self.email = user?.email ?? ""
+        if authStateHandler == nil {
+            authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
+                self.user = user
+                self.authenticationState = user == nil ? .unauthenticated : .authenticated
+                self.email = user?.email ?? ""
+            }
         }
     }
 }
@@ -52,11 +52,10 @@ extension AuthManager {
     func signOut() {
         do {
             try Auth.auth().signOut()
-            self.authenticationState = .unauthenticated
-            print("로그아웃 성공")
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
-            self.errorMessage = error.localizedDescription
+        }
+        catch {
+            print(error)
+            errorMessage = error.localizedDescription
         }
     }
     
@@ -80,7 +79,6 @@ extension AuthManager {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
             fatalError("No client ID found in Firebase configuration")
         }
-        
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
         
@@ -93,24 +91,20 @@ extension AuthManager {
         
         do {
             let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+            
             let user = userAuthentication.user
-            guard let idToken = user.idToken else {
-                throw AuthenticationError.tokenError(message: "ID token missing")
-            }
+            guard let idToken = user.idToken else { throw AuthenticationError.tokenError(message: "ID token missing") }
             let accessToken = user.accessToken
             
-            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString,
+                                                           accessToken: accessToken.tokenString)
             
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
-            
-            self.userID = firebaseUser.uid
-            self.email = firebaseUser.email ?? ""
-//            self.authenticationState = .authenticated //로그인 하는 순간부터 바로 로그인 
-            
             return true
-        } catch {
+        }
+        catch {
             print(error.localizedDescription)
             self.errorMessage = error.localizedDescription
             return false
