@@ -37,6 +37,7 @@ struct MonologueApp: App {
     var body: some Scene {
         WindowGroup {
 //            HomeView()
+//            MemoDetailView()
 //            SearchView()
             ContentView()
                 .environmentObject(authStore)

@@ -31,7 +31,6 @@ struct SearchView: View {
         "시인", "한강 작가", "채식주의자", "흰", "문인", "사랑의 기술", "철학", "율리시스 무어", "카프카", "바퀴벌레", "존재적 사랑"
     ]
     
-//    let productList: [String] = []
     var filteredSuggestions: [String] {
         let allContents = (memoStore.memos.map { $0.content } + columnStore.columns.map { $0.content }).joined(separator: " ")
         let allWords = Set(allContents.components(separatedBy: .whitespacesAndNewlines))
