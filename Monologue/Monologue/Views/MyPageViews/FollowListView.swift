@@ -9,9 +9,7 @@ import SwiftUI
 
 struct FollowListView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
-    @EnvironmentObject private var memoStore: MemoStore
-    @EnvironmentObject private var columnStore: ColumnStore
-    
+
     @Environment(\.dismiss) private var dismiss
     @State private var followers: [UserInfo] = []
     @State private var followings: [UserInfo] = []
@@ -148,10 +146,6 @@ struct FollowListView: View {
 #Preview {
     NavigationStack {
         FollowListView(selectedSegment: "팔로워")
-            .environmentObject(AuthManager())
             .environmentObject(UserInfoStore())
-            .environmentObject(MemoStore())
-            .environmentObject(ColumnStore())
-            .environmentObject(CommentStore())
     }
 }
