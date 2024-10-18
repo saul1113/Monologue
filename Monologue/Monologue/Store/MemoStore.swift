@@ -13,6 +13,7 @@ import FirebaseFirestore
 class MemoStore: ObservableObject {
     @Published var memos: [Memo] = []
     @Published var filterMemos: [Memo] = []
+    private var memoImageStore: MemoImageStore = .init()
     
     // MARK: - 메모 전체 추가, 수정
     func addMemo(memo: Memo, completion: @escaping (Error?) -> Void) {
@@ -78,17 +79,22 @@ class MemoStore: ObservableObject {
     func loadMemos() async throws -> [Memo] {
         let db = Firestore.firestore()
         
-        let querySnapshot = try await db.collection("Memo").getDocuments()
-        
-        var memos: [Memo] = []
-        
-        for document in querySnapshot.documents {
-            let memo = Memo(document: document)
-            memos.append(memo)
+        do {
+            let querySnapshot = try await db.collection("Memo").getDocuments()
+            
+            var memos: [Memo] = []
+            
+            for document in querySnapshot.documents {
+                let memo = Memo(document: document)
+                memos.append(memo)
+            }
+            
+            self.memos = memos
+            return memos
+        } catch {
+            print("loadMemos error: \(error.localizedDescription)")
+            throw error
         }
-        
-        self.memos = memos
-        return memos
     }
     
     
@@ -189,7 +195,15 @@ class MemoStore: ObservableObject {
     func deleteMemo(memoId: String) async throws {
         let db = Firestore.firestore()
         
-        try await db.collection("Memo").document(memoId).delete()
+        do {
+            try await db.collection("Memo").document(memoId).delete()
+            self.memoImageStore.deleteImageFromCache(imageName: memoId)
+            self.memos.removeAll { $0.id == memoId }
+        } catch {
+            print("deleteMemo error: \(error.localizedDescription)")
+            throw error
+        }
+        
     }
     
     // MARK: - 좋아요 수정

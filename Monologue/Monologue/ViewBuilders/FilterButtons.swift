@@ -18,7 +18,11 @@ func categoryView(dict: Binding<OrderedDictionary<String, Bool>>) -> some View {
                         for innerIndex in 1..<dict.wrappedValue.elements.count {
                             dict.wrappedValue[dict.wrappedValue.elements[innerIndex].key]? = false
                         }
-                        dict.wrappedValue[dict.wrappedValue.elements[index].key]?.toggle()
+                        
+                        if !dict.wrappedValue[dict.wrappedValue.elements[0].key]! {
+                            dict.wrappedValue[dict.wrappedValue.elements[index].key]?.toggle()
+                        }
+                        
                     } else {
                         if dict.wrappedValue[dict.wrappedValue.elements[0].key]! {
                             dict.wrappedValue[dict.wrappedValue.elements[0].key]? = false
@@ -26,6 +30,10 @@ func categoryView(dict: Binding<OrderedDictionary<String, Bool>>) -> some View {
                         
                         if let firstValue = dict.wrappedValue[dict.wrappedValue.elements[0].key], !firstValue {
                             dict.wrappedValue[dict.wrappedValue.elements[index].key]?.toggle()
+                            
+                            if dict.wrappedValue.elements.filter({ $0.value == true }).count == 0 {
+                                dict.wrappedValue[dict.wrappedValue.elements[0].key]? = true
+                            }
                         }
                     }
                 } label: {
