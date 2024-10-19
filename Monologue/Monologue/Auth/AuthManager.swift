@@ -41,7 +41,7 @@ class AuthManager: ObservableObject {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
-                //self.authenticationState = user == nil ? .unauthenticated : .authenticated
+                self.authenticationState = user == nil ? .unauthenticated : .authenticated
                 self.email = user?.email ?? ""
             }
         }
@@ -101,6 +101,8 @@ extension AuthManager {
             
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
+            
+            self.userID = "\(firebaseUser.uid)"
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
             return true
         }
