@@ -42,7 +42,7 @@ struct HomeView: View {
                 
                 VStack(spacing: 0) {
                     TopBarView(searchText: $searchText, isSearching: $isSearching, selectedSegment: $selectedSegment)
-                    .transition(.move(edge: .top))
+                        .transition(.move(edge: .top))
                     
                     // 필터 버튼
                     categoryView(dict: $dict)
@@ -57,14 +57,25 @@ struct HomeView: View {
                                     dict[key] = (key == "전체")
                                 }
                             }
+                            
+                            if selectedCategories == ["전체"] {
+                                Task {
+                                    self.filteredColumns = try await columnStore.loadColumn()
+                                }
+                            } else {
+                                Task {
+                                    self.filteredColumns = try await columnStore.loadColumn().filter { column in
+                                        column.categories.contains { selectedCategories!.contains($0) }
+                                    }
+                                }
+                            }
                         }
-                    
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
                             MemoView(filters: $selectedCategories)
                                 .frame(width: geometry.size.width)
                                 .clipped()
-
+                            
                             ColumnView(filteredColumns: $filteredColumns)
                                 .frame(width: geometry.size.width)
                                 .clipped()
@@ -95,17 +106,8 @@ struct HomeView: View {
         .onAppear {
             UIScrollView.appearance().bounces = true
             
-            if selectedCategories == ["전체"] {
-                Task {
-                    self.filteredColumns = try await columnStore.loadColumn()
-                }
-            } else {
-                Task {
-                    self.filteredColumns = try await columnStore.loadColumn().filter { column in
-                        column.categories.contains { selectedCategories!.contains($0) }
-                    }
-                }
-                
+            Task {
+                self.filteredColumns = try await columnStore.loadColumn()
             }
         }
     }

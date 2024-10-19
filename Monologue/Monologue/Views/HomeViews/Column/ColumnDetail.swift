@@ -95,7 +95,7 @@ struct ColumnDetail: View {
     func addComment() {
         if !newComment.isEmpty {
             print(userInfoStore.userInfo?.email ?? "")
-            let tempComment = Comment(userNickname: userInfoStore.userInfo?.email ?? "",
+            let tempComment = Comment(userNickname: userInfoStore.userInfo?.nickname ?? "",
                                       content: newComment,
                                       date: Date.now)
             Task {

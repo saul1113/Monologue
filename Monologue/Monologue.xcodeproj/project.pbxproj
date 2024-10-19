@@ -227,12 +227,12 @@
 		8E902D8D2CBEC5F100562071 /* HomeViews */ = {
 			isa = PBXGroup;
 			children = (
+				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				EBA90F652CC0195C00710E54 /* ShareSheetView.swift */,
 				EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */,
 				EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */,
 				8B1194C22CBFD5BD00D9B28B /* SearchView.swift */,
 				8B11949F2CBED34100D9B28B /* TopBarView.swift */,
-				8E52D93E2CBD216C00E5D42A /* HomeView.swift */,
 				8B682BF82CC237320019617B /* CommentRowView.swift */,
 				8B682BFA2CC2374C0019617B /* CommentTextInputView.swift */,
 				8B682BFC2CC2375D0019617B /* LikeCommentButtons.swift */,
