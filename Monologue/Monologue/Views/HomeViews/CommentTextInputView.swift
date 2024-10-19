@@ -21,6 +21,7 @@ struct CommentTextInputView: View {
                     .focused(isCommentFieldFocused) // 포커스 상태 바인딩
                     .onSubmit {
                         addComment()
+                        isCommentFieldFocused.wrappedValue = false
                     }
 //                    .padding(.trailing, 30)
                 
@@ -30,6 +31,7 @@ struct CommentTextInputView: View {
                             // 새로운 댓글 추가
                             addComment()
                             newComment = ""
+                            isCommentFieldFocused.wrappedValue = false
                         }
                     }) {
                         Image(systemName: "arrowshape.up.circle.fill")

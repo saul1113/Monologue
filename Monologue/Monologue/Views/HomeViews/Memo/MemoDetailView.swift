@@ -48,16 +48,17 @@ struct MemoDetailView: View {
                             .cornerRadius(12)
                             
                             Divider()
+                                .padding(.bottom, 8)
                             
                             Text("댓글 \(memo.comments?.count ?? 0)")
                                 .font(.footnote)
                                 .bold()
-                                .padding(.vertical, 8)
+                                .padding(.bottom, 8)
                             
                             VStack(alignment: .leading, spacing: 0) {
                                 CommentListView(displayedComments: $memo.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                             }
-                            .padding(8)
+                            .padding(.bottom, 8)
                             .background(Color.white)
                             .cornerRadius(12)
                         }
@@ -118,6 +119,7 @@ struct MemoDetailView: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 

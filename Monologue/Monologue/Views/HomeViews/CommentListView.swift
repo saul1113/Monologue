@@ -50,7 +50,7 @@ struct CommentListView: View {
         }
     }
     
-    // 날짜 표시 함수
+    // 댓글 작성 날짜/시간 표시 함수
     func displayTimeSince(postDate: Date) -> String {
             let calendar = Calendar.current
             let currentDate = Date()
