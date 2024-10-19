@@ -15,28 +15,33 @@ struct CommentTextInputView: View {
     
     var body: some View {
         HStack {
-            TextField("댓글을 입력하세요", text: $newComment)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .focused(isCommentFieldFocused) // 포커스 상태 바인딩
-                .onSubmit {
-                    addComment()
-                }
-            
-            if !newComment.isEmpty {
-                Button(action: {
-                    if !newComment.isEmpty {
-                        // 새로운 댓글 추가
+            ZStack(alignment: .trailing) {
+                TextField("댓글을 입력하세요", text: $newComment)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .focused(isCommentFieldFocused) // 포커스 상태 바인딩
+                    .onSubmit {
                         addComment()
-                        newComment = ""
                     }
-                }) {
-                    Image(systemName: "arrowshape.up.circle.fill")
-                        .foregroundColor(Color.accentColor)
-                        .frame(width: 30, height: 30)
+//                    .padding(.trailing, 30)
+                
+                if !newComment.isEmpty {
+                    Button(action: {
+                        if !newComment.isEmpty {
+                            // 새로운 댓글 추가
+                            addComment()
+                            newComment = ""
+                        }
+                    }) {
+                        Image(systemName: "arrowshape.up.circle.fill")
+                            .resizable()
+                            .foregroundColor(Color.accentColor)
+                            .frame(width: 20, height: 20)
+                    }
+                    .padding(.trailing, 8)
+//                    .transition(.move(edge: .trailing))  // 애니메이션 적용
                 }
-                //                        .transition(.move(edge: .trailing)) // 애니메이션 적용
             }
         }
-        .padding(.horizontal)
+        .padding(.bottom, 16)
     }
 }

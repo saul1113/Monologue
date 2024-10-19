@@ -30,7 +30,7 @@ struct MemoDetailView: View {
             ZStack {
                 Color.background
                     .ignoresSafeArea()
-                VStack() {
+                VStack {
                     ScrollView {
                         VStack(alignment: .leading) {
                             VStack(alignment: .leading, spacing: 16) {
@@ -44,7 +44,6 @@ struct MemoDetailView: View {
                                     commentCount: memo.comments?.count ?? 0 // 댓글 개수를 전달
                                 )
                             }
-                            .padding(16)
                             .background(Color.white)
                             .cornerRadius(12)
                             
@@ -53,23 +52,23 @@ struct MemoDetailView: View {
                             Text("댓글 \(memo.comments?.count ?? 0)")
                                 .font(.footnote)
                                 .bold()
-                                .padding(16)
+                                .padding(.vertical, 8)
                             
                             VStack(alignment: .leading, spacing: 0) {
                                 CommentListView(displayedComments: $memo.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                             }
-                            .padding(16)
+                            .padding(8)
                             .background(Color.white)
                             .cornerRadius(12)
                         }
-                        .padding()
+                        .padding(16)
                         .background(Color.white)
                         .cornerRadius(14)
                         .overlay( // 테두리 추가
                             RoundedRectangle(cornerRadius: 14)
                                 .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                         )
-                        .padding(.horizontal)
+                        .padding(.horizontal, 16)
                     }
                     
                     // 하단에 고정된 댓글 입력 필드
@@ -79,7 +78,6 @@ struct MemoDetailView: View {
             }
             .onAppear {
                 likesCount = memo.likes.count
-                //displayedComments = memo.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -99,9 +97,9 @@ struct MemoDetailView: View {
                     }
                 }
                 ToolbarItem(placement: .principal) {
-                    Text("칼럼") // 중앙의 텍스트
+                    Text("메모")
                         .font(.headline)
-                        .foregroundColor(Color.accentColor) // 색상을 갈색으로 설정
+                        .foregroundColor(Color.accentColor)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -111,23 +109,18 @@ struct MemoDetailView: View {
                             .foregroundColor(.gray)
                     }
                 }
+                
+                // 키보드 위에 '완료' 버튼 추가
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                    Button("완료") {
+                        isCommentFieldFocused = false // 키보드 숨기기
+                    }
+                }
             }
         }
     }
-    
-//    func addComment() {
-//        if !newComment.isEmpty {
-//            displayedComments.append(newComment)
-//            memoStore.updateComment(memoId: memo.id, email: memo.email) { error in
-//                if let error = error {
-//                    print("Error updating comment: \(error.localizedDescription)")
-//                } else {
-//                    print("Comment updated successfully.")
-//                }
-//            }
-//            newComment = ""
-//        }
-//    }
+
     
     func addComment() {
         if !newComment.isEmpty {
