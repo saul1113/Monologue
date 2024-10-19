@@ -57,22 +57,31 @@ struct HomeView: View {
                                     dict[key] = (key == "전체")
                                 }
                             }
-//                            else if selectedCategories!.contains("전체") && selectedCategories!.count > 1 {
-//                                // "전체"와 다른 항목이 같이 선택되었을 때 "전체"를 비활성화
-//                                dict["전체"] = false
-//                            }
-//                            else if selectedCategories!.isEmpty {
-//                                // 아무 항목도 선택되지 않았을 때 "전체" 선택
-//                                dict["전체"] = true }
-                            
                         }
-                    if selectedSegment == "메모" {
-                        MemoView(filters: $selectedCategories)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else if selectedSegment == "칼럼" {
-                        ColumnView(filteredColumns: $filteredColumns)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
+                    
+                    GeometryReader { geometry in
+                        HStack(spacing: 0) {
+                            MemoView(filters: $selectedCategories)
+                                .frame(width: geometry.size.width)
+                                .clipped()
+
+                            ColumnView(filteredColumns: $filteredColumns)
+                                .frame(width: geometry.size.width)
+                                .clipped()
+                        }
+                        .frame(width: geometry.size.width * 2)
+                        .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                        .animation(.easeInOut, value: selectedSegment)
+                        .gesture(
+                            DragGesture()
+                                .onEnded { value in
+                                    if value.translation.width > 100 {
+                                        selectedSegment = "메모"
+                                    } else if value.translation.width < -100 {
+                                        selectedSegment = "칼럼"
+                                    }
+                                }
+                        )
                     }
                 }
                 VStack {
