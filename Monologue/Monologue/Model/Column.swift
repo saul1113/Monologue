@@ -41,7 +41,7 @@ struct Column: Codable, Identifiable {
         self.comments = try await fetchComments(for: document)
     }
     
-    init(title: String, content: String, email: String, userNickname: String, font: String, backgroundImageName: String, categories: [String], likes: [String], date: Date, comments: [Comment]) {
+    init(title: String, content: String, email: String, userNickname: String, categories: [String], likes: [String], date: Date, comments: [Comment]) {
         self.title = title
         self.content = content
         self.email = email

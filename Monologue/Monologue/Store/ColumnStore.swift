@@ -21,6 +21,7 @@ class ColumnStore: ObservableObject {
         columnRef.setData([
             "title": column.title,
             "content": column.content,
+            "email": column.email,
             "userNickname": column.userNickname,
             "categories": column.categories,
             "likes": column.likes,
@@ -65,6 +66,7 @@ class ColumnStore: ObservableObject {
         try await columnRef.setData([
             "title": column.title,
             "content": column.content,
+            "email": column.email,
             "userNickname": column.userNickname,
             "categories": column.categories,
             "likes": column.likes,
@@ -118,13 +120,11 @@ class ColumnStore: ObservableObject {
         var columns: [Column] = []
         
         for document in querySnapshot.documents {
-            Task {
-                do {
-                    let column = try await Column(document: document)
-                    columns.append(column)
-                } catch {
-                    print("loadColumn error: \(error.localizedDescription)")
-                }
+            do {
+                let column = try await Column(document: document)
+                columns.append(column)
+            } catch {
+                print("loadColumn error: \(error.localizedDescription)")
             }
         }
         
@@ -169,13 +169,11 @@ class ColumnStore: ObservableObject {
         var columns: [Column] = []
         
         for document in querySnapshot.documents {
-            Task {
-                do {
-                    let column = try await Column(document: document)
-                    columns.append(column)
-                } catch {
-                    print("loadColumnsByUserNickname error: \(error.localizedDescription)")
-                }
+            do {
+                let column = try await Column(document: document)
+                columns.append(column)
+            } catch {
+                print("loadColumnsByUserNickname error: \(error.localizedDescription)")
             }
         }
         
@@ -221,13 +219,11 @@ class ColumnStore: ObservableObject {
         var columns: [Column] = []
         
         for document in querySnapshot.documents {
-            Task {
-                do {
-                    let column = try await Column(document: document)
-                    columns.append(column)
-                } catch {
-                    print("loadColumnsByCategories error: \(error.localizedDescription)")
-                }
+            do {
+                let column = try await Column(document: document)
+                columns.append(column)
+            } catch {
+                print("loadColumnsByCategories error: \(error.localizedDescription)")
             }
         }
         

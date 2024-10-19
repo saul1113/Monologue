@@ -70,8 +70,6 @@ struct PostView: View {
                                         content: text,
                                         email: userInfoStore.userInfo?.email ?? "",
                                         userNickname: userInfoStore.userInfo?.nickname ?? "",
-                                        font: "",
-                                        backgroundImageName: "",
                                         categories: selectedColumnCategories,
                                         likes: [],
                                         date: Date(),

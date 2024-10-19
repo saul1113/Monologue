@@ -113,4 +113,59 @@ class CommentStore: ObservableObject {
             }
         }
     }
+    
+    // MARK: - Test
+    func deleteComment(columnId: String, commentId: String) async throws {
+        let db = Firestore.firestore()
+        let commentRef = db.collection("Column").document(columnId).collection("comments").document(commentId)
+        
+        do {
+            try await commentRef.delete()            
+        } catch {
+            print("deleteComment error: \(error.localizedDescription)")
+        }
+    }
+
+    func addComment(columnId: String, comment: Comment) async throws {
+        let db = Firestore.firestore()
+        let columnRef = db.collection("Column").document(columnId)
+        let commentRef = columnRef.collection("comments").document(comment.id)
+        
+        do {
+            try await commentRef.setData([
+                "content": comment.content,
+                "date": comment.date,
+                "userNickname": comment.userNickname
+            ])
+        } catch {
+            print("addComment error: \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteComment(memoId: String, commentId: String) async throws {
+        let db = Firestore.firestore()
+        let commentRef = db.collection("Memo").document(memoId).collection("comments").document(commentId)
+        
+        do {
+            try await commentRef.delete()
+        } catch {
+            print("deleteComment error: \(error.localizedDescription)")
+        }
+    }
+
+    func addComment(memoId: String, comment: Comment) async throws {
+        let db = Firestore.firestore()
+        let columnRef = db.collection("Memo").document(memoId)
+        let commentRef = columnRef.collection("comments").document(comment.id)
+        
+        do {
+            try await commentRef.setData([
+                "content": comment.content,
+                "date": comment.date,
+                "userNickname": comment.userNickname
+            ])
+        } catch {
+            print("addComment error: \(error.localizedDescription)")
+        }
+    }
 }
