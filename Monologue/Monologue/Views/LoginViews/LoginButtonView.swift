@@ -5,8 +5,6 @@
 //  Created by 김종혁 on 10/15/24.
 //
 
-//
-
 import SwiftUI
 import CryptoKit
 import AuthenticationServices

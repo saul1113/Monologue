@@ -34,17 +34,17 @@ class AuthManager: ObservableObject {
     // 그러면 자동로그인 기능때문에 회원가입 시 sheet가 안띄어짐
     // 그래서 닉네임이 존재하는지 안하는 지 체크하는 용도, user와 닉네임 없으면 sheet 띄어짐
     @Published var nicknameExists: Bool {
-            didSet {
-                UserDefaults.standard.set(nicknameExists, forKey: "nicknameExists")
-            }
+        didSet {
+            UserDefaults.standard.set(nicknameExists, forKey: "nicknameExists")
         }
+    }
     // LoginView에서 state로 사용했는데, 로그아웃 후 로그인 뷰에서 실시간 변화가 없어서 여기에 추가..
     @Published var isPresented: Bool = false
     
     init() {
         self.nicknameExists = UserDefaults.standard.bool(forKey: "nicknameExists")
         registerAuthStateHandler()
-
+        
     }
     
     private var authStateHandler: AuthStateDidChangeListenerHandle?
