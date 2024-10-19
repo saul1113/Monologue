@@ -23,6 +23,7 @@ struct MemoDetailView: View {
     @FocusState private var isCommentFieldFocused: Bool
     
     @Binding var memo: Memo
+    @Binding var image: UIImage
     
     var body: some View {
         GeometryReader { geometry in
@@ -32,7 +33,9 @@ struct MemoDetailView: View {
                 VStack() {
                     ScrollView {
                         VStack(alignment: .leading) {
-                            // 게시글 섹션
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                             VStack(alignment: .leading, spacing: 16) {
                                 MemoHeaderView(
                                     memo: memo,

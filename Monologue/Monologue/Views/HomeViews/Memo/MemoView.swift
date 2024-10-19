@@ -77,7 +77,7 @@ struct MemoView: View {
             MasonryLayout(columns: 2, spacing: 16) {
                 if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
-                        NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index])) {
+                        NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index], image: $filteredMemoStore.images[index])) {
                             ZStack {
                                 VStack(alignment: .trailing) {
                                     let image = filteredMemoStore.images[index]
