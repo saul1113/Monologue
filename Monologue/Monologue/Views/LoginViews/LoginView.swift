@@ -13,7 +13,6 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var isPresented: Bool = false
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var userInfoStore: UserInfoStore
     
@@ -29,19 +28,19 @@ struct LoginView: View {
                             .foregroundStyle(.accent)
                             .bold()
                         
-                        GoogleButtonView(isPresented: $isPresented)
+                        GoogleButtonView()
                             .environmentObject(authManager)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2)
                             .padding()
                         
-                        AppleButtonView(isPresented: $isPresented)
+                        AppleButtonView()
                             .environmentObject(authManager)
                     }
                 }
                 .navigationBarHidden(true)  // 네비게이션 바 숨김
         }
-        .sheet(isPresented: $isPresented) {
-            AddUserInfoView(isPresented: $isPresented)
+        .sheet(isPresented: $authManager.isPresented) {
+            AddUserInfoView(isPresented: $authManager.isPresented)
                 .presentationDetents([.medium])
         }
     }
