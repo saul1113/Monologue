@@ -33,12 +33,10 @@ struct MemoDetailView: View {
                 VStack() {
                     ScrollView {
                         VStack(alignment: .leading) {
-                            Image(uiImage: image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
                             VStack(alignment: .leading, spacing: 16) {
                                 MemoHeaderView(
-                                    memo: memo,
+                                    memo: $memo,
+                                    image: $image,
                                     likesCount: $likesCount,
                                     isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
