@@ -8,19 +8,22 @@
 import SwiftUI
 
 struct MemoDetailView: View {
-    @ObservedObject var memoStore = MemoStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @EnvironmentObject var memoStore: MemoStore
+    @EnvironmentObject var commentStore: CommentStore
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [String] = []
+    @State private var displayedComments: [Comment] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
-    @State private var selectedComment: String?
+    @State private var selectedComment: Comment?
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    var memo: Memo = Memo(content: "안녕하세요", userNickname: "김종혁", font: "나눔고딕", backgroundImageName: "image1", categories: ["전체"], likes: ["23", "12"], comments: ["ㄴㅇ", "ㄴㅇ"], date: Date(), lineCount: 2)
+    @Binding var memo: Memo
+    @Binding var image: UIImage
     
     var body: some View {
         GeometryReader { geometry in
@@ -30,15 +33,15 @@ struct MemoDetailView: View {
                 VStack() {
                     ScrollView {
                         VStack(alignment: .leading) {
-                            // 게시글 섹션
                             VStack(alignment: .leading, spacing: 16) {
                                 MemoHeaderView(
-                                    memo: memo,
+                                    memo: $memo,
+                                    image: $image,
                                     likesCount: $likesCount,
                                     isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
                                     isCommentFieldFocused: $isCommentFieldFocused,
-                                    commentCount: displayedComments.count // 댓글 개수를 전달
+                                    commentCount: memo.comments?.count ?? 0 // 댓글 개수를 전달
                                 )
                             }
                             .padding(16)
@@ -47,13 +50,13 @@ struct MemoDetailView: View {
                             
                             Divider()
                             
-                            Text("댓글 \(displayedComments.count)")
+                            Text("댓글 \(memo.comments?.count ?? 0)")
                                 .font(.footnote)
                                 .bold()
                                 .padding(16)
                             
                             VStack(alignment: .leading, spacing: 0) {
-                                CommentListView(displayedComments: $displayedComments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
+                                CommentListView(displayedComments: $memo.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                             }
                             .padding(16)
                             .background(Color.white)
@@ -76,7 +79,7 @@ struct MemoDetailView: View {
             }
             .onAppear {
                 likesCount = memo.likes.count
-                displayedComments = memo.comments
+                //displayedComments = memo.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -112,34 +115,50 @@ struct MemoDetailView: View {
         }
     }
     
+//    func addComment() {
+//        if !newComment.isEmpty {
+//            displayedComments.append(newComment)
+//            memoStore.updateComment(memoId: memo.id, email: memo.email) { error in
+//                if let error = error {
+//                    print("Error updating comment: \(error.localizedDescription)")
+//                } else {
+//                    print("Comment updated successfully.")
+//                }
+//            }
+//            newComment = ""
+//        }
+//    }
+    
     func addComment() {
         if !newComment.isEmpty {
-            displayedComments.append(newComment)
-            memoStore.updateComment(memoId: memo.id, userNickname: "사용자닉네임") { error in
-                if let error = error {
-                    print("Error updating comment: \(error.localizedDescription)")
-                } else {
-                    print("Comment updated successfully.")
-                }
+            let tempComment = Comment(userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                      content: newComment,
+                                      date: Date.now)
+            Task {
+                try await commentStore.addComment(memoId: memo.id, comment: tempComment)
+                self.memo.comments?.append(tempComment)
+                newComment = ""
             }
-            newComment = ""
         }
     }
     
     func deleteComment() {
         guard let commentToDelete = selectedComment else { return }
-        displayedComments.removeAll { $0 == commentToDelete }
-        memoStore.updateComment(memoId: memo.id, userNickname: commentToDelete) { error in
-            if let error = error {
-                print("Error deleting comment: \(error.localizedDescription)")
-            } else {
-                print("Comment deleted successfully.")
-            }
+               
+        Task {
+            try await commentStore.deleteComment(memoId: memo.id, commentId: commentToDelete.id)
+            memo.comments?.removeAll { $0 == commentToDelete }
         }
+            
         selectedComment = nil
     }
 }
 
-#Preview {
-    MemoDetailView()
-}
+//#Preview {
+//    MemoDetailView()
+//        .environmentObject(UserInfoStore())
+//        .environmentObject(MemoStore())
+//        .environmentObject(CommentStore())
+//}
+
+//Memo(content: "안녕하세요", email: "김종혁", userNickname: "나눔고딕", font: "나눔고딕", backgroundImageName: "아무튼 이미지", categories: ["전체"], likes: ["ㄴㅇ", "ㄴㅇ"], date: Date(), lineCount: 2, comments: [])

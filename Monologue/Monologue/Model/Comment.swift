@@ -9,7 +9,7 @@ import Foundation
 import FirebaseCore
 import FirebaseFirestore
 
-struct Comment: Codable, Identifiable {
+struct Comment: Codable, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var userNickname: String // 작성자
     var content: String // 코멘트 내용

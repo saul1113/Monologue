@@ -11,7 +11,7 @@ struct ColumnView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Environment(\.dismiss) private var dismiss
-    var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
+    @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
     var body: some View {
         NavigationView {
@@ -19,14 +19,14 @@ struct ColumnView: View {
                 Color.background.ignoresSafeArea()
                 VStack {
                     List {
-                        ForEach(filteredColumns) { post in
+                        ForEach($filteredColumns) { $post in
                             ZStack {
                                 // NavigationLink를 ZStack의 투명한 레이어로 만들어 클릭 영역으로만 사용
-                                NavigationLink(destination: ColumnDetail(column: post)) {
+                                NavigationLink(destination: ColumnDetail(column: $post)) {
                                     EmptyView()
                                 }
                                 .opacity(0) // NavigationLink는 보이지 않도록 설정
-                                PostRow(column: post) // PostRow는 항상 보이도록 설정
+                                PostRow(column: $post) // PostRow는 항상 보이도록 설정
                             }
                             .buttonStyle(PlainButtonStyle())
                             .listRowBackground(Color.background)
@@ -42,7 +42,7 @@ struct ColumnView: View {
 
 // 게시물 리스트에서 각 항목을 표시하는 뷰
 struct PostRow: View {
-    let column: Column
+    @Binding var column: Column
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -79,7 +79,7 @@ struct PostRow: View {
                 HStack {
                     Image(systemName: "bubble.right")
                         .foregroundColor(.gray)
-                    Text("\(column.comments.count)")  // 댓글 수 표시
+                    Text("\(String(describing: column.comments?.count ?? 0))")  // 댓글 수 표시
                         .font(.subheadline)
                 }
                 

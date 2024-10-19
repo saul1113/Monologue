@@ -8,7 +8,8 @@
 import SwiftUI
 //칼럼디테일 게시글 뷰
 struct MemoHeaderView: View {
-    var memo: Memo
+    @Binding var memo: Memo
+    @Binding var image: UIImage
     @Binding var likesCount: Int
     @Binding var isLiked: Bool
     @Binding var showShareSheet: Bool
@@ -30,6 +31,11 @@ struct MemoHeaderView: View {
                     .font(.footnote)
                     .foregroundColor(.gray)
             }
+            
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            
             VStack(alignment: .leading, spacing: 8) {
 //                Text(memo.content)
 //                    .font(.body)

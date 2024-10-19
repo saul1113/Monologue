@@ -18,6 +18,7 @@ struct HomeView: View {
     @State private var isSearching: Bool = false
     @State var selectedSegment: String = "메모"
     @State private var selectedCategories: [String]? = ["전체"]
+    @State var filteredColumns: [Column] = []
     @State var dict: OrderedDictionary = [
         "전체": true,
         "오늘의 주제": false,
@@ -33,19 +34,6 @@ struct HomeView: View {
         "기타": false,
     ]
     
-    var filteredColumns: [Column] {
-//        guard !columnStore.columns.isEmpty else { return [] }
-        if selectedCategories == ["전체"] {
-            columnStore.loadColumn { columns, error in
-                columnStore.columns = columns ?? []
-            }
-            return columnStore.columns
-        } else {
-            return columnStore.columns.filter { column in
-                column.categories.contains { selectedCategories!.contains($0) }
-            }
-        }
-    }
     
     var body: some View {
         NavigationView {
@@ -82,7 +70,7 @@ struct HomeView: View {
                         MemoView(filters: $selectedCategories)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else if selectedSegment == "칼럼" {
-                        ColumnView(filteredColumns: filteredColumns)
+                        ColumnView(filteredColumns: $filteredColumns)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .padding(.horizontal, -16)
                     }
@@ -97,6 +85,19 @@ struct HomeView: View {
         }
         .onAppear {
             UIScrollView.appearance().bounces = true
+            
+            if selectedCategories == ["전체"] {
+                Task {
+                    self.filteredColumns = try await columnStore.loadColumn()
+                }
+            } else {
+                Task {
+                    self.filteredColumns = try await columnStore.loadColumn().filter { column in
+                        column.categories.contains { selectedCategories!.contains($0) }
+                    }
+                }
+                
+            }
         }
     }
 }

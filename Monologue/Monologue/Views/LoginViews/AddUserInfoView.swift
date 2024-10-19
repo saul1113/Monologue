@@ -102,6 +102,8 @@ struct AddUserInfoView: View {
                                     .map { $0.key } // 선택된 항목의 키를 배열로 변환
                                 
                                 let newUserInfo = UserInfo(
+                                    uid: authManager.userID,
+                                    email: authManager.email,
                                     nickname: nicknameText,
                                     registrationDate: Date(),
                                     preferredCategories: selectedCategories,
@@ -113,7 +115,7 @@ struct AddUserInfoView: View {
                                     likes: []
                                 )
                                 
-                                await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                                await userInfoStroe.addUserInfo(newUserInfo)
                                 authManager.authenticationState = .authenticated // 메인뷰로 이동
                             }
                         }

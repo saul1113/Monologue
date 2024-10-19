@@ -44,14 +44,15 @@ struct PostView: View {
                                 if selectedSegment == "메모" {
                                     // 메모 저장 처리
                                     let newMemo = Memo(content: text,
+                                                       email: userInfoStore.userInfo?.email ?? "",
                                                        userNickname: userInfoStore.userInfo?.nickname ?? "",
                                                        font: selectedFont,
                                                        backgroundImageName: selectedBackgroundImageName,
                                                        categories: selectedMemoCategories,
                                                        likes: [],
-                                                       comments: [],
                                                        date: Date(),
-                                                       lineCount: lineCount)
+                                                       lineCount: lineCount,
+                                                       comments: [])
                                     memoStore.addMemo(memo: newMemo) { error in
                                         if let error = error {
                                             print("Error adding memo: \(error)")
@@ -67,13 +68,12 @@ struct PostView: View {
                                     let newColumn = Column(
                                         title: title,
                                         content: text,
+                                        email: userInfoStore.userInfo?.email ?? "",
                                         userNickname: userInfoStore.userInfo?.nickname ?? "",
-                                        font: "",
-                                        backgroundImageName: "",
                                         categories: selectedColumnCategories,
                                         likes: [],
-                                        comments: [],
-                                        date: Date()
+                                        date: Date(),
+                                        comments: []
                                     )
                                     columnStore.addColumn(column: newColumn) { error in
                                         if let error = error {
@@ -113,14 +113,14 @@ struct PostView: View {
                 await userInfoStore.loadUserInfo(email: authManager.email)
                 
                 // 유저의 메모 로드
-                memoStore.loadMemosByUserNickname(userNickname: authManager.name) { memos, error in
+                memoStore.loadMemosByUserEmail(email: authManager.email) { memos, error in
                     if let memos = memos {
                         userMemos = memos
                     }
                 }
                 
                 // 유저의 칼럼 로드
-                columnStore.loadColumnsByUserNickname(userNickname: authManager.name) { columns, error in
+                columnStore.loadColumnsByUserEmail(email: authManager.email) { columns, error in
                     if let columns = columns {
                         userColumns = columns
                     }

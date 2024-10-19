@@ -8,19 +8,20 @@
 import SwiftUI
 
 struct ColumnDetail: View {
-    @ObservedObject var columnStore = ColumnStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @EnvironmentObject var columnStore: ColumnStore
+    @EnvironmentObject var commentStore: CommentStore
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [String] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
-    @State private var selectedComment: String?
+    @State private var selectedComment: Comment?
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    var column: Column
+    @Binding var column: Column
     
     var body: some View {
         GeometryReader { geometry in
@@ -39,7 +40,7 @@ struct ColumnDetail: View {
                                     isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
                                     isCommentFieldFocused: $isCommentFieldFocused,
-                                    commentCount: displayedComments.count // 댓글 개수를 전달
+                                    commentCount: column.comments?.count ?? 0 // 댓글 개수를 전달
                                 )
                             }
                             .padding(16)
@@ -49,7 +50,7 @@ struct ColumnDetail: View {
                             Divider()
                             
                             VStack(alignment: .leading, spacing: 0) {
-                                CommentListView(displayedComments: $displayedComments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
+                                CommentListView(displayedComments: $column.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                                 Divider()
                             }
                             .padding(16)
@@ -68,7 +69,7 @@ struct ColumnDetail: View {
             }
             .onAppear {
                 likesCount = column.likes.count
-                displayedComments = column.comments
+                //displayedComments = column.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -93,28 +94,25 @@ struct ColumnDetail: View {
     
     func addComment() {
         if !newComment.isEmpty {
-            displayedComments.append(newComment)
-            columnStore.updateComment(columnId: column.id, userNickname: "사용자닉네임") { error in
-                if let error = error {
-                    print("Error updating comment: \(error.localizedDescription)")
-                } else {
-                    print("Comment updated successfully.")
-                }
+            print(userInfoStore.userInfo?.email ?? "")
+            let tempComment = Comment(userNickname: userInfoStore.userInfo?.email ?? "",
+                                      content: newComment,
+                                      date: Date.now)
+            Task {
+                try await commentStore.addComment(columnId: column.id, comment: tempComment)
+                column.comments?.append(tempComment)
+                newComment = ""
             }
-            newComment = ""
         }
     }
-    
     func deleteComment() {
         guard let commentToDelete = selectedComment else { return }
-        displayedComments.removeAll { $0 == commentToDelete }
-        columnStore.updateComment(columnId: column.id, userNickname: commentToDelete) { error in
-            if let error = error {
-                print("Error deleting comment: \(error.localizedDescription)")
-            } else {
-                print("Comment deleted successfully.")
-            }
+               
+        Task {
+            try await commentStore.deleteComment(columnId: column.id, commentId: commentToDelete.id)
+            column.comments?.removeAll { $0 == commentToDelete }
         }
+            
         selectedComment = nil
     }
 }
@@ -135,7 +133,8 @@ extension Color {
     }
 }
 
-#Preview {
-    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2"], date: Date()))
-        .environmentObject(ColumnStore())
-}
+//#Preview {
+//    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", email: "Test Email", userNickname: "북극성", categories: ["에세이"], likes: [], date: Date(), comments: []))
+//        .environmentObject(ColumnStore())
+//        .environmentObject(CommentStore())
+//}
