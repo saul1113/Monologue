@@ -66,7 +66,7 @@ struct PostRow: View {
                 .font(.body)
                 .foregroundStyle(.black)
                 .font(Font.headline.weight(.bold))
-            
+                .padding(.bottom, 2)
             HStack {
                 Text(column.content) // 칼럼 내용 표시
                     .font(.caption)
@@ -74,6 +74,7 @@ struct PostRow: View {
                     .font(Font.caption.weight(.thin))
                     .lineLimit(3) // 3 줄까지만 표시
             }
+            .padding(.leading, 2)
             
             HStack {
                 HStack {

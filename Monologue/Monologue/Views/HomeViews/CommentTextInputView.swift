@@ -23,7 +23,7 @@ struct CommentTextInputView: View {
                         addComment()
                         isCommentFieldFocused.wrappedValue = false
                     }
-//                    .padding(.trailing, 30)
+                //                    .padding(.trailing, 30)
                 
                 if !newComment.isEmpty {
                     Button(action: {
@@ -40,10 +40,16 @@ struct CommentTextInputView: View {
                             .frame(width: 20, height: 20)
                     }
                     .padding(.trailing, 8)
-//                    .transition(.move(edge: .trailing))  // 애니메이션 적용
+                    //                    .transition(.move(edge: .trailing))  // 애니메이션 적용
                 }
             }
         }
         .padding(.bottom, 16)
+    }
+}
+extension UIApplication {
+    func endEditing() {
+        // 현재 포커스된 뷰의 포커스를 해제하여 키보드를 내림
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

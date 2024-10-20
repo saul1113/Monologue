@@ -26,16 +26,16 @@ struct ColumnDetail: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Color("#FFF8ED")
-                    .edgesIgnoringSafeArea(.all)
+                Color.background
+                    .ignoresSafeArea()
                 
-                VStack(spacing: 0) {
+                VStack {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
+                        VStack(alignment: .leading) {
                             // 게시글 섹션
                             VStack(alignment: .leading, spacing: 16) {
                                 ColumnHeaderView(
-                                    column: column,
+                                    column: $column,
                                     likesCount: $likesCount,
                                     isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
@@ -43,29 +43,43 @@ struct ColumnDetail: View {
                                     commentCount: column.comments?.count ?? 0 // 댓글 개수를 전달
                                 )
                             }
-                            .padding(16)
                             .background(Color.white)
                             .cornerRadius(12)
                             
                             Divider()
+                                .padding(.bottom, 8)
+                            
+                            Text("댓글 \(column.comments?.count ?? 0)")
+                                .font(.footnote)
+                                .bold()
+                                .padding(.bottom, 8)
                             
                             VStack(alignment: .leading, spacing: 0) {
                                 CommentListView(displayedComments: $column.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
-                                Divider()
                             }
-                            .padding(16)
+                            .padding(.bottom, 8)
                             .background(Color.white)
                             .cornerRadius(12)
                             //                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical)
+                        .padding(16)
+                        .background(Color.white)
+                        .cornerRadius(14)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        }
+                        .padding(.horizontal, 16)
                     }
                     
                     // 하단에 고정된 댓글 입력 필드
                     CommentTextInputView(newComment: $newComment, isCommentFieldFocused: $isCommentFieldFocused, addComment: addComment)
                         .padding(.horizontal)
-                        .background(Color.white) // 하단 배경색을 흰색으로 설정
+                    //                        .background(Color.white) // 하단 배경색을 흰색으로 설정
                 }
+            }
+            .onTapGesture {
+                UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }
             .onAppear {
                 likesCount = column.likes.count
@@ -88,7 +102,21 @@ struct ColumnDetail: View {
                         Image(systemName: "chevron.backward")
                     }
                 }
+                ToolbarItem(placement: .principal) {
+                    Text("칼럼")
+                        .font(.headline)
+                        .foregroundColor(Color.accentColor)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showShareSheet = true
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(.gray)
+                    }
+                }
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
@@ -107,12 +135,12 @@ struct ColumnDetail: View {
     }
     func deleteComment() {
         guard let commentToDelete = selectedComment else { return }
-               
+        
         Task {
             try await commentStore.deleteComment(columnId: column.id, commentId: commentToDelete.id)
             column.comments?.removeAll { $0 == commentToDelete }
         }
-            
+        
         selectedComment = nil
     }
 }
