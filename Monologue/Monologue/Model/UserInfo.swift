@@ -32,8 +32,8 @@ struct UserInfo: Codable, Hashable {
     init(document: QueryDocumentSnapshot) {
         let docData = document.data()
         
-        self.uid = document.documentID
-        self.email = docData["email"] as? String ?? ""
+        self.uid = docData["uid"] as? String ?? ""
+        self.email = document.documentID
         self.nickname = docData["nickname"] as? String ?? ""
         self.preferredCategories = docData["preferredCategories"] as? [String] ?? []
         self.profileImageName = docData["profileImageName"] as? String ?? ""

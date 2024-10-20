@@ -149,64 +149,74 @@ class UserInfoStore: ObservableObject {
     
     // MARK: - Follow 관련 로직
     // 팔로우 로직
-//    func followUser(targetUserEmail: String) async {
-//        guard let currentUserEmail = userInfo?.email else {
-//            return
-//        }
-//
-//        let db = Firestore.firestore()
-//        let currentUserRef = db.collection("User").document(currentUserEmail)
-//        let targetUserRef = db.collection("User").document(targetUserEmail)
-//
-//        do {
-//            _ = try await db.runTransaction { transaction, errorPointer in
-//                // 현재 유저의 followings에 타겟 유저 추가
-//                transaction.updateData([
-//                    "followings": FieldValue.arrayUnion([targetUserEmail])
-//                ], forDocument: currentUserRef)
-//                
-//                // 타겟 유저의 followers에 현재 유저 추가
-//                transaction.updateData([
-//                    "followers": FieldValue.arrayUnion([currentUserEmail])
-//                ], forDocument: targetUserRef)
-//
-//                return nil
-//            }
-//
-//            print("Successfully followed \(targetUserEmail)")
-//        } catch {
-//            print("Error following user: \(error)")
-//        }
-//    }
+    func followUser(targetUserEmail: String) async {
+        guard let currentUserEmail = userInfo?.email, !currentUserEmail.isEmpty else {
+            print("Current user email is empty.")
+            return
+        }
+        guard !targetUserEmail.isEmpty else {
+            print("Target user email is empty.")
+            return
+        }
+
+        let db = Firestore.firestore()
+        let currentUserRef = db.collection("User").document(currentUserEmail)
+        let targetUserRef = db.collection("User").document(targetUserEmail)
+
+        do {
+            _ = try await db.runTransaction { transaction, errorPointer in
+                // 현재 유저의 followings에 타겟 유저 추가
+                transaction.updateData([
+                    "followings": FieldValue.arrayUnion([targetUserEmail])
+                ], forDocument: currentUserRef)
+                
+                // 타겟 유저의 followers에 현재 유저 추가
+                transaction.updateData([
+                    "followers": FieldValue.arrayUnion([currentUserEmail])
+                ], forDocument: targetUserRef)
+
+                return nil
+            }
+
+            print("Successfully followed \(targetUserEmail)")
+        } catch {
+            print("Error following user: \(error)")
+        }
+    }
     
     // 언팔로우 로직
-//    func unfollowUser(targetUserEmail: String) async {
-//        guard let currentUserEmail = userInfo?.email else {
-//            return
-//        }
-//
-//        let db = Firestore.firestore()
-//        let currentUserRef = db.collection("User").document(currentUserEmail)
-//        let targetUserRef = db.collection("User").document(targetUserEmail)
-//
-//        do {
-//            _ = try await db.runTransaction { transaction, errorPointer in
-//                // 현재 유저의 followings에서 타겟 유저 제거
-//                transaction.updateData([
-//                    "followings": FieldValue.arrayRemove([targetUserEmail])
-//                ], forDocument: currentUserRef)
-//                
-//                // 타겟 유저의 followers에서 현재 유저 제거
-//                transaction.updateData([
-//                    "followers": FieldValue.arrayRemove([currentUserEmail])
-//                ], forDocument: targetUserRef)
-//
-//                return nil
-//            }
-//
-//            print("Successfully unfollowed \(targetUserEmail)")
-//        } catch {
-//            print("Error unfollowing user: \(error)")
-//        }
-//    }
+    func unfollowUser(targetUserEmail: String) async {
+        guard let currentUserEmail = userInfo?.email, !currentUserEmail.isEmpty else {
+            print("Current user email is empty.")
+            return
+        }
+        guard !targetUserEmail.isEmpty else {
+            print("Target user email is empty.")
+            return
+        }
+
+        let db = Firestore.firestore()
+        let currentUserRef = db.collection("User").document(currentUserEmail)
+        let targetUserRef = db.collection("User").document(targetUserEmail)
+
+        do {
+            _ = try await db.runTransaction { transaction, errorPointer in
+                // 현재 유저의 followings에서 타겟 유저 제거
+                transaction.updateData([
+                    "followings": FieldValue.arrayRemove([targetUserEmail])
+                ], forDocument: currentUserRef)
+                
+                // 타겟 유저의 followers에서 현재 유저 제거
+                transaction.updateData([
+                    "followers": FieldValue.arrayRemove([currentUserEmail])
+                ], forDocument: targetUserRef)
+
+                return nil
+            }
+
+            print("Successfully unfollowed \(targetUserEmail)")
+        } catch {
+            print("Error unfollowing user: \(error)")
+        }
+    }
 }

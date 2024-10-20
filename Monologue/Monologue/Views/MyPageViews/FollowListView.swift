@@ -53,15 +53,15 @@ struct FollowListView: View {
                                         inactiveButtonText: "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.followUser(targetUserEmail: follower.email)
-//                                            }
+                                            Task {
+                                                await userInfoStore.followUser(targetUserEmail: follower.email)
+                                            }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
-//                                            }
+                                            Task {
+                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
+                                            }
                                         }
                                     )
                                 }
@@ -85,15 +85,15 @@ struct FollowListView: View {
                                         inactiveButtonText: "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.followUser(targetUserEmail: follower.email)
-//                                            }
+                                            Task {
+                                                await userInfoStore.followUser(targetUserEmail: following.email)
+                                            }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
-//                                            }
+                                            Task {
+                                                await userInfoStore.unfollowUser(targetUserEmail: following.email)
+                                            }
                                         }
                                     )
                                 }
