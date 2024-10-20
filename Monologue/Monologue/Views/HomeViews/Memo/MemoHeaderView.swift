@@ -8,7 +8,8 @@
 import SwiftUI
 //칼럼디테일 게시글 뷰
 struct MemoHeaderView: View {
-    var memo: Memo
+    @Binding var memo: Memo
+    @Binding var image: UIImage
     @Binding var likesCount: Int
     @Binding var isLiked: Bool
     @Binding var showShareSheet: Bool
@@ -30,25 +31,25 @@ struct MemoHeaderView: View {
                     .font(.footnote)
                     .foregroundColor(.gray)
             }
-            VStack(alignment: .leading, spacing: 8) {
-//                Text(memo.content)
-//                    .font(.body)
-//                    .foregroundColor(.black)
-            }
-            .padding(.horizontal)
+            .padding(.bottom, 8)
+            
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(.bottom, 8)
             
             HStack {
                 // 댓글 개수를 전달하여 실시간 업데이트가 되도록 수정
                 LikeCommentButtons(isLiked: $isLiked, likesCount: $likesCount, commentCount: commentCount, isCommentFieldFocused: isCommentFieldFocused)
                 Spacer()
-                Text(memo.categories.first ?? "전체")
+                Text(memo.categories.first ?? "")
                     .font(.footnote)
                     .foregroundColor(.gray)
                     .padding(8)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(14)
             }
-            .padding(16)
+            .padding(.bottom, 8)
             .background(Color.white)
             .cornerRadius(12)
             //            .padding(.horizontal, 16)

@@ -24,11 +24,12 @@ class UserInfoStore: ObservableObject {
     @Published var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
     
     // 로그인 시 사용자(닉네임, 가입날짜) 파베에 추가
-    func addUserInfo(_ user: UserInfo, email: String) async {
+    func addUserInfo(_ user: UserInfo) async {
         do {
             let db = Firestore.firestore()
             
-            try await db.collection("User").document(email).setData([
+            try await db.collection("User").document(user.email).setData([
+                "uid": user.uid,
                 "nickname": user.nickname,
                 "registrationDate": Timestamp(date: user.registrationDate),
                 "preferredCategories": user.preferredCategories,
@@ -47,11 +48,12 @@ class UserInfoStore: ObservableObject {
     }
     
     // 사용자 정보 업데이트 (registrationDate는 업데이트되지 않음)
-    func updateUserInfo(_ user: UserInfo, email: String) async {
+    func updateUserInfo(_ user: UserInfo) async {
         do {
             let db = Firestore.firestore()
             
-            try await db.collection("User").document(email).setData([
+            try await db.collection("User").document(user.email).setData([
+                "uid": user.uid,
                 "nickname": user.nickname,
                 "preferredCategories": user.preferredCategories,
                 "profileImageName": user.profileImageName,
@@ -79,6 +81,7 @@ class UserInfoStore: ObservableObject {
                 return
             }
             
+            let uid: String = docData["uid"] as? String ?? ""
             let nickname: String = docData["nickname"] as? String ?? ""
             let registrationDate: Date = (docData["registrationDate"] as? Timestamp)?.dateValue() ?? Date()
             let preferredCategories: [String] = docData["preferredCategories"] as? [String] ?? []
@@ -91,6 +94,8 @@ class UserInfoStore: ObservableObject {
             
             // `userInfoStore` 업데이트
             self.userInfo = UserInfo(
+                uid: uid,
+                email: email,
                 nickname: nickname,
                 registrationDate: registrationDate,
                 preferredCategories: preferredCategories,
@@ -131,14 +136,14 @@ class UserInfoStore: ObservableObject {
     }
     
     // 메모 개수
-    func getMemoCount(userNickname: String) async throws -> Int {
-        let memos = try await memoStore.loadMemosByUserNickname(userNickname: userNickname)
+    func getMemoCount(email: String) async throws -> Int {
+        let memos = try await memoStore.loadMemosByUserEmail(email: email)
         return memos.count
     }
     
     // 칼럼 개수
-    func getColumnCount(userNickname: String) async throws -> Int {
-        let columns = try await columnStore.loadColumnsByUserNickname(userNickname: userNickname)
+    func getColumnCount(email: String) async throws -> Int {
+        let columns = try await columnStore.loadColumnsByUserEmail(email: email)
         return columns.count
     }
     

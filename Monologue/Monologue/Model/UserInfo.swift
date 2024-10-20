@@ -10,6 +10,8 @@ import FirebaseCore
 import FirebaseFirestore
 
 struct UserInfo: Codable, Hashable {
+    var uid: String // uid
+    var email: String  // email
     var nickname: String // 닉네임
     var registrationDate: Date  // 가입날짜
     var preferredCategories: [String] // 선호 카테고리
@@ -30,6 +32,8 @@ struct UserInfo: Codable, Hashable {
     init(document: QueryDocumentSnapshot) {
         let docData = document.data()
         
+        self.uid = document.documentID
+        self.email = docData["email"] as? String ?? ""
         self.nickname = docData["nickname"] as? String ?? ""
         self.preferredCategories = docData["preferredCategories"] as? [String] ?? []
         self.profileImageName = docData["profileImageName"] as? String ?? ""
@@ -46,7 +50,9 @@ struct UserInfo: Codable, Hashable {
         }
     }
     
-    init(nickname: String, registrationDate: Date, preferredCategories: [String], profileImageName: String, introduction: String, followers: [String], followings: [String], blocked: [String], likes: [String]) {
+    init(uid:String, email: String, nickname: String, registrationDate: Date, preferredCategories: [String], profileImageName: String, introduction: String, followers: [String], followings: [String], blocked: [String], likes: [String]) {
+        self.uid = uid
+        self.email = email
         self.nickname = nickname
         self.preferredCategories = preferredCategories
         self.profileImageName = profileImageName

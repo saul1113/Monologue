@@ -19,21 +19,44 @@ class MemoStore: ObservableObject {
     func addMemo(memo: Memo, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         
-        db.collection("Memo").document(memo.id).setData([
+        let memoRef = db.collection("Memo").document(memo.id)
+        memoRef.setData([
             "content": memo.content,
+            "email": memo.email,
             "userNickname": memo.userNickname,
             "font": memo.font,
             "backgroundImageName": memo.backgroundImageName,
             "categories": memo.categories,
             "likes": memo.likes,
-            "comments": memo.comments,
             "date": Timestamp(date: memo.date),
             "lineCount": memo.lineCount
         ]) { error in
             if let error = error {
                 completion(error)
-            } else {
-                completion(nil)
+                return
+            }
+            
+            let dispatchGroup = DispatchGroup()
+            
+            if let comments = memo.comments {
+                for comment in comments {
+                    dispatchGroup.enter()
+                    let commentRef = memoRef.collection("comments").document(comment.id)
+                    commentRef.setData([
+                        "content": comment.content,
+                        "date": comment.date,
+                        "userNickname": comment.userNickname
+                    ]) { error in
+                        if let error = error {
+                            completion(error)
+                        }
+                        dispatchGroup.leave()
+                    }
+                }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                completion(nil) // 모든 댓글이 추가된 후 완료
             }
         }
     }
@@ -41,17 +64,29 @@ class MemoStore: ObservableObject {
     func addMemo(memo: Memo) async throws {
         let db = Firestore.firestore()
         
-        try await db.collection("Memo").document(memo.id).setData([
+        let memoRef = db.collection("Memo").document(memo.id)
+        try await memoRef.setData([
             "content": memo.content,
+            "email": memo.email,
             "userNickname": memo.userNickname,
             "font": memo.font,
             "backgroundImageName": memo.backgroundImageName,
             "categories": memo.categories,
             "likes": memo.likes,
-            "comments": memo.comments,
             "date": Timestamp(date: memo.date),
             "lineCount": memo.lineCount
         ])
+        
+        if let comments = memo.comments {
+            for comment in comments {
+                let commentRef = memoRef.collection("comments").document(comment.id)
+                try await commentRef.setData([
+                    "content": comment.content,
+                    "date": comment.date,
+                    "userNickname": comment.userNickname
+                ])
+            }
+        }
     }
     
     // MARK: - 메모 전체 로드
@@ -67,10 +102,16 @@ class MemoStore: ObservableObject {
             var memos: [Memo] = []
             
             for document in querySnapshot!.documents {
-                let memo = Memo(document: document)
-                
-                memos.append(memo)
-                self.memos = memos
+                Task {
+                    do {
+                        let memo = try await Memo(document: document)
+                        
+                        memos.append(memo)
+                        self.memos = memos
+                    } catch {
+                        print("loadMemos error: \(error.localizedDescription)")
+                    }
+                }
             }
             completion(memos, nil)
         }
@@ -84,26 +125,36 @@ class MemoStore: ObservableObject {
             
             var memos: [Memo] = []
             
-            for document in querySnapshot.documents {
-                let memo = Memo(document: document)
-                memos.append(memo)
+            for document in querySnapshot.documents {                
+                do {
+                    let memo = try await Memo(document: document)
+                    
+                    memos.append(memo)
+                    self.memos = memos
+                    
+                    
+                } catch {
+                    print("loadMemos error: \(error.localizedDescription)")
+                    
+                    return []
+                }
             }
-            
-            self.memos = memos
-            return memos
         } catch {
             print("loadMemos error: \(error.localizedDescription)")
-            throw error
+            
+            return []
         }
+        
+        return memos
     }
     
     
-    // MARK: - 메모 유저 닉네임으로 로드
-    func loadMemosByUserNickname(userNickname: String, completion: @escaping ([Memo]?, Error?) -> Void) {
+    // MARK: - 메모 유저 이메일로 로드
+    func loadMemosByUserEmail(email: String, completion: @escaping ([Memo]?, Error?) -> Void) {
         let db = Firestore.firestore()
         
         db.collection("Memo")
-            .whereField("userNickname", isEqualTo: userNickname)
+            .whereField("email", isEqualTo: email)
             .getDocuments { (querySnapshot, error) in
                 if let error = error {
                     completion(nil, error)
@@ -113,26 +164,39 @@ class MemoStore: ObservableObject {
                 var memos: [Memo] = []
                 
                 for document in querySnapshot!.documents {
-                    let memo = Memo(document: document)
-                    
-                    memos.append(memo)
+                    Task {
+                        do {
+                            let memo = try await Memo(document: document)
+                            
+                            memos.append(memo)
+                            self.memos = memos
+                        } catch {
+                            print("loadMemosByUserEmail error: \(error.localizedDescription)")
+                        }
+                    }
                 }
                 completion(memos, nil)
             }
     }
     
-    func loadMemosByUserNickname(userNickname: String) async throws -> [Memo] {
+    func loadMemosByUserEmail(email: String) async throws -> [Memo] {
         let db = Firestore.firestore()
         
         let querySnapshot = try await db.collection("Memo")
-            .whereField("userNickname", isEqualTo: userNickname)
+            .whereField("email", isEqualTo: email)
             .getDocuments()
         
         var memos: [Memo] = []
         
         for document in querySnapshot.documents {
-            let memo = Memo(document: document)
-            memos.append(memo)
+            do {
+                let memo = try await Memo(document: document)
+                
+                memos.append(memo)
+                self.memos = memos
+            } catch {
+                print("loadMemosByUserEmail error: \(error.localizedDescription)")
+            }
         }
         
         return memos
@@ -153,9 +217,16 @@ class MemoStore: ObservableObject {
                 var memos: [Memo] = []
                 
                 for document in querySnapshot!.documents {
-                    let memo = Memo(document: document)
-                    
-                    memos.append(memo)
+                    Task {
+                        do {
+                            let memo = try await Memo(document: document)
+                            
+                            memos.append(memo)
+                            self.memos = memos
+                        } catch {
+                            print("loadMemosByCategories error: \(error.localizedDescription)")
+                        }
+                    }
                 }
                 
                 completion(memos, nil)
@@ -172,8 +243,14 @@ class MemoStore: ObservableObject {
         var memos: [Memo] = []
         
         for document in querySnapshot.documents {
-            let memo = Memo(document: document)
-            memos.append(memo)
+            do {
+                let memo = try await Memo(document: document)
+                
+                memos.append(memo)
+                self.memos = memos
+            } catch {
+                print("loadMemosByCategories error: \(error.localizedDescription)")
+            }
         }
         
         return memos
@@ -207,7 +284,7 @@ class MemoStore: ObservableObject {
     }
     
     // MARK: - 좋아요 수정
-    func updateLikes(memoId: String, userNickname: String, completion: @escaping (Error?) -> Void) {
+    func updateLikes(memoId: String, email: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         
         loadMemoLikes(memoId: memoId) { likes, error in
@@ -218,10 +295,10 @@ class MemoStore: ObservableObject {
             
             var tempLikes: [String] = likes ?? []
             
-            if tempLikes.contains(userNickname) {
-                tempLikes.remove(at: tempLikes.firstIndex(of: userNickname)!)
+            if tempLikes.contains(email) {
+                tempLikes.remove(at: tempLikes.firstIndex(of: email)!)
             } else {
-                tempLikes.append(userNickname)
+                tempLikes.append(email)
             }
             
             db.collection("Memo").document(memoId).updateData([
@@ -236,7 +313,7 @@ class MemoStore: ObservableObject {
         }
     }
     
-    private func loadMemoLikes(memoId: String, completion: @escaping ([String]?, Error?) -> Void) {
+    func loadMemoLikes(memoId: String, completion: @escaping ([String]?, Error?) -> Void) {
         let db = Firestore.firestore()
         
         db.collection("Memo").document(memoId).getDocument { (document, error) in
@@ -255,17 +332,17 @@ class MemoStore: ObservableObject {
         }
     }
     
-    func updateLikes(memoId: String, userNickname: String) async throws {
+    func updateLikes(memoId: String, email: String) async throws {
         let db = Firestore.firestore()
         
         let likes = try await loadMemoLikes(memoId: memoId)
         
         var tempLikes: [String] = likes ?? []
         
-        if tempLikes.contains(userNickname) {
-            tempLikes.remove(at: tempLikes.firstIndex(of: userNickname)!)
+        if tempLikes.contains(email) {
+            tempLikes.remove(at: tempLikes.firstIndex(of: email)!)
         } else {
-            tempLikes.append(userNickname)
+            tempLikes.append(email)
         }
         
         try await db.collection("Memo").document(memoId).updateData([
@@ -273,7 +350,7 @@ class MemoStore: ObservableObject {
         ])
     }
     
-    private func loadMemoLikes(memoId: String) async throws -> [String]? {
+    func loadMemoLikes(memoId: String) async throws -> [String]? {
         let db = Firestore.firestore()
         
         let document = try await db.collection("Memo").document(memoId).getDocument()
@@ -287,7 +364,7 @@ class MemoStore: ObservableObject {
     }
     
     // MARK: - 댓글 수정
-    func updateComment(memoId: String, userNickname: String, completion: @escaping (Error?) -> Void) {
+    func updateComment(memoId: String, email: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         
         loadMemoComment(memoId: memoId) { comments, error in
@@ -298,10 +375,10 @@ class MemoStore: ObservableObject {
             
             var tempComments: [String] = comments ?? []
             
-            if tempComments.contains(userNickname) {
-                tempComments.remove(at: tempComments.firstIndex(of: userNickname)!)
+            if tempComments.contains(email) {
+                tempComments.remove(at: tempComments.firstIndex(of: email)!)
             } else {
-                tempComments.append(userNickname)
+                tempComments.append(email)
             }
             
             db.collection("Memo").document(memoId).updateData([
@@ -316,7 +393,7 @@ class MemoStore: ObservableObject {
         }
     }
 
-    private func loadMemoComment(memoId: String, completion: @escaping ([String]?, Error?) -> Void) {
+    func loadMemoComment(memoId: String, completion: @escaping ([String]?, Error?) -> Void) {
         let db = Firestore.firestore()
         
         db.collection("Memo").document(memoId).getDocument { (document, error) in
@@ -335,17 +412,17 @@ class MemoStore: ObservableObject {
         }
     }
     
-    func updateComment(memoId: String, userNickname: String) async throws {
+    func updateComment(memoId: String, email: String) async throws {
         let db = Firestore.firestore()
         
         let comments = try await loadMemoComment(memoId: memoId)
         
         var tempComments: [String] = comments ?? []
         
-        if let index = tempComments.firstIndex(of: userNickname) {
+        if let index = tempComments.firstIndex(of: email) {
             tempComments.remove(at: index)
         } else {
-            tempComments.append(userNickname)
+            tempComments.append(email)
         }
         
         try await db.collection("Memo").document(memoId).updateData([
@@ -353,7 +430,7 @@ class MemoStore: ObservableObject {
         ])
     }
 
-    private func loadMemoComment(memoId: String) async throws -> [String]? {
+    func loadMemoComment(memoId: String) async throws -> [String]? {
         let db = Firestore.firestore()
         
         let document = try await db.collection("Memo").document(memoId).getDocument()

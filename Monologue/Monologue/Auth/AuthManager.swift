@@ -30,9 +30,21 @@ class AuthManager: ObservableObject {
     @Published var photoURL: URL?
     @Published var userID: String = ""
     
+    // 로그인 버튼 클릭 후 과정 거치면 user가 무조건 생성
+    // 그러면 자동로그인 기능때문에 회원가입 시 sheet가 안띄어짐
+    // 그래서 닉네임이 존재하는지 안하는 지 체크하는 용도, user와 닉네임 없으면 sheet 띄어짐
+    @Published var nicknameExists: Bool {
+        didSet {
+            UserDefaults.standard.set(nicknameExists, forKey: "nicknameExists")
+        }
+    }
+    // LoginView에서 state로 사용했는데, 로그아웃 후 로그인 뷰에서 실시간 변화가 없어서 여기에 추가..
+    @Published var isPresented: Bool = false
+    
     init() {
+        self.nicknameExists = UserDefaults.standard.bool(forKey: "nicknameExists")
         registerAuthStateHandler()
-
+        
     }
     
     private var authStateHandler: AuthStateDidChangeListenerHandle?
@@ -51,6 +63,7 @@ class AuthManager: ObservableObject {
 extension AuthManager {
     func signOut() {
         do {
+            self.nicknameExists = false
             try Auth.auth().signOut()
         }
         catch {
@@ -101,6 +114,8 @@ extension AuthManager {
             
             let result = try await Auth.auth().signIn(with: credential)
             let firebaseUser = result.user
+            
+            self.userID = "\(firebaseUser.uid)"
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
             return true
         }
@@ -114,7 +129,6 @@ extension AuthManager {
     func checkNicknameExists(email: String) async -> Bool {
         let db = Firestore.firestore()
         let docRef = db.collection("User").document(email)
-        
         do {
             let document = try await docRef.getDocument()
             if let data = document.data(), let nickname = data["nickname"] as? String, !nickname.isEmpty {
@@ -122,6 +136,7 @@ extension AuthManager {
             }
         } catch {
             print("Error checking nickname: \(error)")
+            return false
         }
         return false
     }

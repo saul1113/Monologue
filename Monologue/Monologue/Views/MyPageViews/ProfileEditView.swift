@@ -164,7 +164,7 @@ struct ProfileEditView: View {
             userInfo.profileImageName = selectedImageName
             
             Task {
-                await userInfoStore.updateUserInfo(userInfo, email: authManager.email)
+                await userInfoStore.updateUserInfo(userInfo)
             }
         }
     }

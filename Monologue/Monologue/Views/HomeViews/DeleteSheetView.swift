@@ -63,6 +63,7 @@ struct DeleteSheetView: View {
         .sheet(isPresented: $showReportSheet) {
             ReportReasonSheetView(isPresented: $showReportSheet) { reason in
                 print("신고 사유: \(reason)")
+                isPresented = false
             }
             .presentationDetents([.fraction(0.5), .large])
             .presentationDragIndicator(.visible)

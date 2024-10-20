@@ -9,14 +9,6 @@ import SwiftUI
 import OrderedCollections
 
 struct AddUserInfoView: View {
-    @EnvironmentObject var authManager: AuthManager
-    @EnvironmentObject private var userInfoStroe: UserInfoStore
-    
-    @State private var nicknameCheckWarning: Bool = false // 닉네임 확인
-    @State private var nicknameDuplicateWarning: Bool = false // 닉네임 중복 경고
-    
-    @State private var nicknameText: String = ""
-    
     @State var dict: OrderedDictionary = [
         "전체": false,
         "오늘의 주제": false,
@@ -26,8 +18,19 @@ struct AddUserInfoView: View {
         "IT": false,
         "기타": false,
     ]
+    
+    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject private var userInfoStroe: UserInfoStore
+    
+    @State private var nicknameCheckWarning: Bool = false // 닉네임 확인
+    @State private var nicknameDuplicateWarning: Bool = false // 닉네임 중복 경고
+    @State private var nicknameText: String = ""
+    
     @Binding var isPresented: Bool
-//    @Binding var isNextView: Bool
+    
+    @EnvironmentObject private var userInfoStore: UserInfoStore
+    @State private var isShowingSheet: Bool = false
+    @State private var selectedImageName: String = ""
     
     var body: some View {
         NavigationStack {
@@ -39,8 +42,29 @@ struct AddUserInfoView: View {
             
             VStack(alignment: .leading) {
                 Spacer()
-                    .frame(height: 100)
+                      
                 VStack(alignment: .leading) {
+                    Button {
+                        isShowingSheet.toggle()
+                    } label: {
+                        ZStack {
+                            ProfileImageView(
+                                profileImageName: !selectedImageName.isEmpty ? selectedImageName : (userInfoStore.userInfo?.profileImageName ?? ""),
+                                size: 84
+                            )
+                            Image(systemName: "pencil")
+                                .bold()
+                                .frame(width: 30, height: 30)
+                                .background(Circle().fill(.white))
+                                .padding(.top, 60)
+                                .padding(.leading, 60)
+                        }
+                    }
+                    .sheet(isPresented: $isShowingSheet) {
+                        ProfileImageEditView(selectedImageName: $selectedImageName)
+                            .presentationDetents([.height(250)])
+                    }
+                    
                     TextField("사용하실 닉네임을 입력해주세요.", text: $nicknameText)
                         .padding(.horizontal, 10)
                         .frame(height: 45)
@@ -74,7 +98,6 @@ struct AddUserInfoView: View {
                     categoryView(dict: $dict)
                         .padding(.leading, -15)
                 }
-                
                 Spacer()
                 
                 Button {
@@ -94,7 +117,6 @@ struct AddUserInfoView: View {
                             } else {
                                 nicknameDuplicateWarning = false
                                 isPresented = false
-//                                isNextView = true
                                 
                                 // 선택된 카테고리 가져오기
                                 let selectedCategories = dict
@@ -102,10 +124,12 @@ struct AddUserInfoView: View {
                                     .map { $0.key } // 선택된 항목의 키를 배열로 변환
                                 
                                 let newUserInfo = UserInfo(
+                                    uid: authManager.userID,
+                                    email: authManager.email,
                                     nickname: nicknameText,
                                     registrationDate: Date(),
                                     preferredCategories: selectedCategories,
-                                    profileImageName: "",
+                                    profileImageName: selectedImageName,
                                     introduction: "",
                                     followers: [],
                                     followings: [],
@@ -113,7 +137,8 @@ struct AddUserInfoView: View {
                                     likes: []
                                 )
                                 
-                                await userInfoStroe.addUserInfo(newUserInfo, email: authManager.email)
+                                await userInfoStroe.addUserInfo(newUserInfo)
+                                authManager.nicknameExists = true // 닉네임이 있다는 것을 알림
                                 authManager.authenticationState = .authenticated // 메인뷰로 이동
                             }
                         }

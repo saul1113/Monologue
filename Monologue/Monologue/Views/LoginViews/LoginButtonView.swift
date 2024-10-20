@@ -5,8 +5,6 @@
 //  Created by 김종혁 on 10/15/24.
 //
 
-//
-
 import SwiftUI
 import CryptoKit
 import AuthenticationServices
@@ -14,7 +12,6 @@ import FirebaseAuth
 
 struct GoogleButtonView: View {
     @EnvironmentObject var authManager: AuthManager
-    @Binding var isPresented: Bool
     
     var body: some View {
         Button(action: {
@@ -23,10 +20,11 @@ struct GoogleButtonView: View {
                 if loginSuccess {
                     let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
                     if nicknameExists {
-                        isPresented = false
+                        authManager.isPresented = false
+                        authManager.nicknameExists = true // 닉네임이 있다는 것을 알림
                         authManager.authenticationState = .authenticated  // 닉네임이 존재하면 로그인 성공
                     } else {
-                        isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+                        authManager.isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
                     }
                 }
             }
@@ -55,7 +53,6 @@ struct GoogleButtonView: View {
 struct AppleButtonView: View {
     @StateObject private var appleAuth = AppleAuth()
     @EnvironmentObject var authManager: AuthManager
-    @Binding var isPresented: Bool
     
     var body: some View {
         SignInWithAppleButton(
@@ -73,9 +70,10 @@ struct AppleButtonView: View {
                             
                             if nicknameExists {
                                 authManager.authenticationState = .authenticated  // 닉네임이 존재하면 로그인 성공
-                                isPresented = false
+                                authManager.nicknameExists = true // 닉네임이 있다는 것을 알림
+                                authManager.isPresented = false
                             } else {
-                                isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+                                authManager.isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
                             }
                         }
                     }

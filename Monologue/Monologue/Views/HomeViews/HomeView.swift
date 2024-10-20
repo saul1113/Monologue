@@ -18,6 +18,7 @@ struct HomeView: View {
     @State private var isSearching: Bool = false
     @State var selectedSegment: String = "메모"
     @State private var selectedCategories: [String]? = ["전체"]
+    @State var filteredColumns: [Column] = []
     @State var dict: OrderedDictionary = [
         "전체": true,
         "오늘의 주제": false,
@@ -33,19 +34,6 @@ struct HomeView: View {
         "기타": false,
     ]
     
-    var filteredColumns: [Column] {
-//        guard !columnStore.columns.isEmpty else { return [] }
-        if selectedCategories == ["전체"] {
-            columnStore.loadColumn { columns, error in
-                columnStore.columns = columns ?? []
-            }
-            return columnStore.columns
-        } else {
-            return columnStore.columns.filter { column in
-                column.categories.contains { selectedCategories!.contains($0) }
-            }
-        }
-    }
     
     var body: some View {
         NavigationView {
@@ -54,7 +42,7 @@ struct HomeView: View {
                 
                 VStack(spacing: 0) {
                     TopBarView(searchText: $searchText, isSearching: $isSearching, selectedSegment: $selectedSegment)
-                    .transition(.move(edge: .top))
+                        .transition(.move(edge: .top))
                     
                     // 필터 버튼
                     categoryView(dict: $dict)
@@ -69,22 +57,42 @@ struct HomeView: View {
                                     dict[key] = (key == "전체")
                                 }
                             }
-//                            else if selectedCategories!.contains("전체") && selectedCategories!.count > 1 {
-//                                // "전체"와 다른 항목이 같이 선택되었을 때 "전체"를 비활성화
-//                                dict["전체"] = false
-//                            }
-//                            else if selectedCategories!.isEmpty {
-//                                // 아무 항목도 선택되지 않았을 때 "전체" 선택
-//                                dict["전체"] = true }
                             
+                            if selectedCategories == ["전체"] {
+                                Task {
+                                    self.filteredColumns = try await columnStore.loadColumn()
+                                }
+                            } else {
+                                Task {
+                                    self.filteredColumns = try await columnStore.loadColumn().filter { column in
+                                        column.categories.contains { selectedCategories!.contains($0) }
+                                    }
+                                }
+                            }
                         }
-                    if selectedSegment == "메모" {
-                        MemoView(filters: $selectedCategories)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else if selectedSegment == "칼럼" {
-                        ColumnView(filteredColumns: filteredColumns)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
+                    GeometryReader { geometry in
+                        HStack(spacing: 0) {
+                            MemoView(filters: $selectedCategories)
+                                .frame(width: geometry.size.width)
+                                .clipped()
+                            
+                            ColumnView(filteredColumns: $filteredColumns)
+                                .frame(width: geometry.size.width)
+                                .clipped()
+                        }
+                        .frame(width: geometry.size.width * 2)
+                        .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                        .animation(.easeInOut, value: selectedSegment)
+                        .gesture(
+                            DragGesture()
+                                .onEnded { value in
+                                    if value.translation.width > 100 {
+                                        selectedSegment = "메모"
+                                    } else if value.translation.width < -100 {
+                                        selectedSegment = "칼럼"
+                                    }
+                                }
+                        )
                     }
                 }
                 VStack {
@@ -97,6 +105,10 @@ struct HomeView: View {
         }
         .onAppear {
             UIScrollView.appearance().bounces = true
+            
+            Task {
+                self.filteredColumns = try await columnStore.loadColumn()
+            }
         }
     }
 }

@@ -16,8 +16,12 @@ struct PostView: View {
     @EnvironmentObject private var authManager:AuthManager
     @EnvironmentObject private var memoImageStore: MemoImageStore
     
-    @State private var text: String = ""
-    @State private var selectedFont: String = "기본서체"
+    @Binding var selectedTab: Int
+    
+    
+    @State private var memoText: String = ""
+    @State private var columnText: String = ""
+    @State private var selectedFont: String = "San Francisco"
     @State private var selectedBackgroundImageName: String = "jery1"
     
     @State private var title: String = ""
@@ -28,35 +32,43 @@ struct PostView: View {
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     
+    
+    
+//    @State private var navigateToHome: Bool = false // 홈 뷰로의 이동 상태
+
+    
     var body: some View {
-        ZStack {
-            Color(.background)
-                .ignoresSafeArea()
-            VStack {
-                HStack {
-                    
-                    
-                        Text("Post")
-                        .font(.headline)
-                        
-                    Spacer()
+        NavigationStack {
+            ZStack {
+                Color(.background)
+                    .ignoresSafeArea()
+                ScrollView {
+                    VStack {
+                        HStack {
+                            Text("Post")
+                                .font(.headline)
+                            
+                            Spacer()
                             Button(action: {
                                 if selectedSegment == "메모" {
                                     // 메모 저장 처리
-                                    let newMemo = Memo(content: text,
+                                    let newMemo = Memo(content: memoText,
+                                                       email: userInfoStore.userInfo?.email ?? "",
                                                        userNickname: userInfoStore.userInfo?.nickname ?? "",
                                                        font: selectedFont,
                                                        backgroundImageName: selectedBackgroundImageName,
                                                        categories: selectedMemoCategories,
                                                        likes: [],
-                                                       comments: [],
                                                        date: Date(),
-                                                       lineCount: lineCount)
+                                                       lineCount: lineCount,
+                                                       comments: [])
                                     memoStore.addMemo(memo: newMemo) { error in
                                         if let error = error {
                                             print("Error adding memo: \(error)")
                                         } else {
-                                            dismiss()
+                                            DispatchQueue.main.async {
+                                                selectedTab = 0
+                                            }
                                             restFields()
                                         }
                                     }
@@ -66,20 +78,21 @@ struct PostView: View {
                                 } else if selectedSegment == "칼럼" {
                                     let newColumn = Column(
                                         title: title,
-                                        content: text,
+                                        content: columnText,
+                                        email: userInfoStore.userInfo?.email ?? "",
                                         userNickname: userInfoStore.userInfo?.nickname ?? "",
-                                        font: "",
-                                        backgroundImageName: "",
                                         categories: selectedColumnCategories,
                                         likes: [],
-                                        comments: [],
-                                        date: Date()
+                                        date: Date(),
+                                        comments: []
                                     )
                                     columnStore.addColumn(column: newColumn) { error in
                                         if let error = error {
                                             print("Error adding column: \(error)")
                                         } else {
-                                            dismiss()
+                                            DispatchQueue.main.async {
+                                                selectedTab = 0
+                                            }
                                             restFields()
                                         }
                                     }
@@ -88,39 +101,42 @@ struct PostView: View {
                                 Text("발행")
                                     .foregroundColor(.accent)
                             }
+                        }
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 16)
                         
-                    
-                }
-                .padding(.vertical, 10)
-                .padding(.horizontal, 16)
-                
-                CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
-                
-                if selectedSegment == "메모" {
-                    MemoWritingView(text: $text, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
-                                    lineCount: $lineCount)
-                    
-                } else if selectedSegment == "칼럼" {
-                    ColumnWritingView(title: $title, text: $text, selectedColumnCategories: $selectedColumnCategories)
-                    
+                        CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                        
+                        if selectedSegment == "메모" {
+                            MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
+                                            lineCount: $lineCount)
+                        } else if selectedSegment == "칼럼" {
+                            ColumnWritingView(title: $title, columnText: $columnText, selectedColumnCategories: $selectedColumnCategories)
+                        }
+                    }
                 }
             }
-            
         }
         .onAppear {
+            for family in UIFont.familyNames {
+                print("Font Family: \(family)")
+                for font in UIFont.fontNames(forFamilyName: family) {
+                    print("  Font Name: \(font)")
+                }
+            }
             Task {
                 // 유저의 정보 로드
                 await userInfoStore.loadUserInfo(email: authManager.email)
                 
                 // 유저의 메모 로드
-                memoStore.loadMemosByUserNickname(userNickname: authManager.name) { memos, error in
+                memoStore.loadMemosByUserEmail(email: authManager.email) { memos, error in
                     if let memos = memos {
                         userMemos = memos
                     }
                 }
                 
                 // 유저의 칼럼 로드
-                columnStore.loadColumnsByUserNickname(userNickname: authManager.name) { columns, error in
+                columnStore.loadColumnsByUserEmail(email: authManager.email) { columns, error in
                     if let columns = columns {
                         userColumns = columns
                     }
@@ -128,7 +144,7 @@ struct PostView: View {
             }
         }
         .onChange(of: selectedSegment) { newSegment in
-            text = ""
+            
             selectedMemoCategories = ["오늘의 주제"]
             selectedColumnCategories = ["오늘의 주제"]
             
@@ -141,12 +157,13 @@ struct PostView: View {
     
     private func restFields() {
         title = ""
-        text = ""
+        memoText = ""
+        columnText = ""
         selectedMemoCategories = ["오늘의 주제"]
         selectedColumnCategories = ["오늘의 주제"]
         
         if selectedSegment == "메모" {
-            selectedFont = "기본서체"
+            selectedFont = "San Francisco"
             selectedBackgroundImageName = "jery1"
         }
     }

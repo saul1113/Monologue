@@ -8,67 +8,82 @@
 import SwiftUI
 
 struct ColumnDetail: View {
-    @ObservedObject var columnStore = ColumnStore()
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @EnvironmentObject var columnStore: ColumnStore
+    @EnvironmentObject var commentStore: CommentStore
     @State private var isLiked: Bool = false
     @State private var likesCount: Int = 0
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [String] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
-    @State private var selectedComment: String?
+    @State private var selectedComment: Comment?
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    var column: Column
+    @Binding var column: Column
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Color("#FFF8ED")
-                    .edgesIgnoringSafeArea(.all)
+                Color.background
+                    .ignoresSafeArea()
                 
-                VStack(spacing: 0) {
+                VStack {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
+                        VStack(alignment: .leading) {
                             // 게시글 섹션
                             VStack(alignment: .leading, spacing: 16) {
                                 ColumnHeaderView(
-                                    column: column,
+                                    column: $column,
                                     likesCount: $likesCount,
                                     isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
                                     isCommentFieldFocused: $isCommentFieldFocused,
-                                    commentCount: displayedComments.count // 댓글 개수를 전달
+                                    commentCount: column.comments?.count ?? 0 // 댓글 개수를 전달
                                 )
                             }
-                            .padding(16)
                             .background(Color.white)
                             .cornerRadius(12)
                             
                             Divider()
+                                .padding(.bottom, 8)
+                            
+                            Text("댓글 \(column.comments?.count ?? 0)")
+                                .font(.footnote)
+                                .bold()
+                                .padding(.bottom, 8)
                             
                             VStack(alignment: .leading, spacing: 0) {
-                                CommentListView(displayedComments: $displayedComments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
-                                Divider()
+                                CommentListView(displayedComments: $column.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                             }
-                            .padding(16)
+                            .padding(.bottom, 8)
                             .background(Color.white)
                             .cornerRadius(12)
                             //                            .padding(.horizontal, 16)
                         }
-                        .padding(.vertical)
+                        .padding(16)
+                        .background(Color.white)
+                        .cornerRadius(14)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        }
+                        .padding(.horizontal, 16)
                     }
                     
                     // 하단에 고정된 댓글 입력 필드
                     CommentTextInputView(newComment: $newComment, isCommentFieldFocused: $isCommentFieldFocused, addComment: addComment)
                         .padding(.horizontal)
-                        .background(Color.white) // 하단 배경색을 흰색으로 설정
+                    //                        .background(Color.white) // 하단 배경색을 흰색으로 설정
                 }
+            }
+            .onTapGesture {
+                UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }
             .onAppear {
                 likesCount = column.likes.count
-                displayedComments = column.comments
+                //displayedComments = column.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -87,55 +102,67 @@ struct ColumnDetail: View {
                         Image(systemName: "chevron.backward")
                     }
                 }
+                ToolbarItem(placement: .principal) {
+                    Text("칼럼")
+                        .font(.headline)
+                        .foregroundColor(Color.accentColor)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showShareSheet = true
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(.gray)
+                    }
+                }
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
     func addComment() {
         if !newComment.isEmpty {
-            displayedComments.append(newComment)
-            columnStore.updateComment(columnId: column.id, userNickname: "사용자닉네임") { error in
-                if let error = error {
-                    print("Error updating comment: \(error.localizedDescription)")
-                } else {
-                    print("Comment updated successfully.")
-                }
+            print(userInfoStore.userInfo?.email ?? "")
+            let tempComment = Comment(userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                      content: newComment,
+                                      date: Date.now)
+            Task {
+                try await commentStore.addComment(columnId: column.id, comment: tempComment)
+                column.comments?.append(tempComment)
+                newComment = ""
             }
-            newComment = ""
         }
     }
-    
     func deleteComment() {
         guard let commentToDelete = selectedComment else { return }
-        displayedComments.removeAll { $0 == commentToDelete }
-        columnStore.updateComment(columnId: column.id, userNickname: commentToDelete) { error in
-            if let error = error {
-                print("Error deleting comment: \(error.localizedDescription)")
-            } else {
-                print("Comment deleted successfully.")
-            }
+        
+        Task {
+            try await commentStore.deleteComment(columnId: column.id, commentId: commentToDelete.id)
+            column.comments?.removeAll { $0 == commentToDelete }
         }
+        
         selectedComment = nil
     }
 }
 
-extension Color {
-    init(_ hex: String) {
-        let scanner = Scanner(string: hex)
-        _ = scanner.scanString("#")
-        
-        var rgb: UInt64 = 0
-        scanner.scanHexInt64(&rgb)
-        
-        let r = Double((rgb >> 16) & 0xFF) / 255.0
-        let g = Double((rgb >> 8) & 0xFF) / 255.0
-        let b = Double(rgb & 0xFF) / 255.0
-        
-        self.init(red: r, green: g, blue: b)
-    }
-}
+//extension Color {
+//    init(_ hex: String) {
+//        let scanner = Scanner(string: hex)
+//        _ = scanner.scanString("#")
+//        
+//        var rgb: UInt64 = 0
+//        scanner.scanHexInt64(&rgb)
+//        
+//        let r = Double((rgb >> 16) & 0xFF) / 255.0
+//        let g = Double((rgb >> 8) & 0xFF) / 255.0
+//        let b = Double(rgb & 0xFF) / 255.0
+//        
+//        self.init(red: r, green: g, blue: b)
+//    }
+//}
 
-#Preview {
-    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", userNickname: "북극성", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["댓글 1", "댓글 2"], date: Date()))
-        .environmentObject(ColumnStore())
-}
+//#Preview {
+//    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", email: "Test Email", userNickname: "북극성", categories: ["에세이"], likes: [], date: Date(), comments: []))
+//        .environmentObject(ColumnStore())
+//        .environmentObject(CommentStore())
+//}

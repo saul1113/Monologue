@@ -139,7 +139,7 @@ struct UserProfileView: View {
                             MemoView(filters: $filters, userMemos: userMemos)
                                 .frame(width: geometry.size.width)
                             
-                            ColumnView(filteredColumns: userColumns)
+                            ColumnView(filteredColumns: $userColumns)
                                 .frame(width: geometry.size.width)
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
@@ -208,8 +208,8 @@ struct UserProfileView: View {
     // 유저 메모 및 칼럼 업데이트
     private func loadUserInfo() async {
         do {
-            userMemos = try await memoStore.loadMemosByUserNickname(userNickname: userInfo.nickname)
-            userColumns = try await columnStore.loadColumnsByUserNickname(userNickname: userInfo.nickname)
+            userMemos = try await memoStore.loadMemosByUserEmail(email: userInfo.email)
+            userColumns = try await columnStore.loadColumnsByUserEmail(email: userInfo.email)
         } catch {
             print("Error loading memos or columns: \(error.localizedDescription)")
         }
@@ -217,7 +217,7 @@ struct UserProfileView: View {
 }
 
 #Preview {
-    UserProfileView(userInfo: UserInfo(nickname: "피곤해",
+    UserProfileView(userInfo: UserInfo(uid: "test", email: "e.e@com", nickname: "피곤해",
                                        registrationDate: Date(),
                                        preferredCategories: [],
                                        profileImageName: "profileImage2",

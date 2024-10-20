@@ -8,47 +8,49 @@
 import SwiftUI
 
 struct CommentListView: View {
-    @Binding var displayedComments: [String]
-    @Binding var selectedComment: String?
+    @Binding var displayedComments: [Comment]?
+    @Binding var selectedComment: Comment?
     @Binding var showDeleteSheet: Bool
     @State var date: Date = .init()
     
     var body: some View {
-        ForEach(displayedComments, id: \.self) { comment in
-            HStack(alignment: .top, spacing: 16) {
-                // 프로필 이미지
-                Image(systemName: "person.circle")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .clipShape(Circle())
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("닉네임")
-                        .font(.subheadline)
+        if displayedComments != nil {
+            ForEach(displayedComments ?? [], id: \.self) { comment in
+                HStack(alignment: .top, spacing: 16) {
+                    // 프로필 이미지
+                    Image(systemName: "person.circle")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .clipShape(Circle())
                     
-                    Text(displayTimeSince(postDate: date))
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                    Text(comment)
-                        .font(.footnote)
-                        .foregroundColor(.black)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(comment.userNickname)
+                            .font(.subheadline)
+                        
+                        Text(displayTimeSince(postDate: comment.date))
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                        Text(comment.content)
+                            .font(.footnote)
+                            .foregroundColor(.black)
+                    }
+                    Spacer()
+                    
+                    Button(action: {
+                        selectedComment = comment
+                        showDeleteSheet = true
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(.gray)
+                    }
                 }
-                Spacer()
-                
-                Button(action: {
-                    selectedComment = comment
-                    showDeleteSheet = true
-                }) {
-                    Image(systemName: "ellipsis")
-                        .foregroundColor(.gray)
-                }
+                .padding(.vertical, 16) // 댓글 간의 상하 여백
+                Divider()
             }
-            .padding(.vertical, 16) // 댓글 간의 상하 여백
-            Divider()
         }
     }
     
-    // 날짜 표시 함수
+    // 댓글 작성 날짜/시간 표시 함수
     func displayTimeSince(postDate: Date) -> String {
             let calendar = Calendar.current
             let currentDate = Date()

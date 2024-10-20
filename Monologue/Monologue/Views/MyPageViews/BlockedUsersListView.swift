@@ -84,8 +84,8 @@ struct BlockedUsersListView: View {
                 blockedUsers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked)
                 
                 for blockedUser in blockedUsers {
-                    memoCount[blockedUser.nickname] = try await userInfoStore.getMemoCount(userNickname: blockedUser.nickname)
-                    columnCount[blockedUser.nickname] = try await userInfoStore.getColumnCount(userNickname: blockedUser.nickname)
+                    memoCount[blockedUser.nickname] = try await userInfoStore.getMemoCount(email: blockedUser.email)
+                    columnCount[blockedUser.nickname] = try await userInfoStore.getColumnCount(email: blockedUser.email)
                 }
             } catch {
                 print("Error loading blocked users or counts: \(error.localizedDescription)")

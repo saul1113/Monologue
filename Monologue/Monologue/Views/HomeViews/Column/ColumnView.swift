@@ -11,30 +11,28 @@ struct ColumnView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Environment(\.dismiss) private var dismiss
-    var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
+    @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
     var body: some View {
-        NavigationView {
-            ZStack(alignment: .leading) {
-                Color.background.ignoresSafeArea()
-                VStack {
-                    List {
-                        ForEach(filteredColumns) { post in
-                            ZStack {
-                                // NavigationLink를 ZStack의 투명한 레이어로 만들어 클릭 영역으로만 사용
-                                NavigationLink(destination: ColumnDetail(column: post)) {
-                                    EmptyView()
-                                }
-                                .opacity(0) // NavigationLink는 보이지 않도록 설정
-                                PostRow(column: post) // PostRow는 항상 보이도록 설정
+        ZStack(alignment: .leading) {
+            Color.background.ignoresSafeArea()
+            
+            VStack {
+                List {
+                    ForEach($filteredColumns) { $post in
+                        ZStack {
+                            NavigationLink(destination: ColumnDetail(column: $post)) {
+                                EmptyView()
                             }
-                            .buttonStyle(PlainButtonStyle())
-                            .listRowBackground(Color.background)
+                            .opacity(0)  // NavigationLink는 보이지 않도록 설정
                             
+                            PostRow(column: $post)  // PostRow는 항상 보이도록 설정
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        .listRowBackground(Color.background)
                     }
-                    .listStyle(PlainListStyle())
                 }
+                .listStyle(PlainListStyle())
             }
         }
     }
@@ -42,7 +40,7 @@ struct ColumnView: View {
 
 // 게시물 리스트에서 각 항목을 표시하는 뷰
 struct PostRow: View {
-    let column: Column
+    @Binding var column: Column
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -66,7 +64,7 @@ struct PostRow: View {
                 .font(.body)
                 .foregroundStyle(.black)
                 .font(Font.headline.weight(.bold))
-            
+                .padding(.bottom, 2)
             HStack {
                 Text(column.content) // 칼럼 내용 표시
                     .font(.caption)
@@ -74,12 +72,13 @@ struct PostRow: View {
                     .font(Font.caption.weight(.thin))
                     .lineLimit(3) // 3 줄까지만 표시
             }
+            .padding(.leading, 2)
             
             HStack {
                 HStack {
                     Image(systemName: "bubble.right")
                         .foregroundColor(.gray)
-                    Text("\(column.comments.count)")  // 댓글 수 표시
+                    Text("\(String(describing: column.comments?.count ?? 0))")  // 댓글 수 표시
                         .font(.subheadline)
                 }
                 
@@ -135,7 +134,7 @@ struct PostRow: View {
 //            Column(title: "title1", content: "Sample Column 1", userNickname: "User1", font: "", backgroundImageName: "", categories: ["에세이"], likes: [], comments: ["Comment 1", "Comment 2"], date: Date()),
 //            Column(title: "title2", content: "Sample Column 2", userNickname: "User2", font: "", backgroundImageName: "", categories: ["사랑"], likes: ["User1"], comments: [], date: Date())
 //        ]
-//        
+//
 //        NavigationView {
 //            ColumnView(filteredColumns: sampleColumns)
 //                .environmentObject(ColumnStore())
