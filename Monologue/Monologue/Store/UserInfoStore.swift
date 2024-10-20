@@ -219,4 +219,13 @@ class UserInfoStore: ObservableObject {
             print("Error unfollowing user: \(error)")
         }
     }
+    
+    // 특정 유저를 팔로우하고 있는지 확인
+    func checkIfFollowing(targetUserEmail: String) -> Bool {
+        guard let currentUser = userInfo else {
+            return false
+        }
+        
+        return currentUser.followings.contains(targetUserEmail)
+    }
 }
