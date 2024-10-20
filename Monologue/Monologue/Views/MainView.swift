@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct MainView: View {
+    // PostView에 바인딩 하는 변수, 선택시 탭뷰로 이동하는 변수
+    @State private var selectedTab: Int = 0
+    
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             Group {
                 HomeView()
                     .tabItem {
@@ -18,14 +21,16 @@ struct MainView: View {
                             Text("Home")
                         }
                     }
+                    .tag(0)
                 
-                PostView()
+                PostView(selectedTab: $selectedTab)
                     .tabItem {
                         VStack {
                             Image(systemName: "plus.circle")
                             Text("Post")
                         }
                     }
+                    .tag(1)
                 
                 MyPageView()
                     .tabItem {
@@ -34,6 +39,7 @@ struct MainView: View {
                             Text("My Page")
                         }
                     }
+                    .tag(2)
             }
             .toolbarBackground(Color.background, for: .tabBar)
             

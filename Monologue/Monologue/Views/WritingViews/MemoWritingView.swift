@@ -8,23 +8,25 @@
 import SwiftUI
 
 struct MemoWritingView: View {
-    @Binding var text: String
+    @Binding var memoText: String
     @Binding var selectedFont: String
     @Binding var selectedMemoCategories: [String]
     @Binding var selectedBackgroundImageName: String
     @Binding var lineCount: Int
-
+    
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager: AuthManager
-
+    
     let rows = [GridItem(.fixed(50))]
     
     let placeholder: String = "문장을 입력해 주세요."
-    let fontOptions = ["기본서체", "고펍바탕", "노토세리프", "나눔바른펜", "나눔스퀘어"]
+    let fontOptions = ["기본서체",  "노트셰리프", "고펍바탕", "나눔스퀘어", "나눔바른펜"]
+    let fontFileNames = ["San Francisco", "NotoSerifKR-Regular", "KoPubWorldBatangPM", "NanumSquareOTFR", "NanumBarunpenOTF"] // 폰트 파일 이름
+    
     let categoryOptions = ["오늘의 주제", "에세이", "사랑", "자연", "시", "자기계발", "추억", "소설", "SF", "IT", "기타"]
     let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"]
-
+    
     let lineHeight: CGFloat = 24
     
     // FocusState 변수를 선언하여 TextEditor의 포커스 상태를 추적
@@ -44,8 +46,8 @@ struct MemoWritingView: View {
                                 .clipped()
                             
                             GeometryReader { geometry in
-                                TextEditor(text: $text)
-                                    .font(.system(.title2, design: .default, weight: .regular))
+                                TextEditor(text: $memoText)
+                                    .font(.custom(selectedFont, size: 20))
                                     .scrollContentBackground(.hidden)
                                     .background(Color.white.opacity(0.8))
                                     .frame(maxWidth: .infinity, maxHeight: 500)
@@ -54,9 +56,9 @@ struct MemoWritingView: View {
                                     .overlay {
                                         Text(placeholder)
                                             .font(.title2)
-                                            .foregroundColor(text.isEmpty ? .gray : .clear)
+                                            .foregroundColor(memoText.isEmpty ? .gray : .clear)
                                     }
-                                    .onChange(of: text) { _ in
+                                    .onChange(of: memoText) { _ in
                                         let editWidth = geometry.size.width
                                         calculateLineCount(in: editWidth)
                                     }
@@ -67,7 +69,7 @@ struct MemoWritingView: View {
                     
                     HStack {
                         Spacer()
-                        Text("\(text.count)/500")
+                        Text("\(memoText.count)/500")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -86,9 +88,9 @@ struct MemoWritingView: View {
                                 .foregroundStyle(Color.accent)
                             ScrollView(.horizontal, showsIndicators: false) {
                                 LazyHGrid(rows: rows, spacing: 10) {
-                                    ForEach(fontOptions, id: \.self) { font in
-                                        FontButton(title: font, isSelected: selectedFont == font) {
-                                            selectedFont = font
+                                    ForEach(Array(zip(fontOptions.indices, fontOptions)), id: \.0) { index, font in
+                                        FontButton(title: font, isSelected: selectedFont == fontFileNames[index]) {
+                                            selectedFont = fontFileNames[index] // 해당 폰트 파일로 변경
                                         } onFocusChange: {
                                             isTextEditorFocused = false // 포커스를 해제하여 키보드를 내리기
                                         }
@@ -164,6 +166,7 @@ struct MemoWritingView: View {
                 isTextEditorFocused = false // 다른 곳을 클릭하면 포커스 해제
             }
         }
+        
         .toolbar {
             // 키보드 위에 '완료' 버튼 추가
             ToolbarItemGroup(placement: .keyboard) {
@@ -180,7 +183,7 @@ struct MemoWritingView: View {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont(name: selectedFont, size: 17) ?? UIFont.systemFont(ofSize: 17)
         ]
-        let textHeight = (text as NSString).boundingRect(with: size, options: [.usesLineFragmentOrigin], attributes: attributes, context: nil).height
+        let textHeight = (memoText as NSString).boundingRect(with: size, options: [.usesLineFragmentOrigin], attributes: attributes, context: nil).height
         lineCount = Int(ceil(textHeight / lineHeight))
     }
 }

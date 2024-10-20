@@ -10,7 +10,7 @@ import SwiftUI
 struct ColumnWritingView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var title: String
-    @Binding var text: String
+    @Binding var columnText: String
     @State private var textLimit: Int = 2000
     @Binding var selectedColumnCategories: [String]
     
@@ -34,7 +34,7 @@ struct ColumnWritingView: View {
                         .focused($isTextEditorFocused)
                         .textFieldStyle(.roundedBorder)
                     
-                    TextEditor(text: $text)
+                    TextEditor(text: $columnText)
                         .font(.system(.title3, design: .default, weight: .regular))
                         .frame(maxWidth: .infinity, minHeight: 500, maxHeight: .infinity)
                         .cornerRadius(8)
@@ -42,20 +42,20 @@ struct ColumnWritingView: View {
                         .overlay {
                             Text(placeholder)
                                 .font(.title2)
-                                .foregroundColor(text.isEmpty ? .gray : .clear)
+                                .foregroundColor(columnText.isEmpty ? .gray : .clear)
                             
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(Color.brown, lineWidth: 1)
                         }
-                        .onReceive(text.publisher.collect()) { newValue in
+                        .onReceive(columnText.publisher.collect()) { newValue in
                             if newValue.count > textLimit {
-                                text = String(newValue.prefix(textLimit))
+                                columnText = String(newValue.prefix(textLimit))
                             }
                         }
                     
                     HStack {
                         Spacer()
-                        Text("\(text.count)/\(textLimit)")
+                        Text("\(columnText.count)/\(textLimit)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -153,5 +153,5 @@ struct CategoryColumnButton: View {
 }
 
 #Preview {
-    ColumnWritingView(title: .constant(""), text: .constant(""), selectedColumnCategories: .constant([]))
+    ColumnWritingView(title: .constant(""), columnText: .constant(""), selectedColumnCategories: .constant([]))
 }
