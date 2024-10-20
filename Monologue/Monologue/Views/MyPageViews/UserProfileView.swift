@@ -18,9 +18,9 @@ struct UserProfileView: View {
     @State var selectedSegment: String = "메모"
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
-    @State private var isShowingSheet: Bool = false
-    
-    private var sharedString: String = "MONOLOG" // 변경 예정
+    @State private var isShowingEllipsisSheet: Bool = false
+    @State private var isShowingReportSheet: Bool = false
+    @State private var isShowingBlockAlert: Bool = false
     
     @State var filters: [String]? = nil
     
@@ -145,11 +145,11 @@ struct UserProfileView: View {
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
                         .animation(.easeInOut, value: selectedSegment)
                         .gesture(
-                            DragGesture()
-                                .onEnded { value in
-                                    if value.translation.width > 100 {
+                            DragGesture(minimumDistance: 35)
+                                .onChanged { value in
+                                    if value.translation.width > 0 {
                                         selectedSegment = "메모"
-                                    } else if value.translation.width < -100 {
+                                    } else if value.translation.width < 0 {
                                         selectedSegment = "칼럼"
                                     }
                                 }
@@ -173,25 +173,27 @@ struct UserProfileView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        isShowingSheet.toggle()
+                        isShowingEllipsisSheet.toggle()
                     } label: {
                         Image(systemName: "ellipsis")
                             .font(.title3)
                     }
-                    .confirmationDialog("", isPresented: $isShowingSheet) {
-                        Button("공유하기") {
-                            
-                        }
-                        
-                        Button("차단하기", role: .destructive) {
-                            
-                        }
-                        
-                        Button("신고하기", role: .destructive) {
-                            
-                        }
-                        
-                        Button("취소", role: .cancel) {}
+                    .sheet(isPresented: $isShowingEllipsisSheet) {
+                        EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
+                                                                              action: { }),
+                                                            SheetButtonOption(type: .block,
+                                                                              action: { print("유저 차단") }),
+                                                            SheetButtonOption(type: .report,
+                                                                              action: { }),
+                                                            SheetButtonOption(type: .cancel,
+                                                                              action: { isShowingEllipsisSheet = false })],
+                                            sharedString: userInfo.nickname,
+                                            reportOrDeleteTitle: .user,
+                                            isShowingReportSheet: $isShowingReportSheet,
+                                            isShowingBlockAlert: $isShowingBlockAlert,
+                                            isShowingEllipsisSheet: $isShowingEllipsisSheet,
+                                            isShowingDeleteAlert: .constant(false))
+                        .presentationDetents([.height(250)])
                     }
                 }
             }
