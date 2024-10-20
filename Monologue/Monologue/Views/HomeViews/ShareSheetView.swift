@@ -10,21 +10,20 @@ import SwiftUI
 struct ShareSheetView: View {
     @Binding var isPresented: Bool
     @State private var showReportSheet = false
+    let sharedString: String = "MONOLOG"
     
     var body: some View {
         VStack(spacing: 0) {
             Spacer().frame(height: 16) // 상단에 고정된 여백 추가
-
-            Button(action: {
-                print("공유하기 버튼 클릭")
-                isPresented = false
-            }) {
+            
+            ShareLink(item: sharedString) {
                 Text("공유하기")
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.white)
                     .foregroundColor(.black)
             }
+            
             
             Divider()
             
@@ -49,7 +48,7 @@ struct ShareSheetView: View {
                     .background(Color.white)
                     .foregroundColor(.black)
             }
-
+            
             Spacer().frame(height: 16) // 하단 여백 추가
         }
         .background(Color(UIColor.systemGray6))
@@ -62,6 +61,7 @@ struct ShareSheetView: View {
         .sheet(isPresented: $showReportSheet) {
             ReportReasonSheetView(isPresented: $showReportSheet) { reason in
                 print("신고 사유: \(reason)")
+                isPresented = false
             }
             .presentationDetents([.fraction(0.4), .large]) // 시트 높이를 자동으로 조절
             .presentationDragIndicator(.visible)
@@ -80,7 +80,7 @@ extension View {
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
     var corners: UIRectCorner = .allCorners
-
+    
     func path(in rect: CGRect) -> Path {
         let path = UIBezierPath(roundedRect: rect,
                                 byRoundingCorners: corners,
