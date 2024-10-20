@@ -75,7 +75,6 @@ struct ColumnDetail: View {
                     // 하단에 고정된 댓글 입력 필드
                     CommentTextInputView(newComment: $newComment, isCommentFieldFocused: $isCommentFieldFocused, addComment: addComment)
                         .padding(.horizontal)
-                    //                        .background(Color.white) // 하단 배경색을 흰색으로 설정
                 }
             }
             .onTapGesture {
