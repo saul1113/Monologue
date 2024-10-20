@@ -12,9 +12,11 @@ import FirebaseAuth
 
 struct GoogleButtonView: View {
     @EnvironmentObject var authManager: AuthManager
+    @State var loadingGoogleLogin: Bool = false // 로그인 중 표시할려고 사용
     
     var body: some View {
         Button(action: {
+            loadingGoogleLogin = true
             Task {
                 let loginSuccess = await authManager.signInWithGoogle()
                 if loginSuccess {
@@ -27,15 +29,21 @@ struct GoogleButtonView: View {
                         authManager.isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
                     }
                 }
+                loadingGoogleLogin = false
             }
         }) {
             HStack {
-                Image("GoogleLogo")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 19, height: 19)
+                if loadingGoogleLogin {
+                    ProgressView() // 로딩 인디케이터
+                        .progressViewStyle(CircularProgressViewStyle())
+                } else {
+                    Image("GoogleLogo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 19, height: 19)
+                }
                 
-                Text("Sign Up with Google")
+                Text(loadingGoogleLogin ? "Logging in..." : "Sign Up with Google")
                     .fontWeight(.medium)
                     .font(.system(size: 21))
                     .foregroundColor(.black)
@@ -46,46 +54,61 @@ struct GoogleButtonView: View {
             .background(Color.white)
             .cornerRadius(8)
         }
+        // 로그인 중일 때 버튼 비활성화
+        .disabled(loadingGoogleLogin)
     }
 }
-
 
 struct AppleButtonView: View {
     @StateObject private var appleAuth = AppleAuth()
     @EnvironmentObject var authManager: AuthManager
+    @State var loadingAppleLogin: Bool = false
     
     var body: some View {
-        SignInWithAppleButton(
-            .signIn,
-            onRequest: { request in
-                appleAuth.prepareRequest(request)
-            },
-            onCompletion: { result in
-                appleAuth.handleAuthorization(result) {
-                    Task {
-                        if appleAuth.isSignedIn {
-                            authManager.email = appleAuth.userEmail ?? ""
-                            
-                            let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
-                            
-                            if nicknameExists {
-                                authManager.authenticationState = .authenticated  // 닉네임이 존재하면 로그인 성공
-                                authManager.nicknameExists = true // 닉네임이 있다는 것을 알림
-                                authManager.isPresented = false
-                            } else {
-                                authManager.isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+        HStack {
+            Image("AppleLogo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 19, height: 19)
+            Text(loadingAppleLogin ? "Logging in..." : "Sign in with Apple") // 상태에 따라 텍스트 변경
+                .fontWeight(.medium)
+                .font(.system(size: 21))
+                .foregroundColor(.white)
+        }
+        .frame(width: 300)
+        .padding()
+        .background(Color.black)
+        .cornerRadius(8)
+        .overlay {
+            SignInWithAppleButton(
+                .signIn,
+                onRequest: { request in
+                    loadingAppleLogin = true
+                    appleAuth.prepareRequest(request)
+                },
+                onCompletion: { result in
+                    appleAuth.handleAuthorization(result) {
+                        Task {
+                            if appleAuth.isSignedIn {
+                                authManager.email = appleAuth.userEmail ?? ""
+                                
+                                let nicknameExists = await authManager.checkNicknameExists(email: authManager.email)
+                                
+                                if nicknameExists {
+                                    authManager.authenticationState = .authenticated  // 닉네임이 존재하면 로그인 성공
+                                    authManager.nicknameExists = true // 닉네임이 있다는 것을 알림
+                                    authManager.isPresented = false
+                                } else {
+                                    authManager.isPresented = true  // 닉네임이 없으면 사용자 정보 추가 화면 표시
+                                }
                             }
+                            loadingAppleLogin = false
                         }
                     }
                 }
-            }
-        )
-        .signInWithAppleButtonStyle(.black)
-        .frame(height: 60)
-        .frame(width: 330)
-        .font(.system(size: 12))
-        .cornerRadius(8)
-        .padding()
+            )
+            .blendMode(.overlay) // 중첩해서... 커스텀함요...ㅜ
+        }
     }
 }
 
