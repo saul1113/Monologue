@@ -77,8 +77,9 @@ struct EllipsisCustomSheet: View {
                     .sheet(isPresented: $isShowingReportSheet) {
                         ReportSheet(isShowingEllipsisSheet: $isShowingEllipsisSheet,
                                     isShowingReportSheet: $isShowingReportSheet,
-                                    reportTitle: reportOrDeleteTitle)
-                        .presentationDetents([.height(550)])
+                                    reportTitle: reportOrDeleteTitle,
+                                    reportReason: nil)
+                        .presentationDetents([.height(540), .large])
                     }
                     
                 case .block:
@@ -154,27 +155,29 @@ struct EllipsisCustomSheet: View {
 }
 
 // MARK: - 신고하는 이유 시트
+enum ReportReason: String, CaseIterable {
+    case commercial = "상업적 홍보 및 광고"
+    case profanity = "비속어 및 욕설"
+    case hateOrPorn = "혐오 및 음란 내용 신고"
+    case spam = "도배 신고"
+    case politicalOrControversial = "정치 및 분란 유도 신고"
+    case other = "기타 문제 신고"
+}
+
 struct ReportSheet: View {
     @Binding var isShowingEllipsisSheet: Bool
     @Binding var isShowingReportSheet: Bool
     
     let reportTitle: ReportOrDeleteTitle
-    
-    let reasons = [
-        "상업적 홍보 및 광고",
-        "비속어 및 욕설",
-        "혐오 및 음란 내용 신고",
-        "도배 신고",
-        "정치 및 분란 유도 신고",
-        "기타 문제 신고"
-    ]
-    
+    let reportReason: ReportReason?
+        
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 20) {
                 Text(ReportCompleteSheet.getReportTitleText(for: reportTitle))
-                    .font(.title3)
+                    .font(.title2)
                     .bold()
+                    .padding(.top, 50)
                 
                 Text("회원님의 신고는 익명으로 처리됩니다.")
                     .foregroundStyle(.secondary)
@@ -185,15 +188,15 @@ struct ReportSheet: View {
                 Divider()
                 
                 // 신고 버튼 목록
-                ForEach(reasons, id: \.self) { reason in
+                ForEach(ReportReason.allCases, id: \.self) { reason in
                     NavigationLink {
-                        ReportCompleteSheet(reason: reason,
+                        ReportCompleteSheet(reportReason: reason,
                                             reportTitle: reportTitle,
                                             isShowingEllipsisSheet: $isShowingEllipsisSheet,
                                             isShowingReportSheet: $isShowingReportSheet)
                     } label: {
                         HStack {
-                            Text(reason)
+                            Text(reason.rawValue)
                             Spacer()
                             Image(systemName: "chevron.forward")
                                 .foregroundStyle(.secondary)
@@ -202,10 +205,9 @@ struct ReportSheet: View {
                     Divider()
                 }
             }
-            .padding(.bottom, 20)
             .padding(.horizontal, 16)
             .foregroundStyle(.black)
-            .frame(maxHeight: .infinity, alignment: .bottom)
+            .frame(maxHeight: .infinity, alignment: .top)
         }
     }
 }
@@ -213,7 +215,7 @@ struct ReportSheet: View {
 // MARK: - 신고 제출 시트
 struct ReportCompleteSheet: View {
     @Environment(\.dismiss) private var dismiss
-    let reason: String
+    let reportReason: ReportReason
     let reportTitle: ReportOrDeleteTitle
     @State private var customReason: String = ""
     @Binding var isShowingEllipsisSheet: Bool
@@ -222,13 +224,14 @@ struct ReportCompleteSheet: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("신고를 제출합니다.")
-                .font(.title3)
+                .font(.title2)
                 .bold()
             
             Text("커뮤니티 가이드라인을 위반하는 콘텐츠만 삭제됩니다. 아래에서 신고 상세 정보를 검토하거나 수정할 수 있습니다.")
                 .foregroundStyle(.secondary)
                 .font(.subheadline)
                 .padding(.bottom, 10)
+                .multilineTextAlignment(.center)
             
             Divider()
             
@@ -238,12 +241,12 @@ struct ReportCompleteSheet: View {
                 
                 Text(ReportCompleteSheet.getReportTitleText(for: reportTitle))
                 
-                if reason == "기타 문제 신고" {
+                if reportReason.rawValue == ReportReason.other.rawValue {
                     TextField("자세한 신고 이유를 입력하세요.", text: $customReason)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.top, -10)
                 } else {
-                    Text(reason)
+                    Text(reportReason.rawValue)
                         .foregroundStyle(.secondary)
                         .font(.subheadline)
                         .padding(.top, -12)
@@ -265,7 +268,6 @@ struct ReportCompleteSheet: View {
         }
         .padding(.bottom, 10)
         .padding(.horizontal, 16)
-        .frame(maxHeight: .infinity, alignment: .bottom)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -289,7 +291,7 @@ struct ReportCompleteSheet: View {
     }
 }
 
-#Preview("EllipsisCustomSheet") {
+#Preview() {
     EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share, action: { print("공유하기 clicked") }),
                                         SheetButtonOption(type: .block, action: { print("차단하기 clicked") }),
                                         SheetButtonOption(type: .report, action: { print("신고하기 clicked") }),
@@ -297,8 +299,16 @@ struct ReportCompleteSheet: View {
                                         SheetButtonOption(type: .cancel, action: { print("취소 clicked") })],
                         sharedString: "모노로그 화이팅",
                         reportOrDeleteTitle: .memo,
-                        isShowingReportSheet: .constant(false),
+                        isShowingReportSheet: .constant(true),
                         isShowingBlockAlert: .constant(false),
                         isShowingEllipsisSheet: .constant(false),
                         isShowingDeleteAlert: .constant(false))
+}
+
+#Preview("ReportSheet") {
+    ReportSheet(isShowingEllipsisSheet: .constant(false), isShowingReportSheet: .constant(false), reportTitle: .column, reportReason: .commercial)
+}
+
+#Preview("ReportCompleteSheet") {
+    ReportCompleteSheet(reportReason: .commercial, reportTitle: .column, isShowingEllipsisSheet: .constant(false), isShowingReportSheet: .constant(false))
 }
