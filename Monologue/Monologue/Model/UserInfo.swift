@@ -41,7 +41,7 @@ struct UserInfo: Codable, Hashable {
         self.followers = docData["followers"] as? [String] ?? []
         self.followings = docData["followings"] as? [String] ?? []
         self.blocked = docData["blocked"] as? [String] ?? []
-        self.likes = docData["likes"] as? [String] ?? []
+        self.likes = docData["likes"] as? [String] ?? [] 
         
         if let timestamp = docData["date"] as? Timestamp {
             self.registrationDate = timestamp.dateValue()

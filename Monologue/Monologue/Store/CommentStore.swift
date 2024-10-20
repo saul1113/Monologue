@@ -114,7 +114,7 @@ class CommentStore: ObservableObject {
         }
     }
     
-    // MARK: - Test
+    // MARK: - 댓글 추가 삭제 
     func deleteComment(columnId: String, commentId: String) async throws {
         let db = Firestore.firestore()
         let commentRef = db.collection("Column").document(columnId).collection("comments").document(commentId)
