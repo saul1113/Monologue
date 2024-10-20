@@ -21,6 +21,7 @@ class FilteredMemoStore: ObservableObject {
             Task {
                 do {
                     let memos = try await memoStore.loadMemos()
+                    
                     DispatchQueue.main.async {
                         self.filteredMemos = memos
                         self.loadImagesForMemos()
@@ -47,17 +48,17 @@ class FilteredMemoStore: ObservableObject {
     }
     
     private func loadImagesForMemos() {
-            DispatchQueue.main.async {
-                self.images = []
-                for memo in self.filteredMemos {
-                    self.memoImageStore.loadImage(imageName: memo.id) { image in
-                        if let image = image {
-                            self.images.append(image)
-                        }
+        DispatchQueue.main.async {
+            self.images = []
+            for memo in self.filteredMemos {
+                self.memoImageStore.loadImage(imageName: memo.id) { image in
+                    if let image = image {
+                        self.images.append(image)
                     }
                 }
             }
         }
+    }
     
     func setUserMemos(userMemos: [Memo]) {
         DispatchQueue.main.async {
@@ -87,7 +88,7 @@ struct MemoView: View {
                                         .frame(width: UIScreen.main.bounds.width / 2 - 24, height: nil)
                                         .clipped()
                                         .cornerRadius(12)
-                                    .scaledToFit()
+                                        .scaledToFit()
                                     Text("\(filteredMemoStore.filteredMemos[index].userNickname)")
                                         .font(.caption2)
                                         .padding(.trailing, 8)

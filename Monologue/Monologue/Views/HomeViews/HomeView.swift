@@ -12,6 +12,7 @@ struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject private var memoImageStore: MemoImageStore
+    
     @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
     @State private var searchText: String = ""

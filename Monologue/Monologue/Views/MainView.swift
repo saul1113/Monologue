@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MainView: View {
     // PostView에 바인딩 하는 변수, 선택시 탭뷰로 이동하는 변수
+    @EnvironmentObject private var authManager: AuthManager
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     @State private var selectedTab: Int = 0
     
     var body: some View {
@@ -45,6 +47,11 @@ struct MainView: View {
             
         }
         .accentColor(.accent).ignoresSafeArea()
+        .onAppear {
+            Task {
+                await userInfoStore.loadUserInfo(email: authManager.email)
+            }
+        }
     }
 }
 

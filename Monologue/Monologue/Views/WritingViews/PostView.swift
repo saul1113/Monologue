@@ -75,6 +75,8 @@ struct PostView: View {
                                     
                                     memoImageStore.UploadImage(image: .jery1, imageName: newMemo.id)
                                     
+                                    
+                                    
                                 } else if selectedSegment == "칼럼" {
                                     let newColumn = Column(
                                         title: title,
@@ -125,9 +127,6 @@ struct PostView: View {
                 }
             }
             Task {
-                // 유저의 정보 로드
-                await userInfoStore.loadUserInfo(email: authManager.email)
-                
                 // 유저의 메모 로드
                 memoStore.loadMemosByUserEmail(email: authManager.email) { memos, error in
                     if let memos = memos {

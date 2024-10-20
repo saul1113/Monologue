@@ -187,9 +187,7 @@ struct MyPageView: View {
     
     // 유저 정보, 메모, 칼럼 로드 함수
     private func loadUserContent() async {
-        do {
-            await userInfoStore.loadUserInfo(email: authManager.email)
-            
+        do {     
             if let email = userInfoStore.userInfo?.email {
                 userMemos = try await memoStore.loadMemosByUserEmail(email: email)
                 userColumns = try await columnStore.loadColumnsByUserEmail(email: email)
