@@ -250,6 +250,24 @@ class ColumnStore: ObservableObject {
         return columns
     }
     
+    // MARK: - 컬럼 content로 포함 된 컬럼들 로드
+    @MainActor
+    func loadColumnsByContent(content: String) async throws -> [Column] {
+        columns = try await loadColumn()
+        
+        var filteredColumns: [Column] = []
+        
+        for column in columns {
+            if column.content.contains(content) {
+                filteredColumns.append(column)
+            }
+        }
+        
+        self.columns = filteredColumns
+        
+        return columns
+    }
+    
     // MARK: - 칼럼 아이디로 메모 삭제
     func deleteColumn(columnId: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
