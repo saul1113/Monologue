@@ -20,7 +20,6 @@ struct FollowListView: View {
     @State private var isActionActive = true // 팔로우 상태 관리
     
     @State var selectedSegment: String // 마이페이지뷰에서 받음
-    private let segments = ["팔로워", "팔로잉"] // 세그먼트 버튼
     
     var body: some View {
         ZStack {
