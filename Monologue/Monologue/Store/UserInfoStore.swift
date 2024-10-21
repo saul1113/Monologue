@@ -20,8 +20,13 @@ class UserInfoStore: ObservableObject {
     @Published var followers: [UserInfo] = []
     @Published var followings: [UserInfo] = []
     
+    @Published var followersCount: Int = 0
+    @Published var followingsCount: Int = 0
+    
     @Published var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
     @Published var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    
+    private var listener: ListenerRegistration?
     
     // 로그인 시 사용자(닉네임, 가입날짜) 파베에 추가
     func addUserInfo(_ user: UserInfo) async {
@@ -106,7 +111,7 @@ class UserInfoStore: ObservableObject {
                 blocked: blocked,
                 likes: likes
             )
-//            print("User info loaded successfully: \(String(describing: userInfo))")
+            //            print("User info loaded successfully: \(String(describing: userInfo))")
             
         } catch {
             print("Error loading user info: \(error)")
@@ -158,11 +163,11 @@ class UserInfoStore: ObservableObject {
             print("Target user email is empty.")
             return
         }
-
+        
         let db = Firestore.firestore()
         let currentUserRef = db.collection("User").document(currentUserEmail)
         let targetUserRef = db.collection("User").document(targetUserEmail)
-
+        
         do {
             _ = try await db.runTransaction { transaction, errorPointer in
                 // 현재 유저의 followings에 타겟 유저 추가
@@ -174,10 +179,10 @@ class UserInfoStore: ObservableObject {
                 transaction.updateData([
                     "followers": FieldValue.arrayUnion([currentUserEmail])
                 ], forDocument: targetUserRef)
-
+                
                 return nil
             }
-
+            
             print("Successfully followed \(targetUserEmail)")
         } catch {
             print("Error following user: \(error)")
@@ -194,11 +199,11 @@ class UserInfoStore: ObservableObject {
             print("Target user email is empty.")
             return
         }
-
+        
         let db = Firestore.firestore()
         let currentUserRef = db.collection("User").document(currentUserEmail)
         let targetUserRef = db.collection("User").document(targetUserEmail)
-
+        
         do {
             _ = try await db.runTransaction { transaction, errorPointer in
                 // 현재 유저의 followings에서 타겟 유저 제거
@@ -210,10 +215,10 @@ class UserInfoStore: ObservableObject {
                 transaction.updateData([
                     "followers": FieldValue.arrayRemove([currentUserEmail])
                 ], forDocument: targetUserRef)
-
+                
                 return nil
             }
-
+            
             print("Successfully unfollowed \(targetUserEmail)")
         } catch {
             print("Error unfollowing user: \(error)")
@@ -227,5 +232,38 @@ class UserInfoStore: ObservableObject {
         }
         
         return currentUser.followings.contains(targetUserEmail)
+    }
+    
+    // 특정 유저의 팔로우 실시간 감지
+    func observeUserFollowData(email: String) {
+        let db = Firestore.firestore()
+        let userDocRef = db.collection("User").document(email)
+        
+        listener = userDocRef.addSnapshotListener { snapshot, error in
+            guard let document = snapshot, document.exists else {
+                print("User document does not exist")
+                return
+            }
+            
+            guard let docData = document.data() else {
+                print("No user data found")
+                return
+            }
+            
+            if let followings = docData["followings"] as? [String] {
+                self.followingsCount = followings.count
+                print("Followings: \(followings)")
+            }
+            
+            if let followers = docData["followers"] as? [String] {
+                self.followersCount = followers.count
+                print("Followers: \(followers)")
+            }
+        }
+    }
+    
+    func removeListener() {
+        listener?.remove()
+        listener = nil
     }
 }

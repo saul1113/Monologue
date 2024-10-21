@@ -96,7 +96,7 @@ struct MyPageView: View {
                         } label: {
                             HStack {
                                 Text("팔로워")
-                                Text("\(userInfoStore.userInfo?.followers.count ?? 0)")
+                                Text("\(userInfoStore.followersCount)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -109,7 +109,7 @@ struct MyPageView: View {
                         } label: {
                             HStack {
                                 Text("팔로잉")
-                                Text("\(userInfoStore.userInfo?.followings.count ?? 0)")
+                                Text("\(userInfoStore.followingsCount)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -153,7 +153,7 @@ struct MyPageView: View {
                         HStack(spacing: 0) {
                             MemoView(filters: $filters, userMemos: userMemos)
                                 .frame(width: geometry.size.width)
-
+                            
                             ColumnView(filteredColumns: $userColumns)
                                 .frame(width: geometry.size.width)
                         }
@@ -181,9 +181,13 @@ struct MyPageView: View {
                     // 사용자 인증 상태가 인증 완료 상태인 경우에만 Firestore 데이터 로드
                     if authManager.authenticationState == .authenticated {
                         // 유저의 정보 로드
-                         await loadUserContent()
+                        await loadUserContent()
                     }
+                    userInfoStore.observeUserFollowData(email: userInfoStore.userInfo?.email ?? "")
                 }
+            }
+            .onDisappear {
+                userInfoStore.removeListener()
             }
         }
     }
@@ -191,7 +195,7 @@ struct MyPageView: View {
     // 유저 정보, 메모, 칼럼 로드 함수
     private func loadUserContent() async {
         do {
-            await userInfoStore.loadUserInfo(email: authManager.email)
+            await userInfoStore.loadUserInfo(email: userInfoStore.userInfo?.email ?? "")
             
             if let email = userInfoStore.userInfo?.email {
                 userMemos = try await memoStore.loadMemosByUserEmail(email: email)

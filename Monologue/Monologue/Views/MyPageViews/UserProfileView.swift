@@ -23,8 +23,6 @@ struct UserProfileView: View {
     @State private var isShowingReportSheet: Bool = false
     @State private var isShowingBlockAlert: Bool = false
     @State private var isFollowing: Bool = false // 팔로우 상태 확인
-    @State private var followersCount: Int = 0
-    @State private var followingsCount: Int = 0
     
     @State var filters: [String]? = nil
     
@@ -85,7 +83,7 @@ struct UserProfileView: View {
                         } label: {
                             HStack {
                                 Text("팔로워")
-                                Text("\(followersCount)")
+                                Text("\(userInfoStore.followersCount)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -99,7 +97,7 @@ struct UserProfileView: View {
                         } label: {
                             HStack {
                                 Text("팔로잉")
-                                Text("\(followingsCount)")
+                                Text("\(userInfoStore.followingsCount)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -224,7 +222,11 @@ struct UserProfileView: View {
                 Task {
                     await loadUserInfo()
                 }
-                updateUIFromUserInfo()
+                userInfoStore.observeUserFollowData(email: userInfo.email)
+                isFollowing = userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+            }
+            .onDisappear {
+                userInfoStore.removeListener()
             }
         }
     }
@@ -236,15 +238,6 @@ struct UserProfileView: View {
             userColumns = try await columnStore.loadColumnsByUserEmail(email: userInfo.email)
         } catch {
             print("Error loading memos or columns: \(error.localizedDescription)")
-        }
-    }
-    
-    // UI를 최신 유저 정보로 업데이트
-    private func updateUIFromUserInfo() {
-        if userInfoStore.userInfo != nil {
-            isFollowing = userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
-            followersCount = userInfo.followers.count
-            followingsCount = userInfo.followings.count
         }
     }
 }
