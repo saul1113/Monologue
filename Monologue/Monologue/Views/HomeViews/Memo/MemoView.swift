@@ -92,8 +92,7 @@ struct MemoView: View {
                                     Text("\(filteredMemoStore.filteredMemos[index].userNickname)")
                                         .font(.caption2)
                                         .padding(.trailing, 8)
-                                }
-                                
+                                }                                
                             }
                         }
                     }

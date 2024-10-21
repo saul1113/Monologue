@@ -37,7 +37,7 @@ struct Memo: Codable, Equatable, Identifiable {
 //        lhs.comments == rhs.comments
     }
     
-    init(document: QueryDocumentSnapshot)  async throws {
+    init(document: QueryDocumentSnapshot) async throws {
         let docData = document.data()
         
         self.id = document.documentID

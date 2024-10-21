@@ -117,6 +117,7 @@ class MemoStore: ObservableObject {
         }
     }
     
+    @MainActor
     func loadMemos() async throws -> [Memo] {
         let db = Firestore.firestore()
         
@@ -130,7 +131,6 @@ class MemoStore: ObservableObject {
                     let memo = try await Memo(document: document)
                     
                     memos.append(memo)
-                    self.memos = memos
                     
                     
                 } catch {
@@ -139,6 +139,41 @@ class MemoStore: ObservableObject {
                     return []
                 }
             }
+            
+            self.memos = memos
+        } catch {
+            print("loadMemos error: \(error.localizedDescription)")
+            
+            return []
+        }
+        
+        return memos
+    }
+    // MARK: - 메모 아이디들로 로드 // 좋아요 관련 로직
+    @MainActor
+    func loadMemosByIds(ids: [String]) async throws -> [Memo] {
+        let db = Firestore.firestore()
+        
+        do {
+            let querySnapshot = try await db.collection("Memo")
+                .whereField(FieldPath.documentID(), in: ids).getDocuments()
+            
+            var memos: [Memo] = []
+            
+            for document in querySnapshot.documents {
+                do {
+                    let memo = try await Memo(document: document)
+                    
+                    memos.append(memo)
+                    
+                } catch {
+                    print("loadMemos error: \(error.localizedDescription)")
+                    
+                    return []
+                }
+            }
+            
+            self.memos = memos
         } catch {
             print("loadMemos error: \(error.localizedDescription)")
             
@@ -179,6 +214,7 @@ class MemoStore: ObservableObject {
             }
     }
     
+    @MainActor
     func loadMemosByUserEmail(email: String) async throws -> [Memo] {
         let db = Firestore.firestore()
         
@@ -193,12 +229,13 @@ class MemoStore: ObservableObject {
                 let memo = try await Memo(document: document)
                 
                 memos.append(memo)
-                self.memos = memos
             } catch {
                 print("loadMemosByUserEmail error: \(error.localizedDescription)")
             }
         }
         
+        self.memos = memos
+
         return memos
     }
     
@@ -233,6 +270,7 @@ class MemoStore: ObservableObject {
             }
     }
     
+    @MainActor
     func loadMemosByCategories(categories: [String]) async throws -> [Memo] {
         let db = Firestore.firestore()
         
@@ -247,11 +285,12 @@ class MemoStore: ObservableObject {
                 let memo = try await Memo(document: document)
                 
                 memos.append(memo)
-                self.memos = memos
             } catch {
                 print("loadMemosByCategories error: \(error.localizedDescription)")
             }
         }
+        
+        self.memos = memos
         
         return memos
     }

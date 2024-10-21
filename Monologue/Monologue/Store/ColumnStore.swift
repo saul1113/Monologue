@@ -130,6 +130,26 @@ class ColumnStore: ObservableObject {
         
         return columns
     }
+    // MARK: - 칼럼 아이디들로 로드
+    func loadColumnsByIds(ids: [String]) async throws -> [Column] {
+        let db = Firestore.firestore()
+        
+        let querySnapshot = try await db.collection("Column")
+            .whereField(FieldPath.documentID(), in: ids).getDocuments()
+        
+        var columns: [Column] = []
+        
+        for document in querySnapshot.documents {
+            do {
+                let column = try await Column(document: document)
+                columns.append(column)
+            } catch {
+                print("loadColumn error: \(error.localizedDescription)")
+            }
+        }
+        
+        return columns
+    }
     
     // MARK: - 칼럼 유저 이메일로 로드
     func loadColumnsByUserEmail(email: String, completion: @escaping ([Column]?, Error?) -> Void) {

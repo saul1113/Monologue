@@ -20,7 +20,8 @@ struct UserInfo: Codable, Hashable {
     var followings: [String] // 팔로잉 목록
     var followers: [String] // 팔로워 목록
     var blocked: [String] // 차단 목록
-    var likes: [String] // 좋아요 목록
+    var likesMemos: [String] // 좋아요 목록
+    var likesColumns: [String] // 좋아요 목록
     
     // 가입 날짜 Formatter 생성
     var formattedRegistration: String {
@@ -41,7 +42,8 @@ struct UserInfo: Codable, Hashable {
         self.followers = docData["followers"] as? [String] ?? []
         self.followings = docData["followings"] as? [String] ?? []
         self.blocked = docData["blocked"] as? [String] ?? []
-        self.likes = docData["likes"] as? [String] ?? [] 
+        self.likesMemos = docData["likesMemos"] as? [String] ?? []
+        self.likesColumns = docData["likesColumns"] as? [String] ?? []
         
         if let timestamp = docData["date"] as? Timestamp {
             self.registrationDate = timestamp.dateValue()
@@ -50,7 +52,7 @@ struct UserInfo: Codable, Hashable {
         }
     }
     
-    init(uid:String, email: String, nickname: String, registrationDate: Date, preferredCategories: [String], profileImageName: String, introduction: String, followers: [String], followings: [String], blocked: [String], likes: [String]) {
+    init(uid:String, email: String, nickname: String, registrationDate: Date, preferredCategories: [String], profileImageName: String, introduction: String, followers: [String], followings: [String], blocked: [String], likesMemos: [String], likesColumns: [String]) {
         self.uid = uid
         self.email = email
         self.nickname = nickname
@@ -60,7 +62,8 @@ struct UserInfo: Codable, Hashable {
         self.followers = followers
         self.followings = followings
         self.blocked = blocked
-        self.likes = likes
+        self.likesMemos = likesMemos
+        self.likesColumns = likesColumns
         self.registrationDate = registrationDate
     }
 }
