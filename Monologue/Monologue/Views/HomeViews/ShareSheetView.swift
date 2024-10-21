@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct ShareSheetView: View {
+    @EnvironmentObject var memoStore: MemoStore
+    @EnvironmentObject var columnStore: ColumnStore
+    @EnvironmentObject var authManager: AuthManager
+    
+    let shareType: ShareType
     @Binding var isPresented: Bool
     @State private var showReportSheet = false
     let sharedString: String = "MONOLOG"
@@ -24,21 +29,40 @@ struct ShareSheetView: View {
                     .foregroundColor(.black)
             }
             
-            
             Divider()
             
-            Button(action: {
-                showReportSheet = true
-            }) {
-                Text("신고하기")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.red)
+            // 신고하기 버튼 표시
+            if  shouldShowReportButton() {
+                Button(action: {
+                    showReportSheet = true
+                }) {
+                    Text("신고하기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.white)
+                        .foregroundColor(.red)
+                }
+                Divider()
+            } else {
+                Button(action: {
+                    Task {
+                        switch shareType {
+                        case .memo(let memo):
+                            try await memoStore.deleteMemo(memoId: memo.id) // memo.id로 메모 삭제
+                        case .column(let column):
+                            try await columnStore.deleteColumn(columnId: column.id) // column.id로 칼럼 삭제
+                        }
+                        isPresented = false // 시트 닫기
+                    }
+                }) {
+                    Text("삭제하기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.white)
+                        .foregroundColor(.red)
+                }
+                Divider()
             }
-            
-            Divider()
-            
             Button(action: {
                 isPresented = false
             }) {
@@ -67,6 +91,16 @@ struct ShareSheetView: View {
             .presentationDragIndicator(.visible)
         }
     }
+    
+    // 신고하기 버튼을 보여줄지 결정 함수
+    private func shouldShowReportButton() -> Bool {
+        switch shareType {
+        case let .memo(memo):
+            return memo.email != authManager.email
+        case let .column(column):
+            return column.email != authManager.email
+        }
+    }
 }
 
 // UIView extension to customize which corners are rounded
@@ -88,7 +122,7 @@ struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
-
-#Preview {
-    ShareSheetView(isPresented: .constant(true))
-}
+//
+//#Preview {
+//    ShareSheetView(isPresented: .constant(true))
+//}

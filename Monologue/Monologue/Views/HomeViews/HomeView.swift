@@ -8,6 +8,12 @@
 import SwiftUI
 import OrderedCollections
 
+// 메모/칼럼: 해당 글이 아니면 신고하기 버튼 활성, 해당 글이면 삭제하기
+enum ShareType {
+    case memo(Memo)
+    case column(Column)
+}
+
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
@@ -77,10 +83,16 @@ struct HomeView: View {
                             MemoView(filters: $selectedCategories)
                                 .frame(width: geometry.size.width)
                                 .clipped()
+                                .refreshable {
+                                    await reloadMemos()
+                                }
                             
                             ColumnView(filteredColumns: $filteredColumns)
                                 .frame(width: geometry.size.width)
                                 .clipped()
+                                .refreshable {
+                                    await reloadColumns()
+                                }
                         }
                         .frame(width: geometry.size.width * 2)
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
@@ -112,6 +124,35 @@ struct HomeView: View {
                 self.filteredColumns = try await columnStore.loadColumn()
                 self.filteredColumns = self.filteredColumns.filter { $0.email != userInfoStore.userInfo?.email }
             }
+        }
+    }
+    
+    // memo와 column의 refresh를 위한 함수
+    func reloadMemos() async {
+        do {
+            if selectedCategories == ["전체"] {
+                memoStore.memos = try await memoStore.loadMemos()
+            } else {
+                memoStore.memos = try await memoStore.loadMemos().filter { memo in
+                    memo.categories.contains { selectedCategories!.contains($0) }
+                }
+            }
+        } catch {
+            print("Error loading memos: \(error)")
+        }
+    }
+    
+    func reloadColumns() async {
+        do {
+            if selectedCategories == ["전체"] {
+                self.filteredColumns = try await columnStore.loadColumn()
+            } else {
+                self.filteredColumns = try await columnStore.loadColumn().filter { column in
+                    column.categories.contains { selectedCategories!.contains($0) }
+                }
+            }
+        } catch {
+            print("Error loading columns: \(error)")
         }
     }
 }

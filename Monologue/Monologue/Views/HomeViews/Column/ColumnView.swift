@@ -13,13 +13,20 @@ struct ColumnView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
+    var sortedFilteredColumns: [Binding<Column>] {
+        let columns = filteredColumns.indices.map { index in
+            $filteredColumns[index]
+        }
+        return columns.sorted { $0.wrappedValue.date > $1.wrappedValue.date }
+    }
+    
     var body: some View {
         ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
             
             VStack {
                 List {
-                    ForEach($filteredColumns) { $post in
+                    ForEach(sortedFilteredColumns, id: \.wrappedValue.id) { $post in
                         ZStack {
                             NavigationLink(destination: ColumnDetail(column: $post)) {
                                 EmptyView()
