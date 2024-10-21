@@ -80,9 +80,9 @@ struct MemoView: View {
             MasonryLayout(columns: 2, spacing: 16) {
                 if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
+                        (mode == .home && userInfoStore.userInfo?.nickname != filteredMemoStore.filteredMemos[index].userNickname) || mode == .myPage ?
                         NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index], image: $filteredMemoStore.images[index])) {
                             ZStack {
-                                (mode == .home && userInfoStore.userInfo?.nickname != filteredMemoStore.filteredMemos[index].userNickname) || mode == .myPage ?
                                 VStack(alignment: .trailing) {
                                     let image = filteredMemoStore.images[index]
                                     
@@ -97,9 +97,9 @@ struct MemoView: View {
                                         .font(.caption2)
                                         .padding(.trailing, 8)
                                 }
-                                : nil
                             }
                         }
+                        : nil
                     }
                 }
             }

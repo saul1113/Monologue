@@ -154,7 +154,7 @@ struct MyPageView: View {
                             MemoView(filters: $filters, userMemos: userMemos, mode: .myPage)
                                 .frame(width: geometry.size.width)
 
-                            ColumnView(filteredColumns: $userColumns, mode: .column)
+                            ColumnView(filteredColumns: $userColumns, mode: .myPage)
                                 .frame(width: geometry.size.width)
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)

@@ -21,19 +21,21 @@ struct ColumnView: View {
             VStack {
                 List {
                     ForEach($filteredColumns) { $post in
+                        (mode == .column && userInfoStore.userInfo?.nickname != post.userNickname) || mode == .myPage ?
                         ZStack {
-                            NavigationLink(destination: ColumnDetail(column: $post)) {
+                            NavigationLink(destination: ColumnDetail(column: post)) {
                                 EmptyView()
                             }
                             .opacity(0)  // NavigationLink는 보이지 않도록 설정
                             
-                            (mode == .column && userInfoStore.userInfo?.nickname != post.userNickname) || mode == .myPage ?
+                            
                             PostRow(column: $post)  // PostRow는 항상 보이도록 설정
                             
-                            : nil
+                            
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
+                        : nil
                     }
                 }
                 .listStyle(PlainListStyle())
