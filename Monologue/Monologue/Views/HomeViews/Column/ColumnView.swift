@@ -90,12 +90,16 @@ struct PostRow: View {
                 }
                 
                 Spacer()
-                Text(column.categories.first ?? "카테고리 없음.")
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-                    .padding(4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
+                ForEach(column.categories.prefix(3), id: \.self) { category in
+                    if !category.isEmpty {
+                        Text(category)
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                            .padding(4)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(8)
+                    }
+                }
             }
             .padding(.top, 8)
         }
