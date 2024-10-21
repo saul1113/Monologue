@@ -133,7 +133,8 @@ struct AddUserInfoView: View {
                                     followers: [],
                                     followings: [],
                                     blocked: [],
-                                    likes: []
+                                    likesMemos: [],
+                                    likesColumns: []
                                 )
                                 
                                 await userInfoStore.addUserInfo(newUserInfo)
