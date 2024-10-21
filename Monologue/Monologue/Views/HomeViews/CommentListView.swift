@@ -15,7 +15,7 @@ struct CommentListView: View {
     
     var body: some View {
         if displayedComments != nil {
-            ForEach(displayedComments ?? [], id: \.self) { comment in
+            ForEach((displayedComments ?? []).reversed(), id: \.self) { comment in
                 HStack(alignment: .top, spacing: 16) {
                     // 프로필 이미지
                     Image(systemName: "person.circle")

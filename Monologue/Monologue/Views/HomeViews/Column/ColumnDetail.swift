@@ -105,6 +105,12 @@ struct ColumnDetail: View {
                             .foregroundColor(.gray)
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                    Button("완료") {
+                        isCommentFieldFocused = false // 키보드 숨기기
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
         }

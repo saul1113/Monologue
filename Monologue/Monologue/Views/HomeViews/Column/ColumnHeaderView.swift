@@ -50,12 +50,14 @@ struct ColumnHeaderView: View {
                                    column: bindingForColumn(),
                                    isCommentFieldFocused: isCommentFieldFocused)
                 Spacer()
-                Text(column.categories.first ?? "")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .padding(8)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(14)
+                if let category = column.categories.first, !category.isEmpty {
+                    Text(category)
+                        .font(.subheadline)
+                        .foregroundColor(.black)
+                        .padding(4)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                }
             }
             .padding(.bottom, 8)
             .background(Color.white)
