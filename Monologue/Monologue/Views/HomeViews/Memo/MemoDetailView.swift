@@ -77,10 +77,10 @@ struct MemoDetailView: View {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }
             .onAppear {
-                likesCount = memo.likes.count
+//                likesCount = memo.likes.count
             }            
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(memo: memo, isPresented: $showShareSheet)
+                ShareSheetView(shareType: .memo(memo), isPresented: $showShareSheet)
                     .presentationDetents([.height(150)])
                     .presentationDragIndicator(.hidden)
             }

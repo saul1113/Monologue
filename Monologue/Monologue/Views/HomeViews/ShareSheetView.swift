@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ShareSheetView: View {
     @EnvironmentObject var memoStore: MemoStore
-    let memo: Memo
-    //    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var columnStore: ColumnStore
     @EnvironmentObject var authManager: AuthManager
     
+    let shareType: ShareType
     @Binding var isPresented: Bool
     @State private var showReportSheet = false
     let sharedString: String = "MONOLOG"
@@ -31,7 +31,7 @@ struct ShareSheetView: View {
             
             Divider()
             
-            if memo.email != authManager.email {
+            if case let .memo(memo) = shareType, memo.email != authManager.email {
                 Button(action: {
                     showReportSheet = true
                 }) {
@@ -45,7 +45,12 @@ struct ShareSheetView: View {
             } else {
                 Button(action: {
                     Task {
-                        try await memoStore.deleteMemo(memoId: memo.id) // memo.id로 메모 삭제
+                        switch shareType {
+                        case .memo(let memo):
+                            try await memoStore.deleteMemo(memoId: memo.id) // memo.id로 메모 삭제
+                        case .column(let column):
+                            try await columnStore.deleteColumn(columnId: column.id) // column.id로 칼럼 삭제
+                        }
                         isPresented = false // 시트 닫기
                     }
                 }) {

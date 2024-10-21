@@ -8,6 +8,12 @@
 import SwiftUI
 import OrderedCollections
 
+// 메모/칼럼: 해당 글이 아니면 신고하기 버튼 활성, 해당 글이면 삭제하기
+enum ShareType {
+    case memo(Memo)
+    case column(Column)
+}
+
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
