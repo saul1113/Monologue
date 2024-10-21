@@ -41,7 +41,7 @@ struct FollowListView: View {
                         } else {
                             ForEach(followers, id: \.self) { follower in
                                 NavigationLink {
-                                    UserProfileView(userInfo: follower)
+                                    MyPageView(userInfo: follower)
                                 } label: {
                                     UserRow(
                                         profileImageName: follower.profileImageName,
@@ -74,7 +74,7 @@ struct FollowListView: View {
                         } else {
                             ForEach(followings, id: \.self) { following in
                                 NavigationLink {
-                                    UserProfileView(userInfo: following)
+                                    MyPageView(userInfo: following)
                                 } label: {
                                     UserRow(
                                         profileImageName: following.profileImageName,
@@ -109,7 +109,7 @@ struct FollowListView: View {
         }
         .navigationTitle(userInfoStore.userInfo?.nickname ?? "")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {

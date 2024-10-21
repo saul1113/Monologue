@@ -263,12 +263,10 @@ class UserInfoStore: ObservableObject {
             
             if let followings = docData["followings"] as? [String] {
                 self.followingsCount = followings.count
-                print("Followings: \(followings)")
             }
             
             if let followers = docData["followers"] as? [String] {
                 self.followersCount = followers.count
-                print("Followers: \(followers)")
             }
         }
     }

@@ -8,18 +8,31 @@
 import SwiftUI
 
 struct MyPageView: View {
+    public var userInfo: UserInfo
+    
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager:AuthManager
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     
+    @Environment(\.dismiss) private var dismiss
+    
     @State var selectedSegment: String = "메모"
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
+    @State private var isShowingEllipsisSheet: Bool = false
+    @State private var isShowingReportSheet: Bool = false
+    @State private var isShowingBlockAlert: Bool = false
+    @State private var isFollowing: Bool = false
+    @State private var isBlocked: Bool = false
+    @State var filters: [String]? = nil
     
     private let sharedImage: Image = Image(.appLogo)
     
-    @State var filters: [String]? = nil
+    // 내 계정 여부 확인
+    private var isMyAccount: Bool {
+        return authManager.email == userInfo.email
+    }
     
     var body: some View {
         NavigationStack {
@@ -28,54 +41,29 @@ struct MyPageView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    HStack(spacing: 20) {
-                        Text("MONOLOG")
-                            .foregroundStyle(.accent)
-                            .font(.title3)
-                            .bold()
-                        
-                        Spacer()
-                        
-                        NavigationLink {
-                            NotificationView()
-                        } label: {
-                            Image(systemName: "bell")
-                                .font(.title3)
-                        }
-                        
-                        NavigationLink {
-                            SettingView()
-                        } label: {
-                            Image(systemName: "line.3.horizontal")
-                                .font(.title3)
-                        }
-                    }
-                    
-                    // 프사, 닉, 상메
+                    // MARK: - 프로필 정보(프사, 닉네임, 자기소개)
                     HStack {
-                        // 프로필 사진
-                        ProfileImageView(profileImageName: userInfoStore.userInfo?.profileImageName ?? "",
-                                         size: 77)
-                        .padding(.trailing, 24)
+                        ProfileImageView(profileImageName: userInfo.profileImageName, size: 77)
+                            .padding(.trailing, 24)
                         
                         VStack(alignment: .leading, spacing: 12) {
-                            Text(userInfoStore.userInfo?.nickname ?? "닉네임 없음")
+                            Text(userInfo.nickname)
                                 .font(.system(size: 18))
                                 .bold()
                             
-                            Text(userInfoStore.userInfo?.introduction ?? "자기소개가 없습니다.")
+                            Text(userInfo.introduction.isEmpty ? "자기소개가 없습니다." : userInfo.introduction)
                                 .font(.system(size: 16))
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading) // 왼쪽 정렬
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 20)
                     .padding(.top, 15)
                     
-                    // 메모, 칼럼, 팔로워, 팔로잉 수
+                    // MARK: - 메모, 칼럼, 팔로워, 팔로잉 count
                     HStack(spacing: 20) {
                         HStack {
                             Text("메모")
-                            Text("\(userMemos.count)") // Memo 개수
+                            Text("\(userMemos.count)")
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -84,7 +72,7 @@ struct MyPageView: View {
                         
                         HStack {
                             Text("칼럼")
-                            Text("\(userColumns.count)") // Column 개수
+                            Text("\(userColumns.count)")
                                 .bold()
                         }
                         .padding(.horizontal, 2)
@@ -119,43 +107,106 @@ struct MyPageView: View {
                     .frame(height: 22)
                     .padding(.bottom, 30)
                     
-                    // 프로필 편집, 공유 버튼
+                    // MARK: - [본인] 프로필 편집, 프로필 공유 / [타인] 팔로우, 알림 설정
                     HStack {
-                        NavigationLink {
-                            ProfileEditView()
-                        } label: {
-                            Text("프로필 편집")
-                                .font(.system(size: 15))
-                                .frame(maxWidth: .infinity, minHeight: 30)
-                                .background(RoundedRectangle(cornerRadius: 10)
-                                    .strokeBorder(.accent, lineWidth: 1)
-                                )
+                        if isMyAccount {
+                            // 내 계정이면 '프로필 편집' 버튼
+                            NavigationLink {
+                                ProfileEditView()
+                            } label: {
+                                Text("프로필 편집")
+                                    .font(.system(size: 15))
+                                    .frame(maxWidth: .infinity, minHeight: 30)
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(.accent, lineWidth: 1)
+                                    )
+                            }
+                        } else {
+                            // 타인 계정이면 '팔로우/차단' 버튼
+                            if isBlocked {
+                                Button {
+                                    Task {
+                                        try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
+                                        isBlocked = false
+                                    }
+                                } label: {
+                                    Text("차단됨")
+                                        .font(.system(size: 15))
+                                        .frame(maxWidth: .infinity, minHeight: 30)
+                                        .background(RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(.accent, lineWidth: 1)
+                                        )
+                                }
+                            } else {
+                                Button {
+                                    if isFollowing {
+                                        Task {
+                                            await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
+                                            isFollowing = false
+                                        }
+                                    } else {
+                                        Task {
+                                            await userInfoStore.followUser(targetUserEmail: userInfo.email)
+                                            isFollowing = true
+                                        }
+                                    }
+                                } label: {
+                                    if isFollowing {
+                                        Text("팔로잉")
+                                            .font(.system(size: 15))
+                                            .frame(maxWidth: .infinity, minHeight: 30)
+                                            .background(RoundedRectangle(cornerRadius: 10)
+                                                .strokeBorder(.accent, lineWidth: 1)
+                                            )
+                                    } else {
+                                        Text("팔로우")
+                                            .font(.system(size: 15))
+                                            .frame(maxWidth: .infinity, minHeight: 30)
+                                            .foregroundStyle(.white)
+                                            .background(RoundedRectangle(cornerRadius: 10)
+                                                .fill(.accent))
+                                    }
+                                }
+                            }
                         }
                         
-                        ShareLink(
-                            item: sharedImage,
-                            preview: SharePreview(userInfoStore.userInfo?.nickname ?? "", image: sharedImage)
-                        ) {
-                            Text("프로필 공유")
-                                .font(.system(size: 15))
-                                .frame(maxWidth: .infinity, minHeight: 30)
-                                .background(RoundedRectangle(cornerRadius: 10)
-                                    .strokeBorder(.accent, lineWidth: 1)
-                                )
+                        // 알림 설정
+                        if isMyAccount {
+                            ShareLink(
+                                item: sharedImage,
+                                preview: SharePreview(userInfo.nickname, image: sharedImage)
+                            ) {
+                                Text("프로필 공유")
+                                    .font(.system(size: 15))
+                                    .frame(maxWidth: .infinity, minHeight: 30)
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(.accent, lineWidth: 1)
+                                    )
+                            }
+                        } else {
+                            Button {
+                                // 알림 설정 어떻게 할지...
+                            } label: {
+                                Text("알림 설정")
+                                    .font(.system(size: 15))
+                                    .frame(maxWidth: .infinity, minHeight: 30)
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(.accent, lineWidth: 1)
+                                    )
+                            }
                         }
                     }
                     .padding(.bottom, 30)
                     
+                    // MARK: - 메모 및 칼럼 뷰
                     CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
                     
-                    // 버튼 & 스와이프 제스처 사용
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
                             MemoView(filters: $filters, userMemos: userMemos)
                                 .frame(width: geometry.size.width)
-
+                            
                             ColumnView(filteredColumns: $userColumns)
-
                                 .frame(width: geometry.size.width)
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
@@ -177,15 +228,77 @@ struct MyPageView: View {
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
             }
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                // MARK: - [본인] Toolbar - (좌)로고, (우)알람, 설정
+                if isMyAccount {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Text("MONOLOG")
+                            .foregroundStyle(.accent)
+                            .font(.title3)
+                            .bold()
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink {
+                            NotificationView()
+                        } label: {
+                            Image(systemName: "bell")
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink {
+                            SettingView()
+                        } label: {
+                            Image(systemName: "line.3.horizontal")
+                        }
+                    }
+                    // MARK: - [타인] Toolbar (좌)Back, (우)...버튼
+                } else {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "chevron.backward")
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isShowingEllipsisSheet.toggle()
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.title3)
+                        }
+                        .sheet(isPresented: $isShowingEllipsisSheet) {
+                            EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
+                                                                                  action: { }),
+                                                                SheetButtonOption(type: .block,
+                                                                                  action: { isBlocked ? unblockUser() : blockUser() }),
+                                                                SheetButtonOption(type: .report,
+                                                                                  action: { }),
+                                                                SheetButtonOption(type: .cancel,
+                                                                                  action: { isShowingEllipsisSheet = false })],
+                                                sharedString: userInfo.nickname,
+                                                reportOrDeleteTitle: .user,
+                                                isShowingReportSheet: $isShowingReportSheet,
+                                                isShowingBlockAlert: $isShowingBlockAlert,
+                                                isShowingEllipsisSheet: $isShowingEllipsisSheet,
+                                                isShowingDeleteAlert: .constant(false),
+                                                isBlocked: isBlocked)
+                            .presentationDetents([.height(250)])
+                        }
+                    }
+                }
+            }
             .onAppear {
                 Task {
-                    // 사용자 인증 상태가 인증 완료 상태인 경우에만 Firestore 데이터 로드
-                    if authManager.authenticationState == .authenticated {
-                        // 유저의 정보 로드
-                        await loadUserContent()
-                    }
-                    userInfoStore.observeUserFollowData(email: userInfoStore.userInfo?.email ?? "")
+                    await loadUserInfo()
+                    isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+                    isBlocked = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                 }
+                userInfoStore.observeUserFollowData(email: userInfo.email)
             }
             .onDisappear {
                 userInfoStore.removeListener()
@@ -193,17 +306,31 @@ struct MyPageView: View {
         }
     }
     
-    // 유저 정보, 메모, 칼럼 로드 함수
-    private func loadUserContent() async {
+    // 유저 메모 및 칼럼 업데이트
+    private func loadUserInfo() async {
         do {
-            await userInfoStore.loadUserInfo(email: userInfoStore.userInfo?.email ?? "")
-            
-            if let email = userInfoStore.userInfo?.email {
-                userMemos = try await memoStore.loadMemosByUserEmail(email: email)
-                userColumns = try await columnStore.loadColumnsByUserEmail(email: email)
-            }
+            userMemos = try await memoStore.loadMemosByUserEmail(email: userInfo.email)
+            userColumns = try await columnStore.loadColumnsByUserEmail(email: userInfo.email)
         } catch {
-            print("Error: \(error.localizedDescription)")
+            print("Error loading memos or columns: \(error.localizedDescription)")
+        }
+    }
+    
+    // 유저 차단
+    private func blockUser() {
+        Task {
+            try await userInfoStore.blockUser(blockedEmail: userInfo.email)
+            isBlocked = true
+            print("유저 차단 완료")
+        }
+    }
+    
+    // 유저 차단 해제
+    private func unblockUser() {
+        Task {
+            try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
+            isBlocked = false
+            print("유저 차단 해제")
         }
     }
 }

@@ -30,7 +30,7 @@ struct BlockedUsersListView: View {
                     VStack {
                         ForEach(blockedUsers, id: \.self) { blockedUser in
                             NavigationLink {
-                                UserProfileView(userInfo: blockedUser)
+                                MyPageView(userInfo: blockedUser)
                             } label: {
                                 UserRow(
                                     profileImageName: blockedUser.profileImageName,
