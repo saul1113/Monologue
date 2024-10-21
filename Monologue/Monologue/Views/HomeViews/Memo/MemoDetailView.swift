@@ -11,8 +11,6 @@ struct MemoDetailView: View {
     @EnvironmentObject var userInfoStore: UserInfoStore
     @EnvironmentObject var memoStore: MemoStore
     @EnvironmentObject var commentStore: CommentStore
-    @State private var isLiked: Bool = false
-    @State private var likesCount: Int = 0
     @State private var showAllComments = false
     @State private var newComment = ""
     @State private var displayedComments: [Comment] = []
@@ -37,8 +35,6 @@ struct MemoDetailView: View {
                                 MemoHeaderView(
                                     memo: $memo,
                                     image: $image,
-                                    likesCount: $likesCount,
-                                    isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
                                     isCommentFieldFocused: $isCommentFieldFocused,
                                     commentCount: memo.comments?.count ?? 0 // 댓글 개수를 전달
@@ -56,7 +52,7 @@ struct MemoDetailView: View {
                                 .padding(.bottom, 8)
                             
                             VStack(alignment: .leading, spacing: 0) {
-                                CommentListView(displayedComments: $memo.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
+                                CommentListView(displayedComments: bindingForDisplayedComments(), selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                             }
                             .padding(.bottom, 8)
                             .background(Color.white)
@@ -77,9 +73,12 @@ struct MemoDetailView: View {
                         .padding(.horizontal)
                 }
             }
+            .onTapGesture {
+                UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
+            }
             .onAppear {
                 likesCount = memo.likes.count
-            }
+            }            
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
                     .presentationDetents([.height(150)])
@@ -146,6 +145,19 @@ struct MemoDetailView: View {
         }
             
         selectedComment = nil
+    }
+    
+    private func bindingForDisplayedComments() -> Binding<[Comment]?> {
+        Binding(
+            get: {
+                memo.comments
+            },
+            set: { newValue in
+                if let newComments = newValue {
+                    memo.comments = newComments
+                }
+            }
+        )
     }
 }
 

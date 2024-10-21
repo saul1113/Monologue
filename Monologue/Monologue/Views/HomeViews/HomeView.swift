@@ -12,6 +12,7 @@ struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject private var memoImageStore: MemoImageStore
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     
     @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
@@ -76,10 +77,16 @@ struct HomeView: View {
                             MemoView(filters: $selectedCategories)
                                 .frame(width: geometry.size.width)
                                 .clipped()
+                                .refreshable {
+                                    await reloadMemos()
+                                }
                             
                             ColumnView(filteredColumns: $filteredColumns)
                                 .frame(width: geometry.size.width)
                                 .clipped()
+                                .refreshable {
+                                    await reloadColumns()
+                                }
                         }
                         .frame(width: geometry.size.width * 2)
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
@@ -109,7 +116,37 @@ struct HomeView: View {
             
             Task {
                 self.filteredColumns = try await columnStore.loadColumn()
+                self.filteredColumns = self.filteredColumns.filter { $0.email != userInfoStore.userInfo?.email }
             }
+        }
+    }
+    
+    // memo와 column의 refresh를 위한 함수
+    func reloadMemos() async {
+        do {
+            if selectedCategories == ["전체"] {
+                memoStore.memos = try await memoStore.loadMemos()
+            } else {
+                memoStore.memos = try await memoStore.loadMemos().filter { memo in
+                    memo.categories.contains { selectedCategories!.contains($0) }
+                }
+            }
+        } catch {
+            print("Error loading memos: \(error)")
+        }
+    }
+    
+    func reloadColumns() async {
+        do {
+            if selectedCategories == ["전체"] {
+                self.filteredColumns = try await columnStore.loadColumn()
+            } else {
+                self.filteredColumns = try await columnStore.loadColumn().filter { column in
+                    column.categories.contains { selectedCategories!.contains($0) }
+                }
+            }
+        } catch {
+            print("Error loading columns: \(error)")
         }
     }
 }

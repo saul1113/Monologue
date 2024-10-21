@@ -13,13 +13,20 @@ struct ColumnView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     
+    var sortedFilteredColumns: [Binding<Column>] {
+        let columns = filteredColumns.indices.map { index in
+            $filteredColumns[index]
+        }
+        return columns.sorted { $0.wrappedValue.date > $1.wrappedValue.date }
+    }
+    
     var body: some View {
         ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
             
             VStack {
                 List {
-                    ForEach($filteredColumns) { $post in
+                    ForEach(sortedFilteredColumns, id: \.wrappedValue.id) { $post in
                         ZStack {
                             NavigationLink(destination: ColumnDetail(column: $post)) {
                                 EmptyView()
@@ -90,12 +97,16 @@ struct PostRow: View {
                 }
                 
                 Spacer()
-                Text(column.categories.first ?? "카테고리 없음.")
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-                    .padding(4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
+                ForEach(column.categories.prefix(3), id: \.self) { category in
+                    if !category.isEmpty {
+                        Text(category)
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                            .padding(4)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(8)
+                    }
+                }
             }
             .padding(.top, 8)
         }

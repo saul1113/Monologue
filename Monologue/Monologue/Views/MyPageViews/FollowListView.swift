@@ -14,13 +14,12 @@ struct FollowListView: View {
     @State private var followers: [UserInfo] = []
     @State private var followings: [UserInfo] = []
     
-    @State private var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
-    @State private var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    @State private var memoCount: [String: Int] = [:] // 이메일별 메모 개수 저장
+    @State private var columnCount: [String: Int] = [:] // 이메일별 칼럼 개수 저장
     
     @State private var isActionActive = true // 팔로우 상태 관리
     
     @State var selectedSegment: String // 마이페이지뷰에서 받음
-    private let segments = ["팔로워", "팔로잉"] // 세그먼트 버튼
     
     var body: some View {
         ZStack {
@@ -47,22 +46,23 @@ struct FollowListView: View {
                                     UserRow(
                                         profileImageName: follower.profileImageName,
                                         nickname: follower.nickname,
-                                        memoCount: memoCount[follower.nickname] ?? 0,
-                                        columnCount: columnCount[follower.nickname] ?? 0,
+                                        memoCount: memoCount[follower.email] ?? 0,
+                                        columnCount: columnCount[follower.email] ?? 0,
                                         activeButtonText: "팔로우",
                                         inactiveButtonText: "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.followUser(targetUserEmail: follower.email)
-//                                            }
+                                            Task {
+                                                await userInfoStore.followUser(targetUserEmail: follower.email)
+                                            }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
-//                                            }
-                                        }
+                                            Task {
+                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
+                                            }
+                                        },
+                                        isFollowAction: true
                                     )
                                 }
                             }
@@ -79,22 +79,23 @@ struct FollowListView: View {
                                     UserRow(
                                         profileImageName: following.profileImageName,
                                         nickname: following.nickname,
-                                        memoCount: memoCount[following.nickname] ?? 0,
-                                        columnCount: columnCount[following.nickname] ?? 0,
+                                        memoCount: memoCount[following.email] ?? 0,
+                                        columnCount: columnCount[following.email] ?? 0,
                                         activeButtonText: "팔로우",
                                         inactiveButtonText: "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.followUser(targetUserEmail: follower.email)
-//                                            }
+                                            Task {
+                                                await userInfoStore.followUser(targetUserEmail: following.email)
+                                            }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
-//                                            Task {
-//                                                await userInfoStore.unfollowUser(targetUserEmail: follower.email)
-//                                            }
-                                        }
+                                            Task {
+                                                await userInfoStore.unfollowUser(targetUserEmail: following.email)
+                                            }
+                                        },
+                                        isFollowAction: true
                                     )
                                 }
                             }
