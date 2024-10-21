@@ -18,6 +18,7 @@ struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject private var memoImageStore: MemoImageStore
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     
     @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
@@ -115,6 +116,7 @@ struct HomeView: View {
             
             Task {
                 self.filteredColumns = try await columnStore.loadColumn()
+                self.filteredColumns = self.filteredColumns.filter { $0.email != userInfoStore.userInfo?.email }
             }
         }
     }
