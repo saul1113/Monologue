@@ -294,7 +294,8 @@ struct MyPageView: View {
             }
             .onAppear {
                 Task {
-                    await loadUserInfo()
+                    await userInfoStore.loadUserInfo(email: userInfo.email)
+                    await loadUserPosts()
                     isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
                     isBlocked = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                 }
@@ -307,7 +308,7 @@ struct MyPageView: View {
     }
     
     // 유저 메모 및 칼럼 업데이트
-    private func loadUserInfo() async {
+    private func loadUserPosts() async {
         do {
             userMemos = try await memoStore.loadMemosByUserEmail(email: userInfo.email)
             userColumns = try await columnStore.loadColumnsByUserEmail(email: userInfo.email)
