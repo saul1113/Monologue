@@ -76,7 +76,7 @@ struct ColumnDetail: View {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(isPresented: $showShareSheet)
+                ShareSheetView(shareType: .column(column), isPresented: $showShareSheet)
                     .presentationDetents([.height(150)])
                     .presentationDragIndicator(.hidden)
             }
