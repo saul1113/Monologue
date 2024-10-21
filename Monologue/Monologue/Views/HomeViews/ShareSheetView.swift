@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct ShareSheetView: View {
+    @EnvironmentObject var memoStore: MemoStore
+    let memo: Memo
+    //    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var authManager: AuthManager
+    
     @Binding var isPresented: Bool
     @State private var showReportSheet = false
     let sharedString: String = "MONOLOG"
@@ -24,21 +29,34 @@ struct ShareSheetView: View {
                     .foregroundColor(.black)
             }
             
-            
             Divider()
             
-            Button(action: {
-                showReportSheet = true
-            }) {
-                Text("신고하기")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.red)
+            if memo.email != authManager.email {
+                Button(action: {
+                    showReportSheet = true
+                }) {
+                    Text("신고하기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.white)
+                        .foregroundColor(.red)
+                }
+                Divider()
+            } else {
+                Button(action: {
+                    Task {
+                        try await memoStore.deleteMemo(memoId: memo.id) // memo.id로 메모 삭제
+                        isPresented = false // 시트 닫기
+                    }
+                }) {
+                    Text("삭제하기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.white)
+                        .foregroundColor(.red)
+                }
+                Divider()
             }
-            
-            Divider()
-            
             Button(action: {
                 isPresented = false
             }) {
@@ -88,7 +106,7 @@ struct RoundedCorner: Shape {
         return Path(path.cgPath)
     }
 }
-
-#Preview {
-    ShareSheetView(isPresented: .constant(true))
-}
+//
+//#Preview {
+//    ShareSheetView(isPresented: .constant(true))
+//}

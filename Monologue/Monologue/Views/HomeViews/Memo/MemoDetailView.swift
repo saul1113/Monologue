@@ -13,7 +13,7 @@ struct MemoDetailView: View {
     @EnvironmentObject var commentStore: CommentStore
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [Comment] = []
+    @State private var displayedComments: [Comment ] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
     @State private var selectedComment: Comment?
@@ -74,7 +74,7 @@ struct MemoDetailView: View {
                 }
             }
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(isPresented: $showShareSheet)
+                ShareSheetView(memo: memo, isPresented: $showShareSheet)
                     .presentationDetents([.height(150)])
                     .presentationDragIndicator(.hidden)
             }
