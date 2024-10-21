@@ -51,6 +51,7 @@ struct EllipsisCustomSheet: View {
     @Binding var isShowingBlockAlert: Bool
     @Binding var isShowingEllipsisSheet: Bool
     @Binding var isShowingDeleteAlert: Bool
+    var isBlocked: Bool
     
     var body: some View {
         VStack(spacing: 20) {
@@ -86,15 +87,15 @@ struct EllipsisCustomSheet: View {
                     Button {
                         isShowingBlockAlert.toggle()
                     } label: {
-                        Text(option.type.rawValue)
+                        Text(isBlocked ? "차단 해제" : "차단하기")
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.red)
                     }
                     .alert(isPresented: $isShowingBlockAlert) {
                         Alert(
-                            title: Text("차단하기"),
-                            message: Text("차단된 사람은 회원님의 프로필 또는 콘텐츠를 볼 수 없게 됩니다."),
-                            primaryButton: .destructive(Text("차단")) {
+                            title: Text(isBlocked ? "차단 해제하기" : "차단하기"),
+                            message: Text(isBlocked ? "해당 유저의 차단을 해제하시겠습니까?" : "차단된 사람은 회원님의 프로필 또는 콘텐츠를 볼 수 없게 됩니다."),
+                            primaryButton: .destructive(Text(isBlocked ? "차단 해제" : "차단")) {
                                 option.action()
                                 isShowingEllipsisSheet = false
                             },
@@ -302,7 +303,7 @@ struct ReportCompleteSheet: View {
                         isShowingReportSheet: .constant(true),
                         isShowingBlockAlert: .constant(false),
                         isShowingEllipsisSheet: .constant(false),
-                        isShowingDeleteAlert: .constant(false))
+                        isShowingDeleteAlert: .constant(false), isBlocked: false)
 }
 
 #Preview("ReportSheet") {
