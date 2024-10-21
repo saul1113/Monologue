@@ -43,7 +43,8 @@ class UserInfoStore: ObservableObject {
                 "followings": user.followings,
                 "followers": user.followers,
                 "blocked": user.blocked,
-                "likes": user.likes
+                "likesMemos": user.likesMemos,
+                "likesColumns": user.likesColumns
             ])
             
             print("Document successfully written!")
@@ -66,7 +67,8 @@ class UserInfoStore: ObservableObject {
                 "followings": user.followings,
                 "followers": user.followers,
                 "blocked": user.blocked,
-                "likes": user.likes
+                "likesMemos": user.likesMemos,
+                "likesColumns": user.likesColumns
             ])
             
             print("Document successfully updated!")
@@ -95,7 +97,8 @@ class UserInfoStore: ObservableObject {
             let followings: [String] = docData["followings"] as? [String] ?? []
             let followers: [String] = docData["followers"] as? [String] ?? []
             let blocked: [String] = docData["blocked"] as? [String] ?? []
-            let likes: [String] = docData["likes"] as? [String] ?? []
+            let likesMemos: [String] = docData["likesMemos"] as? [String] ?? []
+            let likesColumns: [String] = docData["likesColumns"] as? [String] ?? []
             
             // `userInfoStore` 업데이트
             self.userInfo = UserInfo(
@@ -109,7 +112,8 @@ class UserInfoStore: ObservableObject {
                 followers: followers,
                 followings: followings,
                 blocked: blocked,
-                likes: likes
+                likesMemos: likesMemos,
+                likesColumns: likesColumns
             )
             //            print("User info loaded successfully: \(String(describing: userInfo))")
             

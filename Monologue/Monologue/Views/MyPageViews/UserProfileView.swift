@@ -241,3 +241,18 @@ struct UserProfileView: View {
         }
     }
 }
+
+#Preview {
+    UserProfileView(userInfo: UserInfo(uid: "test", email: "e.e@com", nickname: "피곤해",
+                                       registrationDate: Date(),
+                                       preferredCategories: [],
+                                       profileImageName: "profileImage2",
+                                       introduction: "자고 싶어요.",
+                                       followers: [],
+                                       followings: [],
+                                       blocked: [],
+                                       likesMemos: [],
+                                       likesColumns: []))
+    .environmentObject(MemoStore())
+    .environmentObject(ColumnStore())
+}
