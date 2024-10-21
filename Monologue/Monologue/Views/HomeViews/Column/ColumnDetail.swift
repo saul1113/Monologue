@@ -11,8 +11,6 @@ struct ColumnDetail: View {
     @EnvironmentObject var userInfoStore: UserInfoStore
     @EnvironmentObject var columnStore: ColumnStore
     @EnvironmentObject var commentStore: CommentStore
-    @State private var isLiked: Bool = false
-    @State private var likesCount: Int = 0
     @State private var showAllComments = false
     @State private var newComment = ""
     @State private var showShareSheet: Bool = false
@@ -28,7 +26,6 @@ struct ColumnDetail: View {
             ZStack {
                 Color.background
                     .ignoresSafeArea()
-                
                 VStack {
                     ScrollView {
                         VStack(alignment: .leading) {
@@ -36,8 +33,6 @@ struct ColumnDetail: View {
                             VStack(alignment: .leading, spacing: 16) {
                                 ColumnHeaderView(
                                     column: $column,
-                                    likesCount: $likesCount,
-                                    isLiked: $isLiked,
                                     showShareSheet: $showShareSheet,
                                     isCommentFieldFocused: $isCommentFieldFocused,
                                     commentCount: column.comments?.count ?? 0 // 댓글 개수를 전달
@@ -55,7 +50,7 @@ struct ColumnDetail: View {
                                 .padding(.bottom, 8)
                             
                             VStack(alignment: .leading, spacing: 0) {
-                                CommentListView(displayedComments: $column.comments, selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
+                                CommentListView(displayedComments: bindingForDisplayedComments(), selectedComment: $selectedComment, showDeleteSheet: $showDeleteSheet)
                             }
                             .padding(.bottom, 8)
                             .background(Color.white)
@@ -79,10 +74,6 @@ struct ColumnDetail: View {
             }
             .onTapGesture {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
-            }
-            .onAppear {
-                likesCount = column.likes.count
-                //displayedComments = column.comments
             }
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(isPresented: $showShareSheet)
@@ -148,26 +139,17 @@ struct ColumnDetail: View {
         
         selectedComment = nil
     }
+    
+    private func bindingForDisplayedComments() -> Binding<[Comment]?> {
+        Binding(
+            get: {
+                column.comments
+            },
+            set: { newValue in
+                if let newComments = newValue {
+                    column.comments = newComments
+                }
+            }
+        )
+    }
 }
-
-//extension Color {
-//    init(_ hex: String) {
-//        let scanner = Scanner(string: hex)
-//        _ = scanner.scanString("#")
-//        
-//        var rgb: UInt64 = 0
-//        scanner.scanHexInt64(&rgb)
-//        
-//        let r = Double((rgb >> 16) & 0xFF) / 255.0
-//        let g = Double((rgb >> 8) & 0xFF) / 255.0
-//        let b = Double(rgb & 0xFF) / 255.0
-//        
-//        self.init(red: r, green: g, blue: b)
-//    }
-//}
-
-//#Preview {
-//    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", email: "Test Email", userNickname: "북극성", categories: ["에세이"], likes: [], date: Date(), comments: []))
-//        .environmentObject(ColumnStore())
-//        .environmentObject(CommentStore())
-//}
