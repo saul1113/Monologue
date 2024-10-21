@@ -31,7 +31,8 @@ struct ShareSheetView: View {
             
             Divider()
             
-            if case let .memo(memo) = shareType, memo.email != authManager.email {
+            // 신고하기 버튼 표시
+            if  shouldShowReportButton() {
                 Button(action: {
                     showReportSheet = true
                 }) {
@@ -88,6 +89,16 @@ struct ShareSheetView: View {
             }
             .presentationDetents([.fraction(0.4), .large]) // 시트 높이를 자동으로 조절
             .presentationDragIndicator(.visible)
+        }
+    }
+    
+    // 신고하기 버튼을 보여줄지 결정 함수
+    private func shouldShowReportButton() -> Bool {
+        switch shareType {
+        case let .memo(memo):
+            return memo.email != authManager.email
+        case let .column(column):
+            return column.email != authManager.email
         }
     }
 }
