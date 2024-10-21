@@ -9,7 +9,7 @@ import SwiftUI
 import OrderedCollections
 
 class FilteredMemoStore: ObservableObject {
-    private var memoStore: MemoStore = .init()
+    var memoStore: MemoStore = .init()
     private var memoImageStore: MemoImageStore = .init()
     
     @Published var filteredMemos: [Memo] = []
@@ -23,7 +23,9 @@ class FilteredMemoStore: ObservableObject {
                     let memos = try await memoStore.loadMemos()
                     
                     DispatchQueue.main.async {
-                        self.filteredMemos = memos
+                        
+                        // 시간 순서대로 memo가 배열되게 함.
+                        self.filteredMemos = memos.sorted { $0.date > $1.date }
                         self.loadImagesForMemos()
                     }
                 } catch {
@@ -47,7 +49,7 @@ class FilteredMemoStore: ObservableObject {
         }
     }
     
-    private func loadImagesForMemos() {
+    func loadImagesForMemos() {
         DispatchQueue.main.async {
             self.images = []
             for memo in self.filteredMemos {
@@ -71,12 +73,14 @@ class FilteredMemoStore: ObservableObject {
 struct MemoView: View {
     @StateObject private var filteredMemoStore: FilteredMemoStore = .init()
     @Binding var filters: [String]?
+    @State var sortedMemos: [Memo] = []
     var userMemos: [Memo]?
     
     var body: some View {
         ScrollView {
             MasonryLayout(columns: 2, spacing: 16) {
                 if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
+                    
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
                         NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index], image: $filteredMemoStore.images[index])) {
                             ZStack {
@@ -93,7 +97,6 @@ struct MemoView: View {
                                         .font(.caption2)
                                         .padding(.trailing, 8)
                                 }
-                                
                             }
                         }
                     }
