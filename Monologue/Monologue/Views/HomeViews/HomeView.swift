@@ -8,16 +8,11 @@
 import SwiftUI
 import OrderedCollections
 
-enum MemoViewMode {
-    case home
-    case column
-    case myPage
-}
-
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject private var memoImageStore: MemoImageStore
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     
     @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
@@ -83,7 +78,7 @@ struct HomeView: View {
                                 .frame(width: geometry.size.width)
                                 .clipped()
                             
-                            ColumnView(filteredColumns: $filteredColumns, mode: .column)
+                            ColumnView(filteredColumns: $filteredColumns)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                         }
@@ -115,6 +110,7 @@ struct HomeView: View {
             
             Task {
                 self.filteredColumns = try await columnStore.loadColumn()
+                self.filteredColumns = self.filteredColumns.filter { $0.email != userInfoStore.userInfo?.email }
             }
         }
     }

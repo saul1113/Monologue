@@ -19,14 +19,13 @@ struct ColumnDetail: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    @State var column: Column
+    @Binding var column: Column
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 Color.background
                     .ignoresSafeArea()
-                
                 VStack {
                     ScrollView {
                         VStack(alignment: .leading) {
@@ -106,6 +105,12 @@ struct ColumnDetail: View {
                             .foregroundColor(.gray)
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                    Button("완료") {
+                        isCommentFieldFocused = false // 키보드 숨기기
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -148,25 +153,3 @@ struct ColumnDetail: View {
         )
     }
 }
-
-//extension Color {
-//    init(_ hex: String) {
-//        let scanner = Scanner(string: hex)
-//        _ = scanner.scanString("#")
-//
-//        var rgb: UInt64 = 0
-//        scanner.scanHexInt64(&rgb)
-//
-//        let r = Double((rgb >> 16) & 0xFF) / 255.0
-//        let g = Double((rgb >> 8) & 0xFF) / 255.0
-//        let b = Double(rgb & 0xFF) / 255.0
-//
-//        self.init(red: r, green: g, blue: b)
-//    }
-//}
-
-//#Preview {
-//    ColumnDetail(column: Column(title: "예시타이틀", content: "Example content", email: "Test Email", userNickname: "북극성", categories: ["에세이"], likes: [], date: Date(), comments: []))
-//        .environmentObject(ColumnStore())
-//        .environmentObject(CommentStore())
-//}

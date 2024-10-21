@@ -12,7 +12,6 @@ struct ColumnView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
-    var mode: MemoViewMode
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -21,21 +20,16 @@ struct ColumnView: View {
             VStack {
                 List {
                     ForEach($filteredColumns) { $post in
-                        (mode == .column && userInfoStore.userInfo?.nickname != post.userNickname) || mode == .myPage ?
                         ZStack {
-                            NavigationLink(destination: ColumnDetail(column: post)) {
+                            NavigationLink(destination: ColumnDetail(column: $post)) {
                                 EmptyView()
                             }
                             .opacity(0)  // NavigationLink는 보이지 않도록 설정
                             
-                            
                             PostRow(column: $post)  // PostRow는 항상 보이도록 설정
-                            
-                            
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
-                        : nil
                     }
                 }
                 .listStyle(PlainListStyle())
@@ -96,12 +90,16 @@ struct PostRow: View {
                 }
                 
                 Spacer()
-                Text(column.categories.first ?? "카테고리 없음.")
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-                    .padding(4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
+                ForEach(column.categories.prefix(3), id: \.self) { category in
+                    if !category.isEmpty {
+                        Text(category)
+                            .font(.subheadline)
+                            .foregroundColor(.black)
+                            .padding(4)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(8)
+                    }
+                }
             }
             .padding(.top, 8)
         }
