@@ -11,6 +11,7 @@ import SwiftUI
 struct UserProfileView: View {
     public let userInfo: UserInfo
     
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     
@@ -21,6 +22,7 @@ struct UserProfileView: View {
     @State private var isShowingEllipsisSheet: Bool = false
     @State private var isShowingReportSheet: Bool = false
     @State private var isShowingBlockAlert: Bool = false
+    @State private var isFollowing: Bool = false // 팔로우 상태 확인
     
     @State var filters: [String]? = nil
     
@@ -81,7 +83,7 @@ struct UserProfileView: View {
                         } label: {
                             HStack {
                                 Text("팔로워")
-                                Text("\(userInfo.followers.count)")
+                                Text("\(userInfoStore.followersCount)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -95,7 +97,7 @@ struct UserProfileView: View {
                         } label: {
                             HStack {
                                 Text("팔로잉")
-                                Text("\(userInfo.followings.count)")
+                                Text("\(userInfoStore.followingsCount)")
                                     .bold()
                             }
                             .padding(.horizontal, 2)
@@ -108,14 +110,33 @@ struct UserProfileView: View {
                     // 프로필 편집, 공유 버튼
                     HStack {
                         Button {
-                            // 팔로 or 언팔 로직
+                            if isFollowing {
+                                Task {
+                                    await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
+                                    isFollowing = false
+                                }
+                            } else {
+                                Task {
+                                    await userInfoStore.followUser(targetUserEmail: userInfo.email)
+                                    isFollowing = true
+                                }
+                            }
                         } label: {
-                            Text("팔로잉") // 팔로우 상태에 따라 텍스트 변경하도록 바꿔야 됨...
-                                .font(.system(size: 15))
-                                .frame(maxWidth: .infinity, minHeight: 30)
-                                .background(RoundedRectangle(cornerRadius: 10)
-                                    .strokeBorder(.accent, lineWidth: 1)
-                                )
+                            if isFollowing {
+                                Text("팔로잉")
+                                    .font(.system(size: 15))
+                                    .frame(maxWidth: .infinity, minHeight: 30)
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(.accent, lineWidth: 1)
+                                    )
+                            } else {
+                                Text("팔로우")
+                                    .font(.system(size: 15))
+                                    .frame(maxWidth: .infinity, minHeight: 30)
+                                    .foregroundStyle(.white)
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                        .fill(.accent))
+                            }
                         }
                         
                         Button {
@@ -201,6 +222,11 @@ struct UserProfileView: View {
                 Task {
                     await loadUserInfo()
                 }
+                userInfoStore.observeUserFollowData(email: userInfo.email)
+                isFollowing = userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+            }
+            .onDisappear {
+                userInfoStore.removeListener()
             }
         }
     }

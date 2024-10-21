@@ -22,6 +22,7 @@ struct UserRow: View {
     // 상태 로직
     let onActive: () -> Void
     let onInactive: () -> Void
+    let isFollowAction: Bool
     
     var body: some View {
         HStack {
@@ -53,12 +54,14 @@ struct UserRow: View {
                 Text((isActionActive ? inactiveButtonText : activeButtonText)!)
                     .font(.system(size: 15))
                     .frame(width: 90, height: 30)
-                    .foregroundStyle(isActionActive ? .white : .accent)
-                    .background(RoundedRectangle(cornerRadius: 10)
-                        .fill(isActionActive ? .accent : .clear)) // 배경색 변경
+                    .foregroundStyle(isFollowAction ? (isActionActive ? .accent : .white) : (isActionActive ? .white : .accent))
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(isFollowAction ? (isActionActive ? .clear : .accent) : (isActionActive ? .accent : .clear))
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(isActionActive ? .clear : .accent.opacity(0.5), lineWidth: 1)
+                            .strokeBorder(isFollowAction ? (isActionActive ? .accent.opacity(0.5) : .clear) : (isActionActive ? .clear : .accent.opacity(0.5)), lineWidth: 1)
                     )
             }
         }
