@@ -130,12 +130,12 @@ struct MyPageView: View {
                                         isBlocked = false
                                     }
                                 } label: {
-                                    Text("차단됨")
+                                    Text("차단 해제")
                                         .font(.system(size: 15))
                                         .frame(maxWidth: .infinity, minHeight: 30)
+                                        .foregroundStyle(.white)
                                         .background(RoundedRectangle(cornerRadius: 10)
-                                            .strokeBorder(.accent, lineWidth: 1)
-                                        )
+                                            .fill(.accent))
                                 }
                             } else {
                                 Button {
@@ -203,11 +203,32 @@ struct MyPageView: View {
                     
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $filters, userMemos: userMemos)
-                                .frame(width: geometry.size.width)
-                            
-                            ColumnView(filteredColumns: $userColumns)
-                                .frame(width: geometry.size.width)
+                            // 차단한 유저일 경우
+                            if isBlocked {
+                                Text("차단한 유저의 메모입니다.")
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                
+                                Text("차단한 유저의 칼럼입니다.")
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                            } else {
+                                // 메모가 비어있을 경우
+                                if userMemos.isEmpty {
+                                    Text("작성된 메모가 없습니다.")
+                                        .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                } else {
+                                    MemoView(filters: $filters, userMemos: userMemos)
+                                        .frame(width: geometry.size.width)
+                                }
+                                
+                                // 칼럼이 비어있을 경우
+                                if userColumns.isEmpty {
+                                    Text("작성된 칼럼이 없습니다.")
+                                        .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                } else {
+                                    ColumnView(filteredColumns: $userColumns)
+                                        .frame(width: geometry.size.width)
+                                }
+                            }
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
                         .animation(.easeInOut, value: selectedSegment)
@@ -294,7 +315,6 @@ struct MyPageView: View {
             }
             .onAppear {
                 Task {
-                    await userInfoStore.loadUserInfo(email: userInfo.email)
                     await loadUserPosts()
                     isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
                     isBlocked = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
