@@ -221,9 +221,9 @@ struct UserProfileView: View {
             .onAppear {
                 Task {
                     await loadUserInfo()
+                    isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
-                isFollowing = userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
             }
             .onDisappear {
                 userInfoStore.removeListener()

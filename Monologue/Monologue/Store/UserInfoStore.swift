@@ -230,12 +230,19 @@ class UserInfoStore: ObservableObject {
     }
     
     // 특정 유저를 팔로우하고 있는지 확인
-    func checkIfFollowing(targetUserEmail: String) -> Bool {
-        guard let currentUser = userInfo else {
+    func checkIfFollowing(targetUserEmail: String) async -> Bool {
+        guard let currentUserEmail = userInfo?.email else {
             return false
         }
         
-        return currentUser.followings.contains(targetUserEmail)
+        let db = Firestore.firestore()
+        let document = try? await db.collection("User").document(currentUserEmail).getDocument()
+        
+        if let data = document?.data(), let followings = data["followings"] as? [String] {
+            return followings.contains(targetUserEmail)
+        } else {
+            return false
+        }
     }
     
     // 특정 유저의 팔로우 실시간 감지
