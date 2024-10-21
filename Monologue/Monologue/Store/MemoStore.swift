@@ -295,6 +295,24 @@ class MemoStore: ObservableObject {
         return memos
     }
     
+    // MARK: - 메모 content로 포함 된 메모들 로드
+    @MainActor
+    func loadMemosByContent(content: String) async throws -> [Memo] {
+        let memos = try await loadMemos()
+        
+        var filteredMemos: [Memo] = []
+        
+        for memo in memos {
+            if memo.content.contains(content) {
+                filteredMemos.append(memo)
+            }
+        }
+        
+        self.memos = filteredMemos
+        
+        return self.memos
+    }
+    
     // MARK: - 메모 아이디로 메모 삭제
     func deleteMemo(memoId: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
