@@ -79,7 +79,7 @@ struct HomeView: View {
                         }
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $selectedCategories, mode: .home)
+                            MemoView(filters: $selectedCategories)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                             

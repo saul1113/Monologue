@@ -157,7 +157,7 @@ struct UserProfileView: View {
                     // 버튼 & 스와이프 제스처 사용
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $filters, userMemos: userMemos, mode: .myPage)
+                            MemoView(filters: $filters, userMemos: userMemos)
                                 .frame(width: geometry.size.width)
                             
                             ColumnView(filteredColumns: $userColumns, mode: .myPage)

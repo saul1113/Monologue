@@ -16,11 +16,13 @@ class FilteredMemoStore: ObservableObject {
     @Published var images: [UIImage] = []
     @Published var isLoadingImages: Bool = false
     
-    func setFilteredMemos(filters: [String]) {
-        if filters == ["전체"] {
-            Task {
+    func setFilteredMemos(filters: [String], userEmail: String) {
+        Task {
+            if filters == ["전체"] {
                 do {
-                    let memos = try await memoStore.loadMemos()
+                    let memos = try await memoStore.loadMemos().filter { memo in
+                        memo.email != userEmail
+                    }
                     
                     DispatchQueue.main.async {
                         self.filteredMemos = memos
@@ -29,12 +31,10 @@ class FilteredMemoStore: ObservableObject {
                 } catch {
                     print("loadMemos error: \(error)")
                 }
-            }
-        } else {
-            Task {
+            } else {
                 do {
                     let memos = try await memoStore.loadMemos().filter { memo in
-                        memo.categories.contains { filters.contains($0) }
+                        memo.categories.contains { filters.contains($0) } && memo.email != userEmail
                     }
                     DispatchQueue.main.async {
                         self.filteredMemos = memos
@@ -71,16 +71,15 @@ class FilteredMemoStore: ObservableObject {
 struct MemoView: View {
     @StateObject private var filteredMemoStore: FilteredMemoStore = .init()
     @EnvironmentObject private var userInfoStore: UserInfoStore
+    @EnvironmentObject var authManager: AuthManager
     @Binding var filters: [String]?
     var userMemos: [Memo]?
-    var mode: MemoViewMode // Added mode for view differentiation
     
     var body: some View {
         ScrollView {
             MasonryLayout(columns: 2, spacing: 16) {
                 if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
-                        (mode == .home && userInfoStore.userInfo?.nickname != filteredMemoStore.filteredMemos[index].userNickname) || mode == .myPage ?
                         NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index], image: $filteredMemoStore.images[index])) {
                             ZStack {
                                 VStack(alignment: .trailing) {
@@ -99,7 +98,6 @@ struct MemoView: View {
                                 }
                             }
                         }
-                        : nil
                     }
                 }
             }
@@ -107,7 +105,7 @@ struct MemoView: View {
         .padding(.horizontal, 16)
         .onAppear {
             if let tempFilters = filters {
-                filteredMemoStore.setFilteredMemos(filters: tempFilters)
+                filteredMemoStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
             }
             
             if let userMemos = userMemos {
@@ -117,7 +115,7 @@ struct MemoView: View {
         .onChange(of: filters) {
             print("필터 : \(String(describing: filters))")
             if let tempFilters = filters {
-                filteredMemoStore.setFilteredMemos(filters: tempFilters)
+                filteredMemoStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
             }
         }
         .onChange(of: userMemos) {
