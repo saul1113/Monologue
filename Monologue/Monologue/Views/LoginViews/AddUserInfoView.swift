@@ -20,7 +20,6 @@ struct AddUserInfoView: View {
     ]
     
     @EnvironmentObject var authManager: AuthManager
-    @EnvironmentObject private var userInfoStroe: UserInfoStore
     
     @State private var nicknameCheckWarning: Bool = false // 닉네임 확인
     @State private var nicknameDuplicateWarning: Bool = false // 닉네임 중복 경고
@@ -137,7 +136,7 @@ struct AddUserInfoView: View {
                                     likes: []
                                 )
                                 
-                                await userInfoStroe.addUserInfo(newUserInfo)
+                                await userInfoStore.addUserInfo(newUserInfo)
                                 authManager.nicknameExists = true // 닉네임이 있다는 것을 알림
                                 authManager.authenticationState = .authenticated // 메인뷰로 이동
                             }

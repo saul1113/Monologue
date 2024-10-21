@@ -151,10 +151,10 @@ struct MyPageView: View {
                     // 버튼 & 스와이프 제스처 사용
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $filters, userMemos: userMemos)
+                            MemoView(filters: $filters, userMemos: userMemos, mode: .myPage)
                                 .frame(width: geometry.size.width)
 
-                            ColumnView(filteredColumns: $userColumns)
+                            ColumnView(filteredColumns: $userColumns, mode: .column)
                                 .frame(width: geometry.size.width)
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)

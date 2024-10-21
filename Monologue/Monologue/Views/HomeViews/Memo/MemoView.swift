@@ -70,8 +70,10 @@ class FilteredMemoStore: ObservableObject {
 
 struct MemoView: View {
     @StateObject private var filteredMemoStore: FilteredMemoStore = .init()
+    @EnvironmentObject private var userInfoStore: UserInfoStore
     @Binding var filters: [String]?
     var userMemos: [Memo]?
+    var mode: MemoViewMode // Added mode for view differentiation
     
     var body: some View {
         ScrollView {
@@ -80,8 +82,10 @@ struct MemoView: View {
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
                         NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index], image: $filteredMemoStore.images[index])) {
                             ZStack {
+                                (mode == .home && userInfoStore.userInfo?.nickname != filteredMemoStore.filteredMemos[index].userNickname) || mode == .myPage ?
                                 VStack(alignment: .trailing) {
                                     let image = filteredMemoStore.images[index]
+                                    
                                     Image(uiImage: image)
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
@@ -93,7 +97,7 @@ struct MemoView: View {
                                         .font(.caption2)
                                         .padding(.trailing, 8)
                                 }
-                                
+                                : nil
                             }
                         }
                     }
