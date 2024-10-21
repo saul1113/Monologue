@@ -13,8 +13,8 @@ struct BlockedUsersListView: View {
     @State private var blockedUsers: [UserInfo] = []
     @State private var isActionActive = true // 차단 상태 관리
     
-    @State private var memoCount: [String: Int] = [:] // 닉네임별 메모 개수 저장
-    @State private var columnCount: [String: Int] = [:] // 닉네임별 칼럼 개수 저장
+    @State private var memoCount: [String: Int] = [:] // 이메일별 메모 개수 저장
+    @State private var columnCount: [String: Int] = [:] // 이메일별 칼럼 개수 저장
     
     var body: some View {
         ZStack {
@@ -35,8 +35,8 @@ struct BlockedUsersListView: View {
                                 UserRow(
                                     profileImageName: blockedUser.profileImageName,
                                     nickname: blockedUser.nickname,
-                                    memoCount: memoCount[blockedUser.nickname] ?? 0,
-                                    columnCount: columnCount[blockedUser.nickname] ?? 0,
+                                    memoCount: memoCount[blockedUser.email] ?? 0,
+                                    columnCount: columnCount[blockedUser.email] ?? 0,
                                     activeButtonText: "차단",
                                     inactiveButtonText: "차단 해제",
                                     onActive: {
@@ -46,7 +46,8 @@ struct BlockedUsersListView: View {
                                     onInactive: {
                                         // 차단 해제 로직
                                         print("\(blockedUser.nickname) 차단 해제됨")
-                                    }
+                                    },
+                                    isFollowAction: false
                                 )
                             }
                         }
@@ -84,8 +85,8 @@ struct BlockedUsersListView: View {
                 blockedUsers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.blocked)
                 
                 for blockedUser in blockedUsers {
-                    memoCount[blockedUser.nickname] = try await userInfoStore.getMemoCount(email: blockedUser.email)
-                    columnCount[blockedUser.nickname] = try await userInfoStore.getColumnCount(email: blockedUser.email)
+                    memoCount[blockedUser.email] = try await userInfoStore.getMemoCount(email: blockedUser.email)
+                    columnCount[blockedUser.email] = try await userInfoStore.getColumnCount(email: blockedUser.email)
                 }
             } catch {
                 print("Error loading blocked users or counts: \(error.localizedDescription)")
