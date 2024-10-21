@@ -44,12 +44,16 @@ struct MemoHeaderView: View {
                                    column: $column,
                                    isCommentFieldFocused: isCommentFieldFocused)
                 Spacer()
-                Text(memo.categories.first ?? "")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .padding(8)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(14)
+                ForEach(memo.categories.prefix(3), id: \.self) { category in
+                    if !category.isEmpty {
+                        Text(category)
+                            .font(.footnote)
+                            .foregroundColor(.black)
+                            .padding(8)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(14)
+                    }
+                }
             }
             .padding(.bottom, 8)
             .background(Color.white)
