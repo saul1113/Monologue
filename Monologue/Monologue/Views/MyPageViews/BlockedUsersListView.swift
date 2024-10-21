@@ -46,7 +46,8 @@ struct BlockedUsersListView: View {
                                     onInactive: {
                                         // 차단 해제 로직
                                         print("\(blockedUser.nickname) 차단 해제됨")
-                                    }
+                                    },
+                                    isFollowAction: false
                                 )
                             }
                         }

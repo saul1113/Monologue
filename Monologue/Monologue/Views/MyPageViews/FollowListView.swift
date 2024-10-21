@@ -62,7 +62,8 @@ struct FollowListView: View {
                                             Task {
                                                 await userInfoStore.unfollowUser(targetUserEmail: follower.email)
                                             }
-                                        }
+                                        },
+                                        isFollowAction: true
                                     )
                                 }
                             }
@@ -94,7 +95,8 @@ struct FollowListView: View {
                                             Task {
                                                 await userInfoStore.unfollowUser(targetUserEmail: following.email)
                                             }
-                                        }
+                                        },
+                                        isFollowAction: true
                                     )
                                 }
                             }
