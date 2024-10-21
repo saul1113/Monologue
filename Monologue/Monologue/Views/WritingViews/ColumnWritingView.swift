@@ -26,7 +26,6 @@ struct ColumnWritingView: View {
     @State private var keyboardHeight: CGFloat = 0 // 키보드 높이 상태 추가
     
     var body: some View {
-        ScrollView {
             VStack {
                 VStack  {
                     TextField("제목을 입력해주세요", text: $title)
@@ -36,7 +35,7 @@ struct ColumnWritingView: View {
                     
                     TextEditor(text: $columnText)
                         .font(.system(.title3, design: .default, weight: .regular))
-                        .frame(maxWidth: .infinity, minHeight: 500, maxHeight: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 500, maxHeight: 500)
                         .cornerRadius(8)
                         .focused($isTextEditorFocused)
                         .overlay {
@@ -94,9 +93,9 @@ struct ColumnWritingView: View {
                     }
                 }
                 .padding(.leading, 16)
-                Divider()
+                
             }
-        }
+        
         .contentShape(Rectangle())
         .onTapGesture {
             isTextEditorFocused = false
@@ -104,26 +103,28 @@ struct ColumnWritingView: View {
         .toolbar {
             // 키보드 위에 '완료' 버튼 추가
             ToolbarItemGroup(placement: .keyboard) {
-                Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
-                Button("완료") {
-                    isTextEditorFocused = false // 키보드 숨기기
-                }
-            }
-        }
-        .onAppear {
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
-                if let userInfo = notification.userInfo,
-                   let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-                    let keyboardHeight = keyboardFrame.cgRectValue.height
-                    withAnimation {
-                        self.keyboardHeight = keyboardHeight // 실제 키보드 높이를 사용
+                HStack {
+                    Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                    Button("완료") {
+                        isTextEditorFocused = false // 키보드 숨기기
                     }
                 }
             }
         }
-        .onDisappear {
-            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        }
+//        .onAppear {
+//            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
+//                if let userInfo = notification.userInfo,
+//                   let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+//                    let keyboardHeight = keyboardFrame.cgRectValue.height
+//                    withAnimation {
+//                        self.keyboardHeight = keyboardHeight // 실제 키보드 높이를 사용
+//                    }
+//                }
+//            }
+//        }
+//        .onDisappear {
+//            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+//        }
     }
 }
 
