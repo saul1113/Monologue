@@ -203,7 +203,7 @@ struct UserProfileView: View {
                         EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
                                                                               action: { }),
                                                             SheetButtonOption(type: .block,
-                                                                              action: { print("유저 차단") }),
+                                                                              action: { blockUser() }),
                                                             SheetButtonOption(type: .report,
                                                                               action: { }),
                                                             SheetButtonOption(type: .cancel,
@@ -238,6 +238,18 @@ struct UserProfileView: View {
             userColumns = try await columnStore.loadColumnsByUserEmail(email: userInfo.email)
         } catch {
             print("Error loading memos or columns: \(error.localizedDescription)")
+        }
+    }
+    
+    // 유저 차단
+    private func blockUser() {
+        Task {
+            do {
+                try await userInfoStore.blockUser(blockedEmail: userInfo.email)
+                print("유저 차단 완료")
+            } catch {
+                print("차단 중 오류 발생: \(error.localizedDescription)")
+            }
         }
     }
 }
