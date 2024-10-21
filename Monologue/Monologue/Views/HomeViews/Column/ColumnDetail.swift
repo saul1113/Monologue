@@ -19,7 +19,7 @@ struct ColumnDetail: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    @Binding var column: Column
+    @State var column: Column
     
     var body: some View {
         GeometryReader { geometry in
@@ -153,14 +153,14 @@ struct ColumnDetail: View {
 //    init(_ hex: String) {
 //        let scanner = Scanner(string: hex)
 //        _ = scanner.scanString("#")
-//        
+//
 //        var rgb: UInt64 = 0
 //        scanner.scanHexInt64(&rgb)
-//        
+//
 //        let r = Double((rgb >> 16) & 0xFF) / 255.0
 //        let g = Double((rgb >> 8) & 0xFF) / 255.0
 //        let b = Double(rgb & 0xFF) / 255.0
-//        
+//
 //        self.init(red: r, green: g, blue: b)
 //    }
 //}

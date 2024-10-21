@@ -8,6 +8,12 @@
 import SwiftUI
 import OrderedCollections
 
+enum MemoViewMode {
+    case home
+    case column
+    case myPage
+}
+
 struct HomeView: View {
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
@@ -77,7 +83,7 @@ struct HomeView: View {
                                 .frame(width: geometry.size.width)
                                 .clipped()
                             
-                            ColumnView(filteredColumns: $filteredColumns)
+                            ColumnView(filteredColumns: $filteredColumns, mode: .column)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                         }
