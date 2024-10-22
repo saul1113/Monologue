@@ -25,7 +25,7 @@ struct MemoWritingView: View {
     let fontFileNames = ["San Francisco", "NotoSerifKR-Regular", "KoPubWorldBatangPM", "NanumSquareOTFR", "NanumBarunpenOTF"] // 폰트 파일 이름
     
     let categoryOptions = ["오늘의 주제", "에세이", "사랑", "자연", "시", "자기계발", "추억", "소설", "SF", "IT", "기타"]
-    let backgroundImageNames = ["jery1", "jery2", "jery3", "jery4"]
+    let backgroundImageNames = ["texture1", "texture2", "texture3", "texture4", "texture5", "texture6"]
     
     let lineHeight: CGFloat = 24
     
@@ -49,7 +49,7 @@ struct MemoWritingView: View {
                                 TextEditor(text: $memoText)
                                     .font(.custom(selectedFont, size: 20))
                                     .scrollContentBackground(.hidden)
-                                    .background(Color.white.opacity(0.8))
+                                    //.background(Color.white.opacity(0.8))
                                     .frame(maxWidth: .infinity, maxHeight: 500)
                                     .cornerRadius(8)
                                     .focused($isTextEditorFocused) // TextEditor에 포커스 상태 연결
