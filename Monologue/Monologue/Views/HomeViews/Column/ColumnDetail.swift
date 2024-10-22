@@ -19,7 +19,9 @@ struct ColumnDetail: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isCommentFieldFocused: Bool
     
-    @Binding var column: Column
+    @State var isColumnModifyingView: Bool = false
+    
+    @State var column: Column
     
     var body: some View {
         GeometryReader { geometry in
@@ -76,8 +78,25 @@ struct ColumnDetail: View {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(shareType: .column(column), isPresented: $showShareSheet)
-                    .presentationDetents([.height(150)])
+                ShareSheetView(shareType: .column(column), isPresented: $showShareSheet, isColumnModifyingView: $isColumnModifyingView, onDelete: {
+                    dismiss()
+                })
+                    .presentationDetents([.height(200)])
+                    .fullScreenCover(isPresented: $isColumnModifyingView, onDismiss:{
+                        Task {
+                            let updateColumn = try await columnStore.loadColumnsByIds(ids: [column.id])
+                            if let udpatedColumn = updateColumn.first {
+                                self.column = udpatedColumn
+                            }
+                        }
+                    }) {
+                        NavigationStack {
+                            ColumnModifyingView(
+                                selectedTab: .constant(0),
+                                showShareSheet: $showShareSheet, column: column
+                            )
+                        }
+                    }
                     .presentationDragIndicator(.hidden)
             }
             .sheet(isPresented: $showDeleteSheet) {

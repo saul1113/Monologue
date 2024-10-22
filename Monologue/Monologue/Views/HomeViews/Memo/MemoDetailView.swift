@@ -23,6 +23,8 @@ struct MemoDetailView: View {
     @Binding var memo: Memo
     @Binding var image: UIImage
     
+    @State var isColumnModifyingView: Bool = false
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -77,7 +79,9 @@ struct MemoDetailView: View {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }           
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(shareType: .memo(memo), isPresented: $showShareSheet)
+                ShareSheetView(shareType: .memo(memo), isPresented: $showShareSheet, isColumnModifyingView: $isColumnModifyingView, onDelete: {
+                    dismiss()
+                })
                     .presentationDetents([.height(150)])
                     .presentationDragIndicator(.hidden)
             }
@@ -140,7 +144,6 @@ struct MemoDetailView: View {
             try await commentStore.deleteComment(memoId: memo.id, commentId: commentToDelete.id)
             memo.comments?.removeAll { $0 == commentToDelete }
         }
-            
         selectedComment = nil
     }
     

@@ -28,7 +28,7 @@ struct ColumnView: View {
                 List {
                     ForEach(sortedFilteredColumns, id: \.wrappedValue.id) { $post in
                         ZStack {
-                            NavigationLink(destination: ColumnDetail(column: $post)) {
+                            NavigationLink(destination: ColumnDetail(column: post)) {
                                 EmptyView()
                             }
                             .opacity(0)  // NavigationLink는 보이지 않도록 설정
