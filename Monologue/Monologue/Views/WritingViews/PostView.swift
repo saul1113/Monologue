@@ -131,6 +131,7 @@ struct PostView: View {
             
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .tabBar)
         .onAppear {
             Task {
                 // 유저의 메모 로드
