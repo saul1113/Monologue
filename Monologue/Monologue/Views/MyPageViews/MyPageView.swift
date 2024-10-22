@@ -135,14 +135,20 @@ struct MyPageView: View {
                                     if isFollowing {
                                         Task {
                                             await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
-                                            await userInfoStore.loadUserInfo(email: userInfo.email)
+                                            
+                                            // 문제점
+//                                            await userInfoStore.loadUserInfo(email: userInfo.email)
                                             isFollowing = false
+                                            await refreshUserData()
                                         }
                                     } else {
                                         Task {
                                             await userInfoStore.followUser(targetUserEmail: userInfo.email)
-                                            await userInfoStore.loadUserInfo(email: userInfo.email)
+                                            
+                                            // 문제점
+//                                            await userInfoStore.loadUserInfo(email: userInfo.email)
                                             isFollowing = true
+                                            await refreshUserData()
                                         }
                                     }
                                 } label: {
@@ -315,6 +321,12 @@ struct MyPageView: View {
                 userInfoStore.removeListener()
             }
         }
+    }
+    
+    private func refreshUserData() async {
+            // 팔로우/언팔로우 후 사용자 데이터를 다시 불러와 UI를 갱신
+            await userInfoStore.loadUserInfo(email: userInfo.email)
+       
     }
     
     // 유저 메모 및 칼럼 업데이트

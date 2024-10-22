@@ -33,12 +33,11 @@ struct ColumnHeaderView: View {
                     
                     Text(column.userNickname)
                         .font(.subheadline)
-                    Spacer()
-                    
-                    Text(column.date, style: .date)
-                        .font(.footnote)
-                        .foregroundColor(.gray)
                 }
+                Spacer()
+                Text(column.date, style: .date)
+                    .font(.footnote)
+                    .foregroundColor(.gray)
             }
             .padding(.bottom, 8)
             
