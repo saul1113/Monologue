@@ -148,6 +148,14 @@
 		EBB84EC52CBEE06700AC006A /* ColumnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8EEC41492CC761880073D5C8 /* ImageCrop */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ImageCrop;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		8E52D9132CBD100A00E5D42A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -253,6 +261,7 @@
 				8E52D9412CBD216C00E5D42A /* PostView.swift */,
 				BE0FD6642CBDFF670047251E /* MemoWritingView.swift */,
 				BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */,
+				8EEC41492CC761880073D5C8 /* ImageCrop */,
 			);
 			path = WritingViews;
 			sourceTree = "<group>";
@@ -356,6 +365,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8EEC41492CC761880073D5C8 /* ImageCrop */,
 			);
 			name = Monologue;
 			packageProductDependencies = (

@@ -32,6 +32,10 @@ struct PostView: View {
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     
+    @State var cropArea: CGRect = .init(x: 0, y: 0, width: 100, height: 100)
+    @State var imageViewSize: CGSize = .zero
+    @State var croppedImage: UIImage?
+    
     
     
 //    @State private var navigateToHome: Bool = false // 홈 뷰로의 이동 상태
@@ -73,10 +77,10 @@ struct PostView: View {
                                         }
                                     }
                                     
-                                    memoImageStore.UploadImage(image: .jery1, imageName: newMemo.id)
-                                    
-                                    
-                                    
+                                    if let croppedImage = self.crop(image: UIImage(named: selectedBackgroundImageName) ?? UIImage(), cropArea: cropArea, imageViewSize: imageViewSize) {
+                                        self.croppedImage = self.combineImage(croppedImage: croppedImage, text: memoText, imageViewSize: imageViewSize)
+                                        memoImageStore.UploadImage(image: self.croppedImage ?? UIImage(), imageName: newMemo.id)
+                                    }
                                 } else if selectedSegment == "칼럼" {
                                     let newColumn = Column(
                                         title: title,
@@ -111,9 +115,16 @@ struct PostView: View {
                         
                         if selectedSegment == "메모" {
                             MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
-                                            lineCount: $lineCount)
+                                            lineCount: $lineCount, cropArea: $cropArea, imageViewSize: $imageViewSize)
                         } else if selectedSegment == "칼럼" {
                             ColumnWritingView(title: $title, columnText: $columnText, selectedColumnCategories: $selectedColumnCategories)
+                        }
+                        
+                        if let croppedImage {
+                            Image(uiImage: croppedImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100)
                         }
                     }
                 }
@@ -164,6 +175,47 @@ struct PostView: View {
         if selectedSegment == "메모" {
             selectedFont = "San Francisco"
             selectedBackgroundImageName = "texture6"
+        }
+    }
+    
+    private func crop(image: UIImage, cropArea: CGRect, imageViewSize: CGSize) -> UIImage? {
+        
+        let scaleX = image.size.width / imageViewSize.width * image.scale
+        let scaleY = image.size.height / imageViewSize.height * image.scale
+        let scaledCropArea = CGRect(
+            x: cropArea.origin.x * scaleX,
+            y: cropArea.origin.y * scaleY,
+            width: cropArea.size.width * scaleX,
+            height: cropArea.size.height * scaleY
+        )
+        
+        guard let cutImageRef: CGImage = image.cgImage?.cropping(to: scaledCropArea) else {
+            return nil
+        }
+         
+        return UIImage(cgImage: cutImageRef)
+    }
+    
+    private func combineImage(croppedImage: UIImage, text: String, imageViewSize: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: croppedImage.size)
+        
+        return renderer.image { context in
+            croppedImage.draw(at: .zero)
+            
+            let fontSize: CGFloat = 20
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont(name: selectedFont, size: fontSize)!,
+                .foregroundColor: UIColor.white
+            ]
+            
+            let textRect = CGRect(
+                x: 5,
+                y: 8,
+                width: croppedImage.size.width - 10,
+                height: croppedImage.size.height - 16
+            )
+            
+            text.draw(in: textRect, withAttributes: attributes)
         }
     }
 }
