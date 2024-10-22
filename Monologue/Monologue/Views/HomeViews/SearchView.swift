@@ -53,13 +53,14 @@ struct SearchView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            NavigationView {
+            NavigationStack {
                 ZStack {
                     Color.background
                         .ignoresSafeArea()
-                    ScrollView {
+//                    ScrollView {
+                    VStack {
                         // MARK: - 검색 필드
-                        Spacer()
+//                        Spacer()
                         HStack {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 15)
