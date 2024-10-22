@@ -358,7 +358,7 @@ class UserInfoStore: ObservableObject {
         print("차단 해제 성공")
     }
     
-    // 특정 유저를 차단하고 있는지 확인
+    // 내가 특정 유저를 차단하고 있는지 확인
     func checkIfBlocked(targetUserEmail: String) async -> Bool {
         guard let currentUserEmail = userInfo?.email else {
             return false
@@ -369,6 +369,22 @@ class UserInfoStore: ObservableObject {
         
         if let data = document?.data(), let blocked = data["blocked"] as? [String] {
             return blocked.contains(targetUserEmail)
+        } else {
+            return false
+        }
+    }
+    
+    // 특정 유저가 나를 차단했는지 확인
+    func checkIfBlockedByUser(targetUserEmail: String) async -> Bool {
+        guard let currentUserEmail = userInfo?.email else {
+            return false
+        }
+        
+        let db = Firestore.firestore()
+        let document = try? await db.collection("User").document(targetUserEmail).getDocument()
+        
+        if let data = document?.data(), let blocked = data["blocked"] as? [String] {
+            return blocked.contains(currentUserEmail)
         } else {
             return false
         }

@@ -24,7 +24,8 @@ struct MyPageView: View {
     @State private var isShowingReportSheet: Bool = false
     @State private var isShowingBlockAlert: Bool = false
     @State private var isFollowing: Bool = false
-    @State private var isBlocked: Bool = false
+    @State private var isBlockedByMe: Bool = false // 내가 타인을 블락한 상태
+    @State private var isBlockedByThem: Bool = false // 타인이 나를 블락한 상태
     @State var filters: [String]? = nil
     
     private let sharedImage: Image = Image(.appLogo)
@@ -119,16 +120,19 @@ struct MyPageView: View {
                             }
                         } else {
                             // 타인 계정이면 '팔로우/차단' 버튼
-                            if isBlocked {
+                            if isBlockedByMe {
                                 Button {
                                     Task {
                                         try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
-                                        isBlocked = false
+                                        isBlockedByMe = false
                                     }
                                 } label: {
                                     Text("차단 해제")
                                         .modifier(FilledButtonStyle())
                                 }
+                            } else if isBlockedByThem {
+                                Text("차단됨")
+                                    .modifier(BorderedButtonStyle())
                             } else {
                                 Button {
                                     if isFollowing {
@@ -175,18 +179,27 @@ struct MyPageView: View {
                     .padding(.bottom, 30)
                     
                     // MARK: - 메모 및 칼럼 뷰
-                    CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
-                    
-                    GeometryReader { geometry in
-                        HStack(spacing: 0) {
-                            // 차단한 유저일 경우
-                            if isBlocked {
-                                Text("차단한 유저의 메모입니다.")
-                                    .frame(width: geometry.size.width, height: geometry.size.height)
-                                
-                                Text("차단한 유저의 칼럼입니다.")
-                                    .frame(width: geometry.size.width, height: geometry.size.height)
-                            } else {
+                    if isBlockedByMe {
+                        Text("차단한 유저의 게시물입니다.")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
+                    } else if isBlockedByThem {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("회원님이 나를 차단했습니다.")
+                                .font(.title3)
+                                .bold()
+                            
+                            Text("회원님을 팔로우하거나 게시물을 볼 수 없습니다.")
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.top, 10)
+                        
+                    } else {
+                        CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                        
+                        GeometryReader { geometry in
+                            HStack(spacing: 0) {
                                 // 메모가 비어있을 경우
                                 if userMemos.isEmpty {
                                     Text("작성된 메모가 없습니다.")
@@ -204,23 +217,24 @@ struct MyPageView: View {
                                     ColumnView(filteredColumns: $userColumns)
                                         .frame(width: geometry.size.width)
                                 }
+                                
                             }
-                        }
-                        .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
-                        .animation(.easeInOut, value: selectedSegment)
-                        .gesture(
-                            DragGesture(minimumDistance: 35)
-                                .onChanged { value in
-                                    if value.translation.width > 0 {
-                                        selectedSegment = "메모"
-                                    } else if value.translation.width < 0 {
-                                        selectedSegment = "칼럼"
+                            .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                            .animation(.easeInOut, value: selectedSegment)
+                            .gesture(
+                                DragGesture(minimumDistance: 35)
+                                    .onChanged { value in
+                                        if value.translation.width > 0 {
+                                            selectedSegment = "메모"
+                                        } else if value.translation.width < 0 {
+                                            selectedSegment = "칼럼"
+                                        }
                                     }
-                                }
-                        )
+                            )
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.horizontal, -16)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.horizontal, -16)
                 }
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
@@ -272,7 +286,7 @@ struct MyPageView: View {
                             EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
                                                                                   action: { }),
                                                                 SheetButtonOption(type: .block,
-                                                                                  action: { isBlocked ? unblockUser() : blockUser() }),
+                                                                                  action: { isBlockedByMe ? unblockUser() : blockUser() }),
                                                                 SheetButtonOption(type: .report,
                                                                                   action: { }),
                                                                 SheetButtonOption(type: .cancel,
@@ -283,7 +297,7 @@ struct MyPageView: View {
                                                 isShowingBlockAlert: $isShowingBlockAlert,
                                                 isShowingEllipsisSheet: $isShowingEllipsisSheet,
                                                 isShowingDeleteAlert: .constant(false),
-                                                isBlocked: isBlocked)
+                                                isBlocked: isBlockedByMe)
                             .presentationDetents([.height(250)])
                         }
                     }
@@ -293,7 +307,8 @@ struct MyPageView: View {
                 Task {
                     await loadUserPosts()
                     isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
-                    isBlocked = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                    isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                    isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
             }
@@ -317,7 +332,7 @@ struct MyPageView: View {
     private func blockUser() {
         Task {
             try await userInfoStore.blockUser(blockedEmail: userInfo.email)
-            isBlocked = true
+            isBlockedByMe = true
             print("유저 차단 완료")
         }
     }
@@ -326,7 +341,7 @@ struct MyPageView: View {
     private func unblockUser() {
         Task {
             try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
-            isBlocked = false
+            isBlockedByMe = false
             print("유저 차단 해제")
         }
     }
