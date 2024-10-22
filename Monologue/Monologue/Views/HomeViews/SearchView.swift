@@ -53,7 +53,7 @@ struct SearchView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.background
                         .ignoresSafeArea()
@@ -135,7 +135,10 @@ struct SearchView: View {
                                         VStack {
                                             HStack {
                                                 Image(systemName: "magnifyingglass")
+                                                    .resizable()
+                                                    .frame(width: 30, height: 30)
                                                 Text(search)
+                                                    .font(.subheadline)
                                                 Spacer()
                                             }
                                             .font(.system(size: 22))
@@ -156,24 +159,25 @@ struct SearchView: View {
                                 HStack(spacing: 0) {
                                     MemoView(filters: $selectedCategories, searchMemos: searchMemos)
                                         .frame(width: geometry.size.width)
+                                        .clipped()
                                     ColumnView(filteredColumns: $searchColumns)
                                         .frame(width: geometry.size.width)
+                                        .clipped()
                                 }
+                                .frame(width: geometry.size.width * 2)
                                 .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
                                 .animation(.easeInOut, value: selectedSegment)
                                 .gesture(
-                                    DragGesture(minimumDistance: 35)
-                                        .onChanged { value in
-                                            if value.translation.width > 0 {
+                                    DragGesture()
+                                        .onEnded { value in
+                                            if value.translation.width > 100 {
                                                 selectedSegment = "메모"
-                                            } else if value.translation.width < 0 {
+                                            } else if value.translation.width < -100 {
                                                 selectedSegment = "칼럼"
                                             }
                                         }
                                 )
                             }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .padding(.horizontal, -16)
                         }
                     }
                 }
@@ -201,27 +205,7 @@ struct SearchView: View {
     }
 }
 
-// 8 62 72
 extension SearchView {
-    
-    private func searchResult(_ search: String) -> [String] {
-        var len = search.count
-        let result: [String] = filteredSuggestions.filter { product in
-            return product.lowercased().prefix(len) == search.lowercased()
-        }
-        
-        return result;
-    }
-    
-    @ViewBuilder
-    private func publicHeader(_ title: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 24, weight: .bold))
-            Spacer()
-        }
-        .padding()
-    }
     
     @ViewBuilder
     private func recommandSearchButton(_ text: String) -> some View {

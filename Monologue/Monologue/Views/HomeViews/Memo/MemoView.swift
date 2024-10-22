@@ -124,9 +124,9 @@ struct MemoView: View {
                 filteredMemoStore.setUserMemos(userMemos: userMemos)
             }
             
-            if let searchMemos = searchMemos {
-                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
-            }
+//            if let searchMemos = searchMemos {
+//                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+//            }
         }
         .onChange(of: filters) {
             print("필터 : \(String(describing: filters))")
