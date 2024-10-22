@@ -156,7 +156,7 @@ struct PostView: View {
             
             if newSegment == "메모" {
                 selectedFont = "San Francisco"
-                selectedBackgroundImageName = "jery1"
+                selectedBackgroundImageName = "texture6"
             }
         }
     }
