@@ -43,10 +43,6 @@ struct MemoWritingView: View {
     var body: some View {
         VStack {
             VStack {
-                Button("Edit") {
-                    isTextEditorFocused = .text
-                }
-                
                 ZStack {
                     Image(selectedBackgroundImageName)
                         .resizable()
