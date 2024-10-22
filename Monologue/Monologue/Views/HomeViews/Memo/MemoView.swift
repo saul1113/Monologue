@@ -87,7 +87,7 @@ struct MemoView: View {
     var searchMemos: [Memo]?
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             MasonryLayout(columns: 2, spacing: 16) {
                 if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
                     

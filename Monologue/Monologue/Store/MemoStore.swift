@@ -299,7 +299,7 @@ class MemoStore: ObservableObject {
     // MARK: - 메모 content로 포함 된 메모들 로드
     @MainActor
     func loadMemosByContent(content: String) async throws -> [Memo] {
-        let memos = try await loadMemos()
+        memos = try await loadMemos()
         
         var filteredMemos: [Memo] = []
         

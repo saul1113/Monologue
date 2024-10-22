@@ -25,7 +25,7 @@ struct ColumnView: View {
             Color.background.ignoresSafeArea()
             
             VStack {
-                List {
+                ScrollView(showsIndicators: false) {
                     ForEach(sortedFilteredColumns, id: \.wrappedValue.id) { $post in
                         ZStack {
                             NavigationLink(destination: ColumnDetail(column: post)) {
@@ -37,9 +37,9 @@ struct ColumnView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
+                        .padding(.horizontal, 16)
                     }
                 }
-                .listStyle(PlainListStyle())
             }
         }
     }
