@@ -12,23 +12,29 @@ struct ColumnHeaderView: View {
     @Binding var showShareSheet: Bool
     var isCommentFieldFocused: FocusState<Bool>.Binding
     var commentCount: Int // 댓글 수를 전달받기 위한 변수 추가
-    
+    @EnvironmentObject var userInfoStore: UserInfoStore
     @State private var memo: Memo? = nil
     @State private var isEditMode: Bool = false
+    
+    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Image(systemName: "person.circle")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .clipShape(Circle())
-                    .padding(.trailing, 8)
-                
-                Text(column.userNickname)
-                    .font(.subheadline)
+                NavigationLink {
+                    MyPageView(userInfo: selectedUserInfo)
+                        .navigationBarBackButtonHidden(true)
+                } label: {
+                    Image(systemName: "person.circle")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .clipShape(Circle())
+                        .padding(.trailing, 8)
+                    
+                    Text(column.userNickname)
+                        .font(.subheadline)
+                }
                 Spacer()
-                
                 Text(column.date, style: .date)
                     .font(.footnote)
                     .foregroundColor(.gray)
@@ -65,18 +71,14 @@ struct ColumnHeaderView: View {
             .padding(.bottom, 8)
             .background(Color.white)
             .cornerRadius(12)
-            //            HStack {
-            //                            Spacer()
-            //                            NavigationLink(destination: ColumnWritingView(column: $column), isActive: $isEditMode) {
-            //                                Button(action: {
-            //                                    isEditMode = true
-            //                                }) {
-            //                                    Text("수정하기")
-            //                                        .font(.subheadline)
-            //                                        .foregroundColor(.blue)
-            //                                }
-            //                            }
-            //                        }
+        }
+        .onAppear {
+            Task{
+                // 이메일을 사용하여 유저 정보를 불러옴
+                if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [column.email]).first {
+                    self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                }
+            }
         }
     }
     

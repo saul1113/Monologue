@@ -16,16 +16,25 @@ struct MemoHeaderView: View {
     
     @State private var column: Column? = nil
     
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack() {
-                Image(systemName: "person.circle")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .clipShape(Circle())
-                    .padding(.trailing, 8)
-                Text(memo.userNickname)
-                    .font(.subheadline)
+                NavigationLink {
+                    MyPageView(userInfo: selectedUserInfo)
+                        .navigationBarBackButtonHidden(true)
+                } label: {
+                    Image(systemName: "person.circle")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .clipShape(Circle())
+                        .padding(.trailing, 8)
+                    Text(memo.userNickname)
+                        .font(.subheadline)
+                }
+                
                 Spacer()
                 Text(memo.date, style: .date)
                     .font(.footnote)
@@ -59,6 +68,14 @@ struct MemoHeaderView: View {
             .background(Color.white)
             .cornerRadius(12)
             //            .padding(.horizontal, 16)
+        }
+        .onAppear {
+            Task{
+                // 이메일을 사용하여 유저 정보를 불러옴
+                if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [memo.email]).first {
+                    self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                }
+            }
         }
     }
     
