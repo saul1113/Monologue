@@ -77,6 +77,9 @@
 		EAC7D8A22CBEDF52008A8074 /* MemoImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */; };
 		EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */; };
 		EB5F803D2CC0DAD60019A863 /* ColumnHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F803C2CC0DAD60019A863 /* ColumnHeaderView.swift */; };
+		EB5F80672CC781810019A863 /* AdBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F80662CC781810019A863 /* AdBannerView.swift */; };
+		EB5F80692CC790560019A863 /* LinkPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F80682CC790560019A863 /* LinkPreview.swift */; };
+		EB5F806B2CC790750019A863 /* AdBannerSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5F806A2CC790750019A863 /* AdBannerSliderView.swift */; };
 		EBA90F662CC0195C00710E54 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F652CC0195C00710E54 /* ShareSheetView.swift */; };
 		EBA90F682CC0242F00710E54 /* DeleteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */; };
 		EBA90F6A2CC02CC900710E54 /* ReportReasonSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */; };
@@ -146,6 +149,9 @@
 		EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoImageStore.swift; sourceTree = "<group>"; };
 		EB4000582CBDFA6B00C254A2 /* ColumnDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnDetail.swift; sourceTree = "<group>"; };
 		EB5F803C2CC0DAD60019A863 /* ColumnHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnHeaderView.swift; sourceTree = "<group>"; };
+		EB5F80662CC781810019A863 /* AdBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerView.swift; sourceTree = "<group>"; };
+		EB5F80682CC790560019A863 /* LinkPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPreview.swift; sourceTree = "<group>"; };
+		EB5F806A2CC790750019A863 /* AdBannerSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdBannerSliderView.swift; sourceTree = "<group>"; };
 		EBA90F652CC0195C00710E54 /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
 		EBA90F672CC0242F00710E54 /* DeleteSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteSheetView.swift; sourceTree = "<group>"; };
 		EBA90F692CC02CC900710E54 /* ReportReasonSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportReasonSheetView.swift; sourceTree = "<group>"; };
@@ -253,6 +259,9 @@
 				8B682BFA2CC2374C0019617B /* CommentTextInputView.swift */,
 				8B682BFC2CC2375D0019617B /* LikeCommentButtons.swift */,
 				8B682BF62CC237110019617B /* CommentListView.swift */,
+				EB5F80662CC781810019A863 /* AdBannerView.swift */,
+				EB5F80682CC790560019A863 /* LinkPreview.swift */,
+				EB5F806A2CC790750019A863 /* AdBannerSliderView.swift */,
 				8E902D912CBEC97500562071 /* Column */,
 				8E902D902CBEC96B00562071 /* Memo */,
 			);
@@ -457,6 +466,7 @@
 				8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */,
 				8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */,
 				8E91AED42CBE3749009889D4 /* ColumnStore.swift in Sources */,
+				EB5F80672CC781810019A863 /* AdBannerView.swift in Sources */,
 				8B682BF92CC2373A0019617B /* CommentRowView.swift in Sources */,
 				8EF50D5F2CBDFD01000CABAA /* AuthManager.swift in Sources */,
 				8EF50D742CBE0479000CABAA /* Complain.swift in Sources */,
@@ -507,9 +517,11 @@
 				EBB84EC62CBEE06700AC006A /* ColumnView.swift in Sources */,
 				EB5F803D2CC0DAD60019A863 /* ColumnHeaderView.swift in Sources */,
 				8EF50D372CBDF52A000CABAA /* FilterButtons.swift in Sources */,
+				EB5F80692CC790560019A863 /* LinkPreview.swift in Sources */,
 				BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */,
 				97594F522CC017F00001B6D2 /* NotificationView.swift in Sources */,
 				EB4000592CBDFA6B00C254A2 /* ColumnDetail.swift in Sources */,
+				EB5F806B2CC790750019A863 /* AdBannerSliderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
