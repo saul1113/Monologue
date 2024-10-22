@@ -160,13 +160,9 @@ class UserInfoStore: ObservableObject {
     // MARK: - Follow 관련 로직
     // 팔로우 로직
     func followUser(targetUserEmail: String) async {
+        let db = Firestore.firestore()
         let currentUserEmail = authManager.email
         
-        guard !targetUserEmail.isEmpty else {
-            print("Target user email is empty.")
-            return
-        }
-
         guard !targetUserEmail.isEmpty else {
             print("Target user email is empty.")
             return
@@ -177,7 +173,6 @@ class UserInfoStore: ObservableObject {
             return
         }
         
-        let db = Firestore.firestore()
         let currentUserRef = db.collection("User").document(currentUserEmail)
         let targetUserRef = db.collection("User").document(targetUserEmail)
         
@@ -204,13 +199,14 @@ class UserInfoStore: ObservableObject {
     
     // 언팔로우 로직
     func unfollowUser(targetUserEmail: String) async {
+        let db = Firestore.firestore()
+
         let currentUserEmail = authManager.email
         guard !targetUserEmail.isEmpty else {
             print("Target user email is empty.")
             return
         }
         
-        let db = Firestore.firestore()
         let currentUserRef = db.collection("User").document(currentUserEmail)
         let targetUserRef = db.collection("User").document(targetUserEmail)
         
@@ -237,10 +233,8 @@ class UserInfoStore: ObservableObject {
     
     // 특정 유저를 팔로우하고 있는지 확인
     func checkIfFollowing(targetUserEmail: String) async -> Bool {
-        guard let currentUserEmail = userInfo?.email else {
-            return false
-        }
-        
+        let currentUserEmail = authManager.email
+
         let db = Firestore.firestore()
         let document = try? await db.collection("User").document(currentUserEmail).getDocument()
         

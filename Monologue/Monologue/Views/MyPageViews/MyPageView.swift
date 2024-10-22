@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MyPageView: View {
-    public var userInfo: UserInfo
+    @State var userInfo: UserInfo
     
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager:AuthManager
@@ -81,7 +81,7 @@ struct MyPageView: View {
                         Divider()
                         
                         NavigationLink {
-                            FollowListView(selectedSegment: "팔로워", userInfo: userInfo)
+                            FollowListView(selectedSegment: "팔로워", userInfo: $userInfo)
                         } label: {
                             HStack {
                                 Text("팔로워")
@@ -94,7 +94,7 @@ struct MyPageView: View {
                         Divider()
                         
                         NavigationLink {
-                            FollowListView(selectedSegment: "팔로잉", userInfo: userInfo)
+                            FollowListView(selectedSegment: "팔로잉", userInfo: $userInfo)
                         } label: {
                             HStack {
                                 Text("팔로잉")
@@ -135,13 +135,11 @@ struct MyPageView: View {
                                     if isFollowing {
                                         Task {
                                             await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
-                                            await userInfoStore.loadUserInfo(email: userInfo.email)
                                             isFollowing = false
                                         }
                                     } else {
                                         Task {
                                             await userInfoStore.followUser(targetUserEmail: userInfo.email)
-                                            await userInfoStore.loadUserInfo(email: userInfo.email)
                                             isFollowing = true
                                         }
                                     }

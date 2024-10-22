@@ -37,6 +37,7 @@ struct BlockedUsersListView: View {
                                     nickname: blockedUser.nickname,
                                     memoCount: memoCount[blockedUser.email] ?? 0,
                                     columnCount: columnCount[blockedUser.email] ?? 0,
+                                    isActionActive: $isActionActive,
                                     activeButtonText: "차단",
                                     inactiveButtonText: "차단 해제",
                                     onActive: {

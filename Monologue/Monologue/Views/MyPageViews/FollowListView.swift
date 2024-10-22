@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FollowListView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
+    @EnvironmentObject private var authManager: AuthManager
     
     @Environment(\.dismiss) private var dismiss
     @State private var followers: [UserInfo] = []
@@ -17,10 +18,10 @@ struct FollowListView: View {
     @State private var memoCount: [String: Int] = [:] // 이메일별 메모 개수 저장
     @State private var columnCount: [String: Int] = [:] // 이메일별 칼럼 개수 저장
     
-    @State private var isActionActive = true // 팔로우 상태 관리
+    @State private var isFollowingStatus: [String: Bool] = [:] // 각 유저에 대한 팔로우 상태 추적
     
     @State var selectedSegment: String // 마이페이지뷰에서 받음
-    public var userInfo: UserInfo // 특정 유저의 정보를 받음(본인 or 타인)
+    @Binding var userInfo: UserInfo // 특정 유저의 정보를 받음(본인 or 타인)
     
     var body: some View {
         ZStack {
@@ -49,18 +50,26 @@ struct FollowListView: View {
                                         nickname: follower.nickname,
                                         memoCount: memoCount[follower.email] ?? 0,
                                         columnCount: columnCount[follower.email] ?? 0,
-                                        activeButtonText: "팔로우",
-                                        inactiveButtonText: "팔로잉",
+                                        // [String: Bool] 타입인 isFollowingStatus를 바인딩
+                                        isActionActive: Binding(
+                                                                get: { isFollowingStatus[follower.email] ?? false },
+                                                                set: { isFollowingStatus[follower.email] = $0 }
+                                                            ),
+                                        // 내 계정이면 버튼 안 보임
+                                        activeButtonText: follower.email == authManager.email ? nil : "팔로우",
+                                        inactiveButtonText: follower.email == authManager.email ? nil : "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
                                             Task {
                                                 await userInfoStore.followUser(targetUserEmail: follower.email)
+                                                isFollowingStatus[follower.email] = true
                                             }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
                                             Task {
                                                 await userInfoStore.unfollowUser(targetUserEmail: follower.email)
+                                                isFollowingStatus[follower.email] = false
                                             }
                                         },
                                         isFollowAction: true
@@ -82,18 +91,25 @@ struct FollowListView: View {
                                         nickname: following.nickname,
                                         memoCount: memoCount[following.email] ?? 0,
                                         columnCount: columnCount[following.email] ?? 0,
-                                        activeButtonText: "팔로우",
-                                        inactiveButtonText: "팔로잉",
+                                        isActionActive: Binding(
+                                            get: { isFollowingStatus[following.email] ?? false },
+                                            set: { isFollowingStatus[following.email] = $0 }
+                                        ),
+                                        // 내 계정이면 버튼 안 보임
+                                        activeButtonText: following.email == authManager.email ? nil : "팔로우",
+                                        inactiveButtonText: following.email == authManager.email ? nil : "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
                                             Task {
                                                 await userInfoStore.followUser(targetUserEmail: following.email)
+                                                isFollowingStatus[following.email] = true
                                             }
                                         },
                                         onInactive: {
                                             // 언팔로우 로직
                                             Task {
                                                 await userInfoStore.unfollowUser(targetUserEmail: following.email)
+                                                isFollowingStatus[following.email] = false
                                             }
                                         },
                                         isFollowAction: true
@@ -122,8 +138,9 @@ struct FollowListView: View {
         }
         .onAppear {
             Task {
-                await userInfoStore.loadUserInfo(email: userInfo.email)
                 await loadFollowersAndFollowings()
+                await loadFollowingStatus()
+                print("isFollowingStatus: \(isFollowingStatus)")
             }
         }
     }
@@ -150,20 +167,15 @@ struct FollowListView: View {
             print("Error loading followers or followings: \(error.localizedDescription)")
         }
     }
-}
-
-#Preview {
-    NavigationStack {
-        FollowListView(selectedSegment: "팔로워", userInfo:  UserInfo(uid: "test", email: "e.e@com", nickname: "피곤해",
-                                                                   registrationDate: Date(),
-                                                                   preferredCategories: [],
-                                                                   profileImageName: "profileImage2",
-                                                                   introduction: "자고 싶어요.",
-                                                                   followers: [],
-                                                                   followings: [],
-                                                                   blocked: [],
-                                                                   likesMemos: [],
-                                                                   likesColumns: []))
-        .environmentObject(UserInfoStore())
+    
+    // 로그인된 유저가 각 유저를 팔로우하고 있는지 여부를 확인하는 함수
+    private func loadFollowingStatus() async {
+        for follower in followers {
+            isFollowingStatus[follower.email] = await userInfoStore.checkIfFollowing(targetUserEmail: follower.email)
+        }
+        
+        for following in followings {
+            isFollowingStatus[following.email] = await userInfoStore.checkIfFollowing(targetUserEmail: following.email)
+        }
     }
 }
