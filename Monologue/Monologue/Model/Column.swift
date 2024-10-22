@@ -21,6 +21,18 @@ struct Column: Codable, Identifiable {
     
     var comments: [Comment]? // 댓글
     
+    init(id: String, title: String, content: String, email: String, userNickname: String, categories: [String], likes: [String], date: Date, comments: [Comment]?) {
+        self.id = id // Set the existing id when editing
+        self.title = title
+        self.content = content
+        self.email = email
+        self.userNickname = userNickname
+        self.categories = categories
+        self.likes = likes
+        self.date = date
+        self.comments = comments
+    }
+    
     init(document: QueryDocumentSnapshot) async throws {
         let docData = document.data()
         
