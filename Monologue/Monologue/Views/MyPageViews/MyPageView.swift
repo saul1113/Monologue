@@ -183,7 +183,7 @@ struct MyPageView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         
                     } else if isBlockedByThem {
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .center, spacing: 10) {
                             Text("회원님이 나를 차단했습니다.")
                                 .font(.title3)
                                 .bold()
@@ -191,7 +191,7 @@ struct MyPageView: View {
                             Text("회원님을 팔로우하거나 게시물을 볼 수 없습니다.")
                                 .foregroundStyle(.secondary)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                         .padding(.top, 10)
                         
                     } else {
@@ -305,7 +305,7 @@ struct MyPageView: View {
             .customAlert(isPresented: $isShowingBlockAlert,
                          transition: .opacity,
                          title: isBlockedByMe ? "차단 해제하기" : "차단하기",
-                         message: isBlockedByMe ? "해당 유저의 차단을 해제하시겠습니까?" : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다.",
+                         message: isBlockedByMe ? "해당 유저의 차단을 해제하면 게시물을 다시 볼 수 있게 됩니다." : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다.",
                          primaryButtonTitle: isBlockedByMe ? "차단 해제" : "차단") {
                 isBlockedByMe ? unblockUser() : blockUser()
             }

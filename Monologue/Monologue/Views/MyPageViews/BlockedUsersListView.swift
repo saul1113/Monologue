@@ -25,6 +25,7 @@ struct BlockedUsersListView: View {
                 if blockedUsers.isEmpty {
                     VStack {
                         Text("차단한 사용자가 없습니다.")
+                            .padding(.top, 250)
                     }
                 } else {
                     VStack {
