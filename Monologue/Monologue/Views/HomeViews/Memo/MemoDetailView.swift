@@ -13,7 +13,7 @@ struct MemoDetailView: View {
     @EnvironmentObject var commentStore: CommentStore
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [Comment] = []
+    @State private var displayedComments: [Comment ] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
     @State private var selectedComment: Comment?
@@ -75,12 +75,9 @@ struct MemoDetailView: View {
             }
             .onTapGesture {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
-            }
-            .onAppear {
-                likesCount = memo.likes.count
-            }            
+            }           
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(isPresented: $showShareSheet)
+                ShareSheetView(shareType: .memo(memo), isPresented: $showShareSheet)
                     .presentationDetents([.height(150)])
                     .presentationDragIndicator(.hidden)
             }
