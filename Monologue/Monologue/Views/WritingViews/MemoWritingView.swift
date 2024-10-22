@@ -167,9 +167,12 @@ struct MemoWritingView: View {
                         LazyHGrid(rows: rows, spacing: 10) {
                             ForEach(categoryOptions, id: \.self) { category in
                                 CategoryMemoButton(title: category, isSelected: selectedMemoCategories.contains(category)) {
+                                    // 선택된 카테고리가 포함되어 있으면 제거
                                     if selectedMemoCategories.contains(category) {
                                         selectedMemoCategories.removeAll { $0 == category }
-                                    } else {
+                                    }
+                                    // 선택된 카테고리 개수가 3개 미만일 때만 추가
+                                    else if selectedMemoCategories.count < 3 {
                                         selectedMemoCategories.append(category)
                                     }
                                 } onFocusChange: {
