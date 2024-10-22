@@ -132,16 +132,18 @@ struct MyPageView: View {
                                     .modifier(BorderedButtonStyle())
                             } else {
                                 Button {
-                                    if isFollowing {
-                                        Task {
+                                    Task {
+                                        if isFollowing {
+                                            // 언팔로우 로직
                                             await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
                                             isFollowing = false
-                                        }
-                                    } else {
-                                        Task {
+                                        } else {
+                                            // 팔로우 로직
                                             await userInfoStore.followUser(targetUserEmail: userInfo.email)
                                             isFollowing = true
                                         }
+                                        
+                                        await userInfoStore.loadFollowersAndFollowings(for: userInfo)
                                     }
                                 } label: {
                                     if isFollowing {
@@ -307,19 +309,19 @@ struct MyPageView: View {
                          primaryButtonTitle: isBlockedByMe ? "차단 해제" : "차단") {
                 isBlockedByMe ? unblockUser() : blockUser()
             }
-            .onAppear {
-                Task {
-                    await loadUserPosts()
-                    isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
-                    isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
-                    isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
-                }
-                userInfoStore.observeUserFollowData(email: userInfo.email)
-                setupNavigationBarAppearance(backgroundColor: .clear)
-            }
-            .onDisappear {
-                userInfoStore.removeListener()
-            }
+                         .onAppear {
+                             Task {
+                                 await loadUserPosts()
+                                 isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+                                 isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                                 isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                             }
+                             userInfoStore.observeUserFollowData(email: userInfo.email)
+                             setupNavigationBarAppearance(backgroundColor: .clear)
+                         }
+                         .onDisappear {
+                             userInfoStore.removeListener()
+                         }
         }
     }
     
@@ -337,7 +339,6 @@ struct MyPageView: View {
     private func blockUser() {
         Task {
             try await userInfoStore.blockUser(blockedEmail: userInfo.email)
-            await userInfoStore.loadUserInfo(email: authManager.email)
             isBlockedByMe = true
         }
     }
@@ -346,7 +347,6 @@ struct MyPageView: View {
     private func unblockUser() {
         Task {
             try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
-            await userInfoStore.loadUserInfo(email: authManager.email)
             isBlockedByMe = false
         }
     }
