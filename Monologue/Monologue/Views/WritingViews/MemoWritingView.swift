@@ -96,7 +96,7 @@ struct MemoWritingView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            .padding(.bottom, -5)
+            .padding(.bottom)
             .padding(.horizontal, 16)
             
             HStack {
