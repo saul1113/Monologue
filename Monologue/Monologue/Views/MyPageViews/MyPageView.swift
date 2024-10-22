@@ -297,7 +297,7 @@ struct MyPageView: View {
                                                 isShowingEllipsisSheet: $isShowingEllipsisSheet,
                                                 isShowingDeleteAlert: .constant(false),
                                                 isBlocked: isBlockedByMe)
-                            .presentationDetents([.height(250)])
+                            .presentationDetents([.height(240)])
                         }
                     }
                 }

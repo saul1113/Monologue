@@ -47,6 +47,7 @@ struct EllipsisCustomSheet: View {
     let sharedString: String? // 공유하고자 하는 String
     let sharedImage: Image = Image(.appLogo)
     let reportOrDeleteTitle: ReportOrDeleteTitle // 신고 or 삭제 대상
+
     @Binding var isShowingReportSheet: Bool
     @Binding var isShowingBlockAlert: Bool
     @Binding var isShowingEllipsisSheet: Bool
@@ -94,7 +95,7 @@ struct EllipsisCustomSheet: View {
                     .alert(isPresented: $isShowingBlockAlert) {
                         Alert(
                             title: Text(isBlocked ? "차단 해제하기" : "차단하기"),
-                            message: Text(isBlocked ? "해당 유저의 차단을 해제하시겠습니까?" : "차단된 사람은 회원님의 프로필 또는 콘텐츠를 볼 수 없게 됩니다."),
+                            message: Text(isBlocked ? "해당 유저의 차단을 해제하시겠습니까?" : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다."),
                             primaryButton: .destructive(Text(isBlocked ? "차단 해제" : "차단")) {
                                 option.action()
                                 isShowingEllipsisSheet = false
@@ -117,7 +118,6 @@ struct EllipsisCustomSheet: View {
                             message: Text(getdeleteTitleText(for: reportOrDeleteTitle)),
                             primaryButton: .destructive(Text("삭제")) {
                                 option.action()
-                                isShowingEllipsisSheet = false
                             },
                             secondaryButton: .cancel()
                         )
@@ -139,8 +139,8 @@ struct EllipsisCustomSheet: View {
                 }
             }
         }
-        .padding(.bottom, 10)
-        .frame(maxHeight: .infinity, alignment: .bottom)
+        .padding(.top, 20)
+        .frame(maxHeight: .infinity, alignment: .top)
     }
     
     // deleteTitle에 따라 다른 텍스트를 반환하는 함수
@@ -279,6 +279,9 @@ struct ReportCompleteSheet: View {
                 }
             }
         }
+        .onAppear {
+            setupNavigationBarAppearance(backgroundColor: .white)
+        }
     }
     
     // reportTitle에 따라 다른 텍스트를 반환하는 함수
@@ -300,7 +303,7 @@ struct ReportCompleteSheet: View {
                                         SheetButtonOption(type: .cancel, action: { print("취소 clicked") })],
                         sharedString: "모노로그 화이팅",
                         reportOrDeleteTitle: .memo,
-                        isShowingReportSheet: .constant(true),
+                        isShowingReportSheet: .constant(false),
                         isShowingBlockAlert: .constant(false),
                         isShowingEllipsisSheet: .constant(false),
                         isShowingDeleteAlert: .constant(false), isBlocked: false)

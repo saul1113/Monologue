@@ -53,6 +53,7 @@ struct MainView: View {
             Task {
                 await userInfoStore.loadUserInfo(email: authManager.email)
             }
+            setupNavigationBarAppearance()
         }
     }
 }
