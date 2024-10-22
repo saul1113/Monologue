@@ -12,6 +12,13 @@ struct SettingView: View {
     @State private var isShowingAlert = false
     @EnvironmentObject var authManager: AuthManager
     
+    // 앱 버전과 빌드 번호
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+        return "\(version) (\(build))"
+    }
+    
     var body: some View {
         ZStack {
             Color(.background)
@@ -56,7 +63,7 @@ struct SettingView: View {
                             
                             Spacer()
                             
-                            Text("1.0")
+                            Text(appVersion)
                                 .bold()
                         }
                     }
