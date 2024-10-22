@@ -165,6 +165,7 @@ struct ProfileEditView: View {
             
             Task {
                 await userInfoStore.updateUserInfo(userInfo)
+                await userInfoStore.loadUserInfo(email: userInfo.email)
             }
         }
     }

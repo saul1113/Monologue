@@ -14,6 +14,9 @@ struct ContentView: View {
             if authManager.nicknameExists { // 닉네임이 있는지도 확인
                 MainView()
                     .environmentObject(authManager)
+                    .onAppear {
+                        setupNavigationBarAppearance()
+                    }
             } else {
                 LoginView()
                     .environmentObject(authManager)

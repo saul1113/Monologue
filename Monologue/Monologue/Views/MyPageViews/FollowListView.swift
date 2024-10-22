@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FollowListView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
-
+    
     @Environment(\.dismiss) private var dismiss
     @State private var followers: [UserInfo] = []
     @State private var followings: [UserInfo] = []
@@ -20,6 +20,7 @@ struct FollowListView: View {
     @State private var isActionActive = true // 팔로우 상태 관리
     
     @State var selectedSegment: String // 마이페이지뷰에서 받음
+    public var userInfo: UserInfo // 특정 유저의 정보를 받음(본인 or 타인)
     
     var body: some View {
         ZStack {
@@ -41,7 +42,7 @@ struct FollowListView: View {
                         } else {
                             ForEach(followers, id: \.self) { follower in
                                 NavigationLink {
-                                    UserProfileView(userInfo: follower)
+                                    MyPageView(userInfo: follower)
                                 } label: {
                                     UserRow(
                                         profileImageName: follower.profileImageName,
@@ -74,7 +75,7 @@ struct FollowListView: View {
                         } else {
                             ForEach(followings, id: \.self) { following in
                                 NavigationLink {
-                                    UserProfileView(userInfo: following)
+                                    MyPageView(userInfo: following)
                                 } label: {
                                     UserRow(
                                         profileImageName: following.profileImageName,
@@ -107,9 +108,9 @@ struct FollowListView: View {
             }
             .padding(.top, 70)
         }
-        .navigationTitle(userInfoStore.userInfo?.nickname ?? "")
+        .navigationTitle(userInfo.nickname)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -128,33 +129,40 @@ struct FollowListView: View {
     
     // 팔로워, 팔로잉 목록 불러오고 각 메모 및 칼럼 개수 로드 함수
     private func loadFollowersAndFollowings() async {
-        if let userInfo = userInfoStore.userInfo {
-            do {
-                // 팔로워
-                followers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers)
-                
-                for follower in followers {
-                    memoCount[follower.email] = try await userInfoStore.getMemoCount(email: follower.email)
-                    columnCount[follower.email] = try await userInfoStore.getColumnCount(email: follower.email)
-                }
-                
-                // 팔로잉
-                followings = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings)
-                
-                for following in followings {
-                    memoCount[following.email] = try await userInfoStore.getMemoCount(email: following.email)
-                    columnCount[following.email] = try await userInfoStore.getColumnCount(email: following.email)
-                }
-            } catch {
-                print("Error loading followers or followings: \(error.localizedDescription)")
+        do {
+            // 팔로워
+            followers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers)
+            
+            for follower in followers {
+                memoCount[follower.email] = try await userInfoStore.getMemoCount(email: follower.email)
+                columnCount[follower.email] = try await userInfoStore.getColumnCount(email: follower.email)
             }
+            
+            // 팔로잉
+            followings = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings)
+            
+            for following in followings {
+                memoCount[following.email] = try await userInfoStore.getMemoCount(email: following.email)
+                columnCount[following.email] = try await userInfoStore.getColumnCount(email: following.email)
+            }
+        } catch {
+            print("Error loading followers or followings: \(error.localizedDescription)")
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        FollowListView(selectedSegment: "팔로워")
-            .environmentObject(UserInfoStore())
+        FollowListView(selectedSegment: "팔로워", userInfo:  UserInfo(uid: "test", email: "e.e@com", nickname: "피곤해",
+                                                                   registrationDate: Date(),
+                                                                   preferredCategories: [],
+                                                                   profileImageName: "profileImage2",
+                                                                   introduction: "자고 싶어요.",
+                                                                   followers: [],
+                                                                   followings: [],
+                                                                   blocked: [],
+                                                                   likesMemos: [],
+                                                                   likesColumns: []))
+        .environmentObject(UserInfoStore())
     }
 }

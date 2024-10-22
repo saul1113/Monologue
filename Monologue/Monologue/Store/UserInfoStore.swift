@@ -245,7 +245,7 @@ class UserInfoStore: ObservableObject {
         }
     }
     
-    // 특정 유저의 팔로우 실시간 감지
+    // 특정 유저의 팔로우 실시간 감지(리스너 활용)
     func observeUserFollowData(email: String) {
         let db = Firestore.firestore()
         let userDocRef = db.collection("User").document(email)
@@ -263,12 +263,10 @@ class UserInfoStore: ObservableObject {
             
             if let followings = docData["followings"] as? [String] {
                 self.followingsCount = followings.count
-                print("Followings: \(followings)")
             }
             
             if let followers = docData["followers"] as? [String] {
                 self.followersCount = followers.count
-                print("Followers: \(followers)")
             }
         }
     }
@@ -283,29 +281,44 @@ class UserInfoStore: ObservableObject {
     func blockUser(blockedEmail: String) async throws {
         guard let currentUserEmail = userInfo?.email else { return }
         let db = Firestore.firestore()
-        let userRef = db.collection("User").document(currentUserEmail)
-        
+        let currentUserRef = db.collection("User").document(currentUserEmail)
+        let blockedUserRef = db.collection("User").document(blockedEmail)
+
         _ = try await db.runTransaction { (transaction, errorPointer) -> Any? in
             do {
-                let userSnapshot = try transaction.getDocument(userRef)
-                guard let userData = userSnapshot.data() else { return nil }
+                let currentUserSnapshot = try transaction.getDocument(currentUserRef)
+                guard let currentUserData = currentUserSnapshot.data() else { return nil }
                 
-                var blocked = userData["blocked"] as? [String] ?? []
-                var followings = userData["followings"] as? [String] ?? []
-                var followers = userData["followers"] as? [String] ?? []
+                let blockedUserSnapshot = try transaction.getDocument(blockedUserRef)
+                guard let blockedUserData = blockedUserSnapshot.data() else { return nil }
                 
-                // 이미 차단된 유저가 아닌지 확인(중복 차단 방지)
-                if !blocked.contains(blockedEmail) {
-                    followings.removeAll { $0 == blockedEmail }
-                    followers.removeAll { $0 == blockedEmail }
+                var currentUserFollowings = currentUserData["followings"] as? [String] ?? []
+                var currentUserFollowers = currentUserData["followers"] as? [String] ?? []
+                var currentUserBlocked = currentUserData["blocked"] as? [String] ?? []
+                
+                var blockedUserFollowings = blockedUserData["followings"] as? [String] ?? []
+                var blockedUserFollowers = blockedUserData["followers"] as? [String] ?? []
+                
+                // 이미 차단된 유저가 아닌지 확인 (중복 차단 방지)
+                if !currentUserBlocked.contains(blockedEmail) {
+                    currentUserFollowings.removeAll { $0 == blockedEmail }
+                    currentUserFollowers.removeAll { $0 == blockedEmail }
                     
-                    blocked.append(blockedEmail)
+                    blockedUserFollowers.removeAll { $0 == currentUserEmail }
+                    blockedUserFollowings.removeAll { $0 == currentUserEmail }
+
+                    currentUserBlocked.append(blockedEmail)
                     
                     transaction.updateData([
-                        "blocked": blocked,
-                        "followings": followings,
-                        "followers": followers
-                    ], forDocument: userRef)
+                        "blocked": currentUserBlocked,
+                        "followings": currentUserFollowings,
+                        "followers": currentUserFollowers
+                    ], forDocument: currentUserRef)
+                    
+                    transaction.updateData([
+                        "followings": blockedUserFollowings,
+                        "followers": blockedUserFollowers
+                    ], forDocument: blockedUserRef)
                 }
             } catch {
                 errorPointer?.pointee = error as NSError
@@ -324,18 +337,14 @@ class UserInfoStore: ObservableObject {
         
         _ = try await db.runTransaction { (transaction, errorPointer) -> Any? in
             do {
-                // 현재 유저 정보 가져오기
                 let userSnapshot = try transaction.getDocument(userRef)
                 guard let userData = userSnapshot.data() else { return nil }
                 
-                // 기존 blocked 데이터 가져오기
                 var blocked = userData["blocked"] as? [String] ?? []
                 
-                // 차단 해제할 유저가 blocked에 있는지 확인 후 제거
                 if blocked.contains(blockedEmail) {
                     blocked.removeAll { $0 == blockedEmail }
                     
-                    // Firestore에 업데이트
                     transaction.updateData([
                         "blocked": blocked
                     ], forDocument: userRef)
@@ -347,5 +356,37 @@ class UserInfoStore: ObservableObject {
             return nil
         }
         print("차단 해제 성공")
+    }
+    
+    // 내가 특정 유저를 차단하고 있는지 확인
+    func checkIfBlocked(targetUserEmail: String) async -> Bool {
+        guard let currentUserEmail = userInfo?.email else {
+            return false
+        }
+        
+        let db = Firestore.firestore()
+        let document = try? await db.collection("User").document(currentUserEmail).getDocument()
+        
+        if let data = document?.data(), let blocked = data["blocked"] as? [String] {
+            return blocked.contains(targetUserEmail)
+        } else {
+            return false
+        }
+    }
+    
+    // 특정 유저가 나를 차단했는지 확인
+    func checkIfBlockedByUser(targetUserEmail: String) async -> Bool {
+        guard let currentUserEmail = userInfo?.email else {
+            return false
+        }
+        
+        let db = Firestore.firestore()
+        let document = try? await db.collection("User").document(targetUserEmail).getDocument()
+        
+        if let data = document?.data(), let blocked = data["blocked"] as? [String] {
+            return blocked.contains(currentUserEmail)
+        } else {
+            return false
+        }
     }
 }
