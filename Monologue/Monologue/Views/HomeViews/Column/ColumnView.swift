@@ -13,6 +13,7 @@ struct ColumnView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     @State private var selectedColumn: Column? = nil
+    @State private var index: Int = 0
     
     var sortedFilteredColumns: [Binding<Column>] {
         let columns = filteredColumns.indices.map { index in
@@ -33,18 +34,11 @@ struct ColumnView: View {
                         }
                         ZStack {
                             NavigationLink(
-                                destination: ColumnDetail(column: sortedFilteredColumns[index].wrappedValue),
-                                label: {
+                                destination: ColumnDetail(column: sortedFilteredColumns[index].wrappedValue)) {
                                     EmptyView()
                                 }
-                            )
-                            .opacity(0)
-                            
+                                .opacity(0)
                             PostRow(column: sortedFilteredColumns[index])
-                                .onTapGesture {
-                                    // 선택된 칼럼 업데이트
-                                    selectedColumn = sortedFilteredColumns[index].wrappedValue
-                                }
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
