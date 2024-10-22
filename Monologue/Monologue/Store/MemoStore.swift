@@ -185,6 +185,7 @@ class MemoStore: ObservableObject {
     
     
     // MARK: - 메모 유저 이메일로 로드
+    @MainActor
     func loadMemosByUserEmail(email: String, completion: @escaping ([Memo]?, Error?) -> Void) {
         let db = Firestore.firestore()
         

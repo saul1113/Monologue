@@ -27,6 +27,9 @@ struct MemoWritingView: View {
     @EnvironmentObject var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager: AuthManager
     
+    @Binding var cropArea: CGRect
+    @Binding var imageViewSize: CGSize
+    
     let rows = [GridItem(.fixed(50))]
     
     let placeholder: String = "문장을 입력해 주세요."
@@ -39,51 +42,56 @@ struct MemoWritingView: View {
     let lineHeight: CGFloat = 24
     
     var body: some View {
-        VStack {
-            VStack {
-                ZStack {
-                    Image(selectedBackgroundImageName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .cornerRadius(8)
-                        .clipped()
-                    
-                    GeometryReader { geometry in
-                        TextEditor(text: $memoText)
-                            .font(.custom(selectedFont, size: 20))
-                            .focused($isTextEditorFocused, equals: .text) // TextEditor에 포커스 상태 연결
-                            .toolbarTitleDisplayMode(.inline)
-                            .toolbar {
-                                
-                                ToolbarItem(placement: .keyboard) {
-                                    HStack {
-                                        Spacer()
-                                        Button("완료") {
-                                            isTextEditorFocused = nil
-                                        }
-                                    }
-                                    .onAppear {
-                                        print("show toolbar!!!!")
+        ScrollView {
+            ZStack {
+                VStack {
+                    VStack {
+                        ZStack {
+                            Image(selectedBackgroundImageName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: 500)
+                                .cornerRadius(8)
+                                .clipped()
+                                .overlay(alignment: .topLeading) {
+                                    GeometryReader { geometry in
+                                        CropBox(rect: $cropArea, text: $memoText, selectedFont: $selectedFont, placeholder: placeholder)
+                                            .onAppear {
+                                                self.imageViewSize = geometry.size
+                                            }
+                                            .onChange(of: geometry.size) {
+                                                self.imageViewSize = $0
+                                            }
                                     }
                                 }
-                            }
-                            .task(id: isTextEditorFocused) {
-                                print("isTextEditorFocused set: \(isTextEditorFocused)")
-                            }
-                            .scrollContentBackground(.hidden)
-                            .background(Color.white.opacity(0.8))
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .cornerRadius(8)
-                            .overlay {
-                                Text(placeholder)
-                                    .font(.title2)
-                                    .foregroundColor(memoText.isEmpty ? .gray : .clear)
-                            }
-                            .onChange(of: memoText) { _ in // .task로 바꾸자!
-                                let editWidth = geometry.size.width
-                                calculateLineCount(in: editWidth)
-                            }
+                            
+//                            GeometryReader { geometry in
+//                                TextEditor(text: $memoText)
+//                                    .font(.custom(selectedFont, size: 20))
+//                                    .scrollContentBackground(.hidden)
+//                                    //.background(Color.white.opacity(0.8))
+//                                    .frame(maxWidth: .infinity, maxHeight: 500)
+//                                    .cornerRadius(8)
+//                                    .focused($isTextEditorFocused) // TextEditor에 포커스 상태 연결
+//                                    .overlay {
+//                                        Text(placeholder)
+//                                            .font(.title2)
+//                                            .foregroundColor(memoText.isEmpty ? .gray : .clear)
+//                                    }
+//                                    .onChange(of: memoText) { _ in
+//                                        let editWidth = geometry.size.width
+//                                        calculateLineCount(in: editWidth)
+//                                    }
+//                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    HStack {
+                        Spacer()
+                        Text("\(memoText.count)/500")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .padding(.horizontal, 16)
