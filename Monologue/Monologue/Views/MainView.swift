@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct MainView: View {
-    // PostView에 바인딩 하는 변수, 선택시 탭뷰로 이동하는 변수
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @State private var selectedTab: Int = 0
-    
+    @State private var isPostViewActive: Bool = false // PostView로 이동 여부
+
     var body: some View {
         TabView(selection: $selectedTab) {
             Group {
@@ -25,14 +25,19 @@ struct MainView: View {
                     }
                     .tag(0)
                 
-                PostView(selectedTab: $selectedTab)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "plus.circle")
-                            Text("Post")
-                        }
+                NavigationStack {
+                    // PostView로 자동 네비게이션
+                    NavigationLink(destination: PostView(selectedTab: $selectedTab, isPostViewActive: $isPostViewActive), isActive: $isPostViewActive) {
+                        EmptyView() // 실제로 화면에 보이지 않음
                     }
-                    .tag(1)
+                }
+                .tabItem {
+                    VStack {
+                        Image(systemName: "plus.circle")
+                        Text("Post")
+                    }
+                }
+                .tag(1)
                 
                 if let userInfo = userInfoStore.userInfo {
                     MyPageView(userInfo: userInfo)
@@ -46,12 +51,23 @@ struct MainView: View {
                 }
             }
             .toolbarBackground(Color.background, for: .tabBar)
-            
         }
         .accentColor(.accent).ignoresSafeArea()
         .onAppear {
             Task {
                 await userInfoStore.loadUserInfo(email: authManager.email)
+            }
+            setupNavigationBarAppearance()
+        }
+        .onChange(of: selectedTab) { newValue in
+            // Post 탭이 선택되면 PostView로 자동 이동
+            if newValue == 1 {
+                
+                if !isPostViewActive {
+                    isPostViewActive = true
+                }
+            } else {
+                isPostViewActive = false
             }
         }
     }

@@ -185,6 +185,7 @@ class MemoStore: ObservableObject {
     
     
     // MARK: - 메모 유저 이메일로 로드
+    @MainActor
     func loadMemosByUserEmail(email: String, completion: @escaping ([Memo]?, Error?) -> Void) {
         let db = Firestore.firestore()
         
@@ -298,7 +299,7 @@ class MemoStore: ObservableObject {
     // MARK: - 메모 content로 포함 된 메모들 로드
     @MainActor
     func loadMemosByContent(content: String) async throws -> [Memo] {
-        let memos = try await loadMemos()
+        memos = try await loadMemos()
         
         var filteredMemos: [Memo] = []
         

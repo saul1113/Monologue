@@ -13,6 +13,7 @@ import SwiftUICore
 
 @MainActor
 class UserInfoStore: ObservableObject {
+    private var authManager: AuthManager = .init()
     private var memoStore: MemoStore = .init()
     private var columnStore: ColumnStore = .init()
     @Published var userInfo: UserInfo? = nil
@@ -159,12 +160,20 @@ class UserInfoStore: ObservableObject {
     // MARK: - Follow 관련 로직
     // 팔로우 로직
     func followUser(targetUserEmail: String) async {
-        guard let currentUserEmail = userInfo?.email, !currentUserEmail.isEmpty else {
-            print("Current user email is empty.")
-            return
-        }
+        let currentUserEmail = authManager.email
+        
         guard !targetUserEmail.isEmpty else {
             print("Target user email is empty.")
+            return
+        }
+
+        guard !targetUserEmail.isEmpty else {
+            print("Target user email is empty.")
+            return
+        }
+        
+        guard currentUserEmail != targetUserEmail else {
+            print("You cannot follow yourself.")
             return
         }
         
@@ -195,10 +204,7 @@ class UserInfoStore: ObservableObject {
     
     // 언팔로우 로직
     func unfollowUser(targetUserEmail: String) async {
-        guard let currentUserEmail = userInfo?.email, !currentUserEmail.isEmpty else {
-            print("Current user email is empty.")
-            return
-        }
+        let currentUserEmail = authManager.email
         guard !targetUserEmail.isEmpty else {
             print("Target user email is empty.")
             return

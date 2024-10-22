@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-func setupNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.background
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.accent]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.accent]
-        appearance.shadowColor = nil
-        
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
-    }
+func setupNavigationBarAppearance(backgroundColor: UIColor = .background) {
+    let appearance = UINavigationBarAppearance()
+    appearance.configureWithOpaqueBackground()
+    appearance.backgroundColor = backgroundColor
+    appearance.titleTextAttributes = [.foregroundColor: UIColor.accent]
+    appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.accent]
+    appearance.shadowColor = nil
+    
+    UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    UINavigationBar.appearance().standardAppearance = appearance
+    UINavigationBar.appearance().compactAppearance = appearance
+}

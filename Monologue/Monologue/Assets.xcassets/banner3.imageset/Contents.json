@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "texture1@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "banner3.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

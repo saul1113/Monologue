@@ -12,6 +12,8 @@ struct ColumnView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
+    @State private var selectedColumn: Column? = nil
+    @State private var index: Int = 0
     
     var sortedFilteredColumns: [Binding<Column>] {
         let columns = filteredColumns.indices.map { index in
@@ -26,14 +28,17 @@ struct ColumnView: View {
             
             VStack {
                 List {
-                    ForEach(sortedFilteredColumns, id: \.wrappedValue.id) { $post in
+                    ForEach(sortedFilteredColumns.indices, id: \.self) { index in
+                        if index == 3 {  // 3번째 게시물 뒤에 광고 배너 삽입
+                            AdBannerView()
+                        }
                         ZStack {
-                            NavigationLink(destination: ColumnDetail(column: post)) {
-                                EmptyView()
-                            }
-                            .opacity(0)  // NavigationLink는 보이지 않도록 설정
-                            
-                            PostRow(column: $post)  // PostRow는 항상 보이도록 설정
+                            NavigationLink(
+                                destination: ColumnDetail(column: sortedFilteredColumns[index].wrappedValue)) {
+                                    EmptyView()
+                                }
+                                .opacity(0)
+                            PostRow(column: sortedFilteredColumns[index])
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)

@@ -78,7 +78,7 @@ struct MemoDetailView: View {
             }
             .onTapGesture {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
-            }           
+            }         
             .sheet(isPresented: $showShareSheet) {
                 ShareSheetView(shareType: .memo(memo), isPresented: $showShareSheet, isColumnModifyingView: $isColumnModifyingView, itemSheet: $itemSheet, onDelete: {
                     dismiss()
