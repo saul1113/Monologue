@@ -7,12 +7,26 @@
 
 import SwiftUI
 
+// 여러 개의 광고 이미지를 슬라이더로 보여주는 뷰
 struct AdBannerSliderView: View {
+    let images: [String]
+    @State private var selectedIndex = 0
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView(selection: $selectedIndex) {
+            ForEach(0..<images.count, id: \.self) { index in
+                Image(images[index])
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: UIScreen.main.bounds.width / 2 - 24, height: 150)
+                    .clipped()
+                    .cornerRadius(12)
+                    .tag(index)
+            }
+        }
+        .frame(height: 150)
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+        .cornerRadius(12)
     }
 }
 
-#Preview {
-    AdBannerSliderView()
-}
