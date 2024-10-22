@@ -122,10 +122,7 @@ struct MyPageView: View {
                             // 타인 계정이면 '팔로우/차단' 버튼
                             if isBlockedByMe {
                                 Button {
-                                    Task {
-                                        try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
-                                        isBlockedByMe = false
-                                    }
+                                    unblockUser()
                                 } label: {
                                     Text("차단 해제")
                                         .modifier(FilledButtonStyle())
@@ -138,11 +135,13 @@ struct MyPageView: View {
                                     if isFollowing {
                                         Task {
                                             await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
+                                            await userInfoStore.loadUserInfo(email: authManager.email)
                                             isFollowing = false
                                         }
                                     } else {
                                         Task {
                                             await userInfoStore.followUser(targetUserEmail: userInfo.email)
+                                            await userInfoStore.loadUserInfo(email: authManager.email)
                                             isFollowing = true
                                         }
                                     }
@@ -332,6 +331,7 @@ struct MyPageView: View {
     private func blockUser() {
         Task {
             try await userInfoStore.blockUser(blockedEmail: userInfo.email)
+            await userInfoStore.loadUserInfo(email: authManager.email)
             isBlockedByMe = true
             print("유저 차단 완료")
         }
@@ -341,6 +341,7 @@ struct MyPageView: View {
     private func unblockUser() {
         Task {
             try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
+            await userInfoStore.loadUserInfo(email: authManager.email)
             isBlockedByMe = false
             print("유저 차단 해제")
         }
