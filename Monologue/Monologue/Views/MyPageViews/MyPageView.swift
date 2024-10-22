@@ -115,11 +115,7 @@ struct MyPageView: View {
                                 ProfileEditView()
                             } label: {
                                 Text("프로필 편집")
-                                    .font(.system(size: 15))
-                                    .frame(maxWidth: .infinity, minHeight: 30)
-                                    .background(RoundedRectangle(cornerRadius: 10)
-                                        .strokeBorder(.accent, lineWidth: 1)
-                                    )
+                                    .modifier(BorderedButtonStyle())
                             }
                         } else {
                             // 타인 계정이면 '팔로우/차단' 버튼
@@ -131,11 +127,7 @@ struct MyPageView: View {
                                     }
                                 } label: {
                                     Text("차단 해제")
-                                        .font(.system(size: 15))
-                                        .frame(maxWidth: .infinity, minHeight: 30)
-                                        .foregroundStyle(.white)
-                                        .background(RoundedRectangle(cornerRadius: 10)
-                                            .fill(.accent))
+                                        .modifier(FilledButtonStyle())
                                 }
                             } else {
                                 Button {
@@ -153,18 +145,10 @@ struct MyPageView: View {
                                 } label: {
                                     if isFollowing {
                                         Text("팔로잉")
-                                            .font(.system(size: 15))
-                                            .frame(maxWidth: .infinity, minHeight: 30)
-                                            .background(RoundedRectangle(cornerRadius: 10)
-                                                .strokeBorder(.accent, lineWidth: 1)
-                                            )
+                                            .modifier(BorderedButtonStyle())
                                     } else {
                                         Text("팔로우")
-                                            .font(.system(size: 15))
-                                            .frame(maxWidth: .infinity, minHeight: 30)
-                                            .foregroundStyle(.white)
-                                            .background(RoundedRectangle(cornerRadius: 10)
-                                                .fill(.accent))
+                                            .modifier(FilledButtonStyle())
                                     }
                                 }
                             }
@@ -177,22 +161,14 @@ struct MyPageView: View {
                                 preview: SharePreview(userInfo.nickname, image: sharedImage)
                             ) {
                                 Text("프로필 공유")
-                                    .font(.system(size: 15))
-                                    .frame(maxWidth: .infinity, minHeight: 30)
-                                    .background(RoundedRectangle(cornerRadius: 10)
-                                        .strokeBorder(.accent, lineWidth: 1)
-                                    )
+                                    .modifier(BorderedButtonStyle())
                             }
                         } else {
                             Button {
                                 // 알림 설정 어떻게 할지...
                             } label: {
                                 Text("알림 설정")
-                                    .font(.system(size: 15))
-                                    .frame(maxWidth: .infinity, minHeight: 30)
-                                    .background(RoundedRectangle(cornerRadius: 10)
-                                        .strokeBorder(.accent, lineWidth: 1)
-                                    )
+                                    .modifier(BorderedButtonStyle())
                             }
                         }
                     }
@@ -206,15 +182,15 @@ struct MyPageView: View {
                             // 차단한 유저일 경우
                             if isBlocked {
                                 Text("차단한 유저의 메모입니다.")
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
                                 
                                 Text("차단한 유저의 칼럼입니다.")
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
                             } else {
                                 // 메모가 비어있을 경우
                                 if userMemos.isEmpty {
                                     Text("작성된 메모가 없습니다.")
-                                        .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                        .frame(width: geometry.size.width, height: geometry.size.height)
                                 } else {
                                     MemoView(filters: $filters, userMemos: userMemos)
                                         .frame(width: geometry.size.width)
@@ -223,7 +199,7 @@ struct MyPageView: View {
                                 // 칼럼이 비어있을 경우
                                 if userColumns.isEmpty {
                                     Text("작성된 칼럼이 없습니다.")
-                                        .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                        .frame(width: geometry.size.width, height: geometry.size.height)
                                 } else {
                                     ColumnView(filteredColumns: $userColumns)
                                         .frame(width: geometry.size.width)
