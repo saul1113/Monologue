@@ -28,7 +28,7 @@ struct ColumnView: View {
                 List {
                     ForEach(sortedFilteredColumns, id: \.wrappedValue.id) { $post in
                         ZStack {
-                            NavigationLink(destination: ColumnDetail(column: $post)) {
+                            NavigationLink(destination: ColumnDetail(column: post)) {
                                 EmptyView()
                             }
                             .opacity(0)  // NavigationLink는 보이지 않도록 설정
@@ -100,11 +100,11 @@ struct PostRow: View {
                 ForEach(column.categories.prefix(3), id: \.self) { category in
                     if !category.isEmpty {
                         Text(category)
-                            .font(.subheadline)
+                            .font(.footnote)
                             .foregroundColor(.black)
-                            .padding(4)
+                            .padding(8)
                             .background(Color.gray.opacity(0.2))
-                            .cornerRadius(8)
+                            .cornerRadius(14)
                     }
                 }
             }

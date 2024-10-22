@@ -13,7 +13,7 @@ struct MemoDetailView: View {
     @EnvironmentObject var commentStore: CommentStore
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [Comment] = []
+    @State private var displayedComments: [Comment ] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
     @State private var selectedComment: Comment?
@@ -22,6 +22,9 @@ struct MemoDetailView: View {
     
     @Binding var memo: Memo
     @Binding var image: UIImage
+    
+    @State var isColumnModifyingView: Bool = false
+    @State var itemSheet: Bool = false // 글자에때라 쉬트 크기
     
     var body: some View {
         GeometryReader { geometry in
@@ -77,7 +80,9 @@ struct MemoDetailView: View {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }         
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(isPresented: $showShareSheet)
+                ShareSheetView(shareType: .memo(memo), isPresented: $showShareSheet, isColumnModifyingView: $isColumnModifyingView, itemSheet: $itemSheet, onDelete: {
+                    dismiss()
+                })
                     .presentationDetents([.height(150)])
                     .presentationDragIndicator(.hidden)
             }
@@ -140,7 +145,6 @@ struct MemoDetailView: View {
             try await commentStore.deleteComment(memoId: memo.id, commentId: commentToDelete.id)
             memo.comments?.removeAll { $0 == commentToDelete }
         }
-            
         selectedComment = nil
     }
     

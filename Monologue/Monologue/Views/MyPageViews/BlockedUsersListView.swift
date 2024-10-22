@@ -30,7 +30,7 @@ struct BlockedUsersListView: View {
                     VStack {
                         ForEach(blockedUsers, id: \.self) { blockedUser in
                             NavigationLink {
-                                UserProfileView(userInfo: blockedUser)
+                                MyPageView(userInfo: blockedUser)
                             } label: {
                                 UserRow(
                                     profileImageName: blockedUser.profileImageName,
@@ -41,11 +41,15 @@ struct BlockedUsersListView: View {
                                     inactiveButtonText: "차단 해제",
                                     onActive: {
                                         // 차단 로직
-                                        print("\(blockedUser.nickname) 차단됨")
+                                        Task {
+                                            try await userInfoStore.blockUser(blockedEmail: blockedUser.email)
+                                        }
                                     },
                                     onInactive: {
                                         // 차단 해제 로직
-                                        print("\(blockedUser.nickname) 차단 해제됨")
+                                        Task {
+                                            try await userInfoStore.unblockUser(blockedEmail: blockedUser.email)
+                                        }
                                     },
                                     isFollowAction: false
                                 )

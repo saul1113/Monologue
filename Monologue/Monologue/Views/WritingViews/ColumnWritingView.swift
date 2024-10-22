@@ -26,76 +26,73 @@ struct ColumnWritingView: View {
     @State private var keyboardHeight: CGFloat = 0 // 키보드 높이 상태 추가
     
     var body: some View {
-        ScrollView {
-            VStack {
-                VStack  {
-                    TextField("제목을 입력해주세요", text: $title)
-                        .frame(maxWidth: .infinity, maxHeight: 30)
-                        .focused($isTextEditorFocused)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    TextEditor(text: $columnText)
-                        .font(.system(.title3, design: .default, weight: .regular))
-                        .frame(maxWidth: .infinity, minHeight: 500, maxHeight: .infinity)
-                        .cornerRadius(8)
-                        .focused($isTextEditorFocused)
-                        .overlay {
-                            Text(placeholder)
-                                .font(.title2)
-                                .foregroundColor(columnText.isEmpty ? .gray : .clear)
-                            
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.brown, lineWidth: 1)
-                        }
-                        .onReceive(columnText.publisher.collect()) { newValue in
-                            if newValue.count > textLimit {
-                                columnText = String(newValue.prefix(textLimit))
-                            }
-                        }
-                    
-                    HStack {
-                        Spacer()
-                        Text("\(columnText.count)/\(textLimit)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, -5) // 여백 조정
-                HStack {
-                    HStack(spacing: 10) {
-                        Image(systemName: "tag")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color.accent)
+        VStack {
+            VStack  {
+                TextField("제목을 입력해주세요", text: $title)
+                    .frame(maxWidth: .infinity, maxHeight: 30)
+                    .focused($isTextEditorFocused)
+                    .textFieldStyle(.roundedBorder)
+                
+                TextEditor(text: $columnText)
+                    .font(.system(.title3, design: .default, weight: .regular))
+                    .frame(maxWidth: .infinity, minHeight: 500, maxHeight: 500)
+                    .cornerRadius(8)
+                    .focused($isTextEditorFocused)
+                    .overlay {
+                        Text(placeholder)
+                            .font(.title2)
+                            .foregroundColor(columnText.isEmpty ? .gray : .clear)
                         
-                        Text("카테고리")
-                            .font(.system(size: 15))
-                            .foregroundStyle(Color.accent)
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.brown, lineWidth: 1)
                     }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHGrid(rows: rows, spacing: 10) {
-                            ForEach(categoryOptions, id: \.self) { category in
-                                CategoryColumnButton(
-                                    title: category,
-                                    isSelected: selectedColumnCategories.contains(category)
-                                ) {
-                                    if selectedColumnCategories.contains(category) {
-                                        selectedColumnCategories.removeAll { $0 == category }
-                                    } else {
-                                        selectedColumnCategories.append(category)
-                                    }
-                                } onFocusChange: {
-                                    isTextEditorFocused = false
+                    .onReceive(columnText.publisher.collect()) { newValue in
+                        if newValue.count > textLimit {
+                            columnText = String(newValue.prefix(textLimit))
+                        }
+                    }
+                
+                HStack {
+                    Spacer()
+                    Text("\(columnText.count)/\(textLimit)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, -5) // 여백 조정
+            HStack {
+                HStack(spacing: 10) {
+                    Image(systemName: "tag")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color.accent)
+                    
+                    Text("카테고리")
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.accent)
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHGrid(rows: rows, spacing: 10) {
+                        ForEach(categoryOptions, id: \.self) { category in
+                            CategoryColumnButton(title: category, isSelected: selectedColumnCategories.contains(category)) {
+                                // 선택된 카테고리가 포함되어 있으면 제거
+                                if selectedColumnCategories.contains(category) {
+                                    selectedColumnCategories.removeAll { $0 == category }
                                 }
-                                .padding(.horizontal, 2)
+                                // 선택된 카테고리 개수가 3개 미만일 때만 추가
+                                else if selectedColumnCategories.count < 3 {
+                                    selectedColumnCategories.append(category)
+                                }
+                            } onFocusChange: {
+                                isTextEditorFocused = false
                             }
+                            .padding(.horizontal, 2)
                         }
                     }
                 }
-                .padding(.leading, 16)
-                Divider()
             }
+            .padding(.leading, 16)
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -104,29 +101,18 @@ struct ColumnWritingView: View {
         .toolbar {
             // 키보드 위에 '완료' 버튼 추가
             ToolbarItemGroup(placement: .keyboard) {
-                Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
-                Button("완료") {
-                    isTextEditorFocused = false // 키보드 숨기기
-                }
-            }
-        }
-        .onAppear {
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
-                if let userInfo = notification.userInfo,
-                   let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-                    let keyboardHeight = keyboardFrame.cgRectValue.height
-                    withAnimation {
-                        self.keyboardHeight = keyboardHeight // 실제 키보드 높이를 사용
+                HStack {
+                    Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                    Button("완료") {
+                        isTextEditorFocused = false // 키보드 숨기기
                     }
                 }
             }
         }
-        .onDisappear {
-            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        }
     }
 }
 
+// 카테고리 버튼의 크기와 이름을 보여주는 뷰
 struct CategoryColumnButton: View {
     var title: String
     var isSelected: Bool
