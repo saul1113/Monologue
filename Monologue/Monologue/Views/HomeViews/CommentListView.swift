@@ -14,8 +14,8 @@ struct CommentListView: View {
     @State var date: Date = .init()
     
     var body: some View {
-        if displayedComments != nil {
-            ForEach((displayedComments ?? []).reversed(), id: \.self) { comment in
+        if let comments = displayedComments {
+            ForEach(comments.sorted(by: { $0.date > $1.date}), id: \.self) { comment in
                 HStack(alignment: .top, spacing: 16) {
                     // 프로필 이미지
                     Image(systemName: "person.circle")
