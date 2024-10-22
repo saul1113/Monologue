@@ -39,14 +39,16 @@ struct MainView: View {
                 }
                 .tag(1)
                 
-                MyPageView()
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "person")
-                            Text("My Page")
+                if let userInfo = userInfoStore.userInfo {
+                    MyPageView(userInfo: userInfo)
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "person")
+                                Text("My Page")
+                            }
                         }
-                    }
-                    .tag(2)
+                        .tag(2)
+                }
             }
             .toolbarBackground(Color.background, for: .tabBar)
         }

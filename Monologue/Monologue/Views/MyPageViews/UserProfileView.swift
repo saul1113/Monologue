@@ -23,7 +23,8 @@ struct UserProfileView: View {
     @State private var isShowingReportSheet: Bool = false
     @State private var isShowingBlockAlert: Bool = false
     @State private var isFollowing: Bool = false // 팔로우 상태 확인
-    
+    @State private var isBlocked: Bool = false // 차단 상태 확인
+
     @State var filters: [String]? = nil
     
     // 기본 이니셜라이저
@@ -109,33 +110,49 @@ struct UserProfileView: View {
                     
                     // 프로필 편집, 공유 버튼
                     HStack {
-                        Button {
-                            if isFollowing {
+                        if isBlocked {
+                            Button {
                                 Task {
-                                    await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
-                                    isFollowing = false
+                                    try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
+                                    isBlocked = false
                                 }
-                            } else {
-                                Task {
-                                    await userInfoStore.followUser(targetUserEmail: userInfo.email)
-                                    isFollowing = true
-                                }
-                            }
-                        } label: {
-                            if isFollowing {
-                                Text("팔로잉")
+                            } label: {
+                                Text("차단됨")
                                     .font(.system(size: 15))
                                     .frame(maxWidth: .infinity, minHeight: 30)
                                     .background(RoundedRectangle(cornerRadius: 10)
                                         .strokeBorder(.accent, lineWidth: 1)
                                     )
-                            } else {
-                                Text("팔로우")
-                                    .font(.system(size: 15))
-                                    .frame(maxWidth: .infinity, minHeight: 30)
-                                    .foregroundStyle(.white)
-                                    .background(RoundedRectangle(cornerRadius: 10)
-                                        .fill(.accent))
+                            }
+                        } else {
+                            Button {
+                                if isFollowing {
+                                    Task {
+                                        await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
+                                        isFollowing = false
+                                    }
+                                } else {
+                                    Task {
+                                        await userInfoStore.followUser(targetUserEmail: userInfo.email)
+                                        isFollowing = true
+                                    }
+                                }
+                            } label: {
+                                if isFollowing {
+                                    Text("팔로잉")
+                                        .font(.system(size: 15))
+                                        .frame(maxWidth: .infinity, minHeight: 30)
+                                        .background(RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(.accent, lineWidth: 1)
+                                        )
+                                } else {
+                                    Text("팔로우")
+                                        .font(.system(size: 15))
+                                        .frame(maxWidth: .infinity, minHeight: 30)
+                                        .foregroundStyle(.white)
+                                        .background(RoundedRectangle(cornerRadius: 10)
+                                            .fill(.accent))
+                                }
                             }
                         }
                         
@@ -157,11 +174,19 @@ struct UserProfileView: View {
                     // 버튼 & 스와이프 제스처 사용
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $filters, userMemos: userMemos)
-                                .frame(width: geometry.size.width)
-                            
-                            ColumnView(filteredColumns: $userColumns)
-                                .frame(width: geometry.size.width)
+                            if isBlocked {
+                                Text("차단한 유저의 메모입니다.")
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                                
+                                Text("차단한 유저의 칼럼입니다.")
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
+                            } else {
+                                MemoView(filters: $filters, userMemos: userMemos)
+                                    .frame(width: geometry.size.width)
+                                
+                                ColumnView(filteredColumns: $userColumns)
+                                    .frame(width: geometry.size.width)
+                            }
                         }
                         .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
                         .animation(.easeInOut, value: selectedSegment)
@@ -203,7 +228,12 @@ struct UserProfileView: View {
                         EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
                                                                               action: { }),
                                                             SheetButtonOption(type: .block,
-                                                                              action: { blockUser() }),
+                                                                              action: {
+                                                                                if isBlocked {
+                                                                                    unblockUser()
+                                                                                } else {
+                                                                                    blockUser()
+                                                                                }}),
                                                             SheetButtonOption(type: .report,
                                                                               action: { }),
                                                             SheetButtonOption(type: .cancel,
@@ -213,7 +243,8 @@ struct UserProfileView: View {
                                             isShowingReportSheet: $isShowingReportSheet,
                                             isShowingBlockAlert: $isShowingBlockAlert,
                                             isShowingEllipsisSheet: $isShowingEllipsisSheet,
-                                            isShowingDeleteAlert: .constant(false))
+                                            isShowingDeleteAlert: .constant(false),
+                                            isBlocked: isBlocked)
                         .presentationDetents([.height(250)])
                     }
                 }
@@ -222,6 +253,7 @@ struct UserProfileView: View {
                 Task {
                     await loadUserInfo()
                     isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+                    isBlocked = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
             }
@@ -244,12 +276,18 @@ struct UserProfileView: View {
     // 유저 차단
     private func blockUser() {
         Task {
-            do {
-                try await userInfoStore.blockUser(blockedEmail: userInfo.email)
-                print("유저 차단 완료")
-            } catch {
-                print("차단 중 오류 발생: \(error.localizedDescription)")
-            }
+            try await userInfoStore.blockUser(blockedEmail: userInfo.email)
+            isBlocked = true
+            print("유저 차단 완료")
+        }
+    }
+    
+    // 유저 차단 해제
+    private func unblockUser() {
+        Task {
+            try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
+            isBlocked = false
+            print("유저 차단 해제")
         }
     }
 }

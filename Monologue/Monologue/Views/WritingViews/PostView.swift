@@ -23,7 +23,7 @@ struct PostView: View {
     @State private var memoText: String = ""
     @State private var columnText: String = ""
     @State private var selectedFont: String = "San Francisco"
-    @State private var selectedBackgroundImageName: String = "jery1"
+    @State private var selectedBackgroundImageName: String = "texture6"
     
     @State private var title: String = ""   // Column 제목
     @State private var selectedMemoCategories: [String] = ["오늘의 주제"]
@@ -170,7 +170,7 @@ struct PostView: View {
         
         if selectedSegment == "메모" {
             selectedFont = "San Francisco"
-            selectedBackgroundImageName = "jery1"
+            selectedBackgroundImageName = "texture6"
         }
     }
 }

@@ -118,13 +118,14 @@ struct ColumnDetail: View {
     
     func addComment() {
         if !newComment.isEmpty {
-            print(userInfoStore.userInfo?.email ?? "")
             let tempComment = Comment(userNickname: userInfoStore.userInfo?.nickname ?? "",
                                       content: newComment,
                                       date: Date.now)
             Task {
                 try await commentStore.addComment(columnId: column.id, comment: tempComment)
                 column.comments?.append(tempComment)
+                column.comments?.sort(by: { $0.date > $1.date})
+                
                 newComment = ""
             }
         }
@@ -135,6 +136,7 @@ struct ColumnDetail: View {
         Task {
             try await commentStore.deleteComment(columnId: column.id, commentId: commentToDelete.id)
             column.comments?.removeAll { $0 == commentToDelete }
+            column.comments?.sort(by: { $0.date > $1.date })
         }
         
         selectedComment = nil
