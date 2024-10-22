@@ -42,60 +42,49 @@ struct MemoWritingView: View {
     let lineHeight: CGFloat = 24
     
     var body: some View {
-        ScrollView {
-            ZStack {
-                VStack {
-                    VStack {
-                        ZStack {
-                            Image(selectedBackgroundImageName)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: .infinity, maxHeight: 500)
-                                .cornerRadius(8)
-                                .clipped()
-                                .overlay(alignment: .topLeading) {
-                                    GeometryReader { geometry in
-                                        CropBox(rect: $cropArea, text: $memoText, selectedFont: $selectedFont, placeholder: placeholder)
-                                            .onAppear {
-                                                self.imageViewSize = geometry.size
-                                            }
-                                            .onChange(of: geometry.size) {
-                                                self.imageViewSize = $0
-                                            }
+        VStack {
+            VStack {
+                ZStack {
+                    Image(selectedBackgroundImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: 500)
+                        .cornerRadius(8)
+                        .clipped()
+                        .overlay(alignment: .topLeading) {
+                            GeometryReader { geometry in
+                                CropBox(rect: $cropArea, text: $memoText, selectedFont: $selectedFont, placeholder: placeholder)
+                                    .onAppear {
+                                        self.imageViewSize = geometry.size
                                     }
-                                }
-                            
-//                            GeometryReader { geometry in
-//                                TextEditor(text: $memoText)
-//                                    .font(.custom(selectedFont, size: 20))
-//                                    .scrollContentBackground(.hidden)
-//                                    //.background(Color.white.opacity(0.8))
-//                                    .frame(maxWidth: .infinity, maxHeight: 500)
-//                                    .cornerRadius(8)
-//                                    .focused($isTextEditorFocused) // TextEditor에 포커스 상태 연결
-//                                    .overlay {
-//                                        Text(placeholder)
-//                                            .font(.title2)
-//                                            .foregroundColor(memoText.isEmpty ? .gray : .clear)
-//                                    }
-//                                    .onChange(of: memoText) { _ in
-//                                        let editWidth = geometry.size.width
-//                                        calculateLineCount(in: editWidth)
-//                                    }
-//                            }
+                                    .onChange(of: geometry.size) {
+                                        self.imageViewSize = $0
+                                    }
+                            }
                         }
-                    }
-                    .padding(.horizontal, 16)
                     
-                    HStack {
-                        Spacer()
-                        Text("\(memoText.count)/500")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+                    //                            GeometryReader { geometry in
+                    //                                TextEditor(text: $memoText)
+                    //                                    .font(.custom(selectedFont, size: 20))
+                    //                                    .scrollContentBackground(.hidden)
+                    //                                    //.background(Color.white.opacity(0.8))
+                    //                                    .frame(maxWidth: .infinity, maxHeight: 500)
+                    //                                    .cornerRadius(8)
+                    //                                    .focused($isTextEditorFocused) // TextEditor에 포커스 상태 연결
+                    //                                    .overlay {
+                    //                                        Text(placeholder)
+                    //                                            .font(.title2)
+                    //                                            .foregroundColor(memoText.isEmpty ? .gray : .clear)
+                    //                                    }
+                    //                                    .onChange(of: memoText) { _ in
+                    //                                        let editWidth = geometry.size.width
+                    //                                        calculateLineCount(in: editWidth)
+                    //                                    }
+                    //                            }
                 }
-                .padding(.horizontal, 16)
             }
+            .padding(.horizontal, 16)
+            
             HStack {
                 Spacer()
                 Text("\(memoText.count)/500")
@@ -197,6 +186,7 @@ struct MemoWritingView: View {
             isTextEditorFocused = nil // 다른 곳을 클릭하면 포커스 해제
         }
     }
+        
     // TextEditor의 라인수를 계산하는 함수
     private func calculateLineCount(in width: CGFloat) {
         let size = CGSize(width: width, height: .infinity)

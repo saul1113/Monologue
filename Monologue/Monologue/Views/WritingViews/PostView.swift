@@ -34,85 +34,57 @@ struct PostView: View {
     
     @State var cropArea: CGRect = .init(x: 0, y: 0, width: 100, height: 100)
     @State var imageViewSize: CGSize = .zero
-    @State var croppedImage: UIImage?
-    
+    @State var croppedImage: UIImage?    
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(.background)
-                    .ignoresSafeArea()
-                ScrollView {
-                    VStack {
-                        HStack {
-                            Text("Post")
-                                .font(.headline)
-                            
-                            Spacer()
-                            Button(action: {
-                                if selectedSegment == "메모" {
-                                    // 메모 저장 처리
-                                    let newMemo = Memo(content: memoText,
-                                                       email: userInfoStore.userInfo?.email ?? "",
-                                                       userNickname: userInfoStore.userInfo?.nickname ?? "",
-                                                       font: selectedFont,
-                                                       backgroundImageName: selectedBackgroundImageName,
-                                                       categories: selectedMemoCategories,
-                                                       likes: [],
-                                                       date: Date(),
-                                                       lineCount: lineCount,
-                                                       comments: [])
-                                    memoStore.addMemo(memo: newMemo) { error in
-                                        if let error = error {
-                                            print("Error adding memo: \(error)")
-                                        } else {
-                                            DispatchQueue.main.async {
-                                                selectedTab = 0
-                                            }
-                                            restFields()
-                                        }
-                                    }
-                                    
-                                    if let croppedImage = self.crop(image: UIImage(named: selectedBackgroundImageName) ?? UIImage(), cropArea: cropArea, imageViewSize: imageViewSize) {
-                                        self.croppedImage = self.combineImage(croppedImage: croppedImage, text: memoText, imageViewSize: imageViewSize)
-                                        memoImageStore.UploadImage(image: self.croppedImage ?? UIImage(), imageName: newMemo.id)
-                                    }
-                                } else if selectedSegment == "칼럼" {
-                                    let newColumn = Column(
-                                        title: title,
-                                        content: columnText,
-                                        email: userInfoStore.userInfo?.email ?? "",
-                                        userNickname: userInfoStore.userInfo?.nickname ?? "",
-                                        categories: selectedColumnCategories,
-                                        likes: [],
-                                        date: Date(),
-                                        comments: []
-                                    )
-                                    columnStore.addColumn(column: newColumn) { error in
-                                        if let error = error {
-                                            print("Error adding column: \(error)")
-                                        } else {
-                                            DispatchQueue.main.async {
-                                                selectedTab = 0
-                                            }
-                                            restFields()
-                                        }
+        ZStack {
+            Color(.background)
+                .ignoresSafeArea()
+            
+            VStack {
+                HStack {
+                    Button(action: {
+                        selectedTab = 0
+                        isPostViewActive = false
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.title2)
+                    }
+                    Spacer()
+                    Text("Post")
+                        .font(.title2)
+                    Spacer()
+                    Button(action: {
+                        if selectedSegment == "메모" {
+                            // 메모 저장 처리
+                            let newMemo = Memo(content: memoText,
+                                               email: userInfoStore.userInfo?.email ?? "",
+                                               userNickname: userInfoStore.userInfo?.nickname ?? "",
+                                               font: selectedFont,
+                                               backgroundImageName: selectedBackgroundImageName,
+                                               categories: selectedMemoCategories,
+                                               likes: [],
+                                               date: Date(),
+                                               lineCount: lineCount,
+                                               comments: [])
+                            memoStore.addMemo(memo: newMemo) { error in
+                                if let error = error {
+                                    print("Error adding memo: \(error)")
+                                } else {
+                                    // 발핼버튼 클릭 시 HomeView로 이동하는 코드
+                                    DispatchQueue.main.async {
+                                        selectedTab = 0
                                     }
                                     restFields()
                                 }
                             }
-                        }
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 16)
-                        
-                        CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
-                        
-                        if selectedSegment == "메모" {
-                            MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
-                                            lineCount: $lineCount, cropArea: $cropArea, imageViewSize: $imageViewSize)
-                            if let image = UIImage(named: selectedBackgroundImageName) {
-                                memoImageStore.UploadImage(image: image, imageName: newMemo.id)
+                            
+                            if let croppedImage = self.crop(image: UIImage(named: selectedBackgroundImageName) ?? UIImage(), cropArea: cropArea, imageViewSize: imageViewSize) {
+                                self.croppedImage = self.combineImage(croppedImage: croppedImage, text: memoText, imageViewSize: imageViewSize)
+                                memoImageStore.UploadImage(image: self.croppedImage ?? UIImage(), imageName: newMemo.id)
                             }
+
                         } else if selectedSegment == "칼럼" {
                             let newColumn = Column(
                                 title: title,
@@ -135,12 +107,6 @@ struct PostView: View {
                                 }
                             }
                         }
-                        if let croppedImage {
-                            Image(uiImage: croppedImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100)
-                        }
                     }) {
                         Text("발행")
                             .foregroundColor(.accent)
@@ -154,8 +120,7 @@ struct PostView: View {
                 
                 ScrollView {
                     if selectedSegment == "메모" {
-                        MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
-                                        lineCount: $lineCount)
+                        MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName, lineCount: $lineCount, cropArea: $cropArea, imageViewSize: $imageViewSize)
                     } else if selectedSegment == "칼럼" {
                         ColumnWritingView(title: $title, columnText: $columnText, selectedColumnCategories: $selectedColumnCategories)
                     }
@@ -221,7 +186,7 @@ struct PostView: View {
         guard let cutImageRef: CGImage = image.cgImage?.cropping(to: scaledCropArea) else {
             return nil
         }
-         
+        
         return UIImage(cgImage: cutImageRef)
     }
     
@@ -247,6 +212,7 @@ struct PostView: View {
             text.draw(in: textRect, withAttributes: attributes)
         }
     }
+
 }
 
 //#Preview {
