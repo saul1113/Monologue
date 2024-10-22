@@ -15,6 +15,7 @@ struct ShareSheetView: View {
     let shareType: ShareType
     @Binding var isPresented: Bool
     @Binding var isColumnModifyingView: Bool
+    @Binding var itemSheet: Bool
     @State private var showReportSheet = false
     let sharedString: String = "MONOLOG"
     
@@ -45,6 +46,9 @@ struct ShareSheetView: View {
                                 .padding()
                                 .background(Color.white)
                                 .foregroundColor(.red)
+                        }
+                        .onAppear {
+                            itemSheet = true
                         }
                     }
                 }
@@ -121,7 +125,6 @@ struct ShareSheetView: View {
             return column.email != authManager.email
         }
     }
-        
 }
 
 // UIView extension to customize which corners are rounded

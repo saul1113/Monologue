@@ -20,6 +20,7 @@ struct ColumnDetail: View {
     @FocusState private var isCommentFieldFocused: Bool
     
     @State var isColumnModifyingView: Bool = false
+    @State var itemSheet: Bool = false // 글자에때라 쉬트 크기
     
     @State var column: Column
     
@@ -78,26 +79,26 @@ struct ColumnDetail: View {
                 UIApplication.shared.endEditing() // 화면을 탭하면 키보드 내려가도록 함
             }
             .sheet(isPresented: $showShareSheet) {
-                ShareSheetView(shareType: .column(column), isPresented: $showShareSheet, isColumnModifyingView: $isColumnModifyingView, onDelete: {
+                ShareSheetView(shareType: .column(column), isPresented: $showShareSheet, isColumnModifyingView: $isColumnModifyingView, itemSheet: $itemSheet, onDelete: {
                     dismiss()
                 })
-                    .presentationDetents([.height(200)])
-                    .fullScreenCover(isPresented: $isColumnModifyingView, onDismiss:{
-                        Task {
-                            let updateColumn = try await columnStore.loadColumnsByIds(ids: [column.id])
-                            if let udpatedColumn = updateColumn.first {
-                                self.column = udpatedColumn
-                            }
-                        }
-                    }) {
-                        NavigationStack {
-                            ColumnModifyingView(
-                                selectedTab: .constant(0),
-                                showShareSheet: $showShareSheet, column: column
-                            )
+                .presentationDetents([itemSheet ? .height(200) : .height(150)])
+                .fullScreenCover(isPresented: $isColumnModifyingView, onDismiss:{
+                    Task {
+                        let updateColumn = try await columnStore.loadColumnsByIds(ids: [column.id])
+                        if let udpatedColumn = updateColumn.first {
+                            self.column = udpatedColumn
                         }
                     }
-                    .presentationDragIndicator(.hidden)
+                }) {
+                    NavigationStack {
+                        ColumnModifyingView(
+                            selectedTab: .constant(0),
+                            showShareSheet: $showShareSheet, column: column
+                        )
+                    }
+                }
+                .presentationDragIndicator(.hidden)
             }
             .sheet(isPresented: $showDeleteSheet) {
                 DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment)
