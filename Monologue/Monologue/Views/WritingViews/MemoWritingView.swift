@@ -57,8 +57,8 @@ struct MemoWritingView: View {
                     
                     GeometryReader { geometry in
                         TextEditor(text: $memoText)
+                            .font(.custom(selectedFont, size: 20))
                             .focused($isTextEditorFocused, equals: .text) // TextEditor에 포커스 상태 연결
-                            .padding()
                             .toolbarTitleDisplayMode(.inline)
                             .toolbar {
                                 
@@ -77,7 +77,6 @@ struct MemoWritingView: View {
                             .task(id: isTextEditorFocused) {
                                 print("isTextEditorFocused set: \(isTextEditorFocused)")
                             }
-                            .font(.custom(selectedFont, size: 20))
                             .scrollContentBackground(.hidden)
                             .background(Color.white.opacity(0.8))
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -94,9 +93,7 @@ struct MemoWritingView: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                
             }
-            
             HStack {
                 Spacer()
                 Text("\(memoText.count)/500")
