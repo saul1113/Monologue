@@ -57,6 +57,7 @@ struct MainView: View {
             Task {
                 await userInfoStore.loadUserInfo(email: authManager.email)
             }
+            setupNavigationBarAppearance()
         }
         .onChange(of: selectedTab) { newValue in
             // Post 탭이 선택되면 PostView로 자동 이동

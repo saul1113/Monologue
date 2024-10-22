@@ -122,7 +122,7 @@ struct MyPageView: View {
                             // 타인 계정이면 '팔로우/차단' 버튼
                             if isBlockedByMe {
                                 Button {
-                                    unblockUser()
+                                    isShowingBlockAlert = true
                                 } label: {
                                     Text("차단 해제")
                                         .modifier(FilledButtonStyle())
@@ -285,7 +285,7 @@ struct MyPageView: View {
                             EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
                                                                                   action: { }),
                                                                 SheetButtonOption(type: .block,
-                                                                                  action: { isBlockedByMe ? unblockUser() : blockUser() }),
+                                                                                  action: { }),
                                                                 SheetButtonOption(type: .report,
                                                                                   action: { }),
                                                                 SheetButtonOption(type: .cancel,
@@ -297,10 +297,17 @@ struct MyPageView: View {
                                                 isShowingEllipsisSheet: $isShowingEllipsisSheet,
                                                 isShowingDeleteAlert: .constant(false),
                                                 isBlocked: isBlockedByMe)
-                            .presentationDetents([.height(250)])
+                            .presentationDetents([.height(240)])
                         }
                     }
                 }
+            }
+            .customAlert(isPresented: $isShowingBlockAlert,
+                         transition: .opacity,
+                         title: isBlockedByMe ? "차단 해제하기" : "차단하기",
+                         message: isBlockedByMe ? "해당 유저의 차단을 해제하시겠습니까?" : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다.",
+                         primaryButtonTitle: isBlockedByMe ? "차단 해제" : "차단") {
+                isBlockedByMe ? unblockUser() : blockUser()
             }
             .onAppear {
                 Task {
@@ -310,6 +317,7 @@ struct MyPageView: View {
                     isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
+                setupNavigationBarAppearance(backgroundColor: .clear)
             }
             .onDisappear {
                 userInfoStore.removeListener()
@@ -333,7 +341,6 @@ struct MyPageView: View {
             try await userInfoStore.blockUser(blockedEmail: userInfo.email)
             await userInfoStore.loadUserInfo(email: authManager.email)
             isBlockedByMe = true
-            print("유저 차단 완료")
         }
     }
     
@@ -343,17 +350,6 @@ struct MyPageView: View {
             try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
             await userInfoStore.loadUserInfo(email: authManager.email)
             isBlockedByMe = false
-            print("유저 차단 해제")
         }
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        MyPageView()
-//            .environmentObject(AuthManager())
-//            .environmentObject(UserInfoStore())
-//            .environmentObject(MemoStore())
-//            .environmentObject(ColumnStore())
-//    }
-//}
