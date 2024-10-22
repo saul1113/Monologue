@@ -86,22 +86,12 @@ struct EllipsisCustomSheet: View {
                     
                 case .block:
                     Button {
+                        isShowingEllipsisSheet.toggle()
                         isShowingBlockAlert.toggle()
                     } label: {
                         Text(isBlocked ? "차단 해제" : "차단하기")
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(.red)
-                    }
-                    .alert(isPresented: $isShowingBlockAlert) {
-                        Alert(
-                            title: Text(isBlocked ? "차단 해제하기" : "차단하기"),
-                            message: Text(isBlocked ? "해당 유저의 차단을 해제하시겠습니까?" : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다."),
-                            primaryButton: .destructive(Text(isBlocked ? "차단 해제" : "차단")) {
-                                option.action()
-                                isShowingEllipsisSheet = false
-                            },
-                            secondaryButton: .cancel()
-                        )
                     }
                     
                 case .delete:

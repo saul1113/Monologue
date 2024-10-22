@@ -49,6 +49,7 @@
 		97594F542CC01D390001B6D2 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97594F532CC01D390001B6D2 /* UserProfileView.swift */; };
 		979BD30C2CC725330006CD13 /* MyPageButtonModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BD30B2CC725330006CD13 /* MyPageButtonModifier.swift */; };
 		979BD3722CC749480006CD13 /* NavigationAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BD3712CC749480006CD13 /* NavigationAppearance.swift */; };
+		979BD3742CC7792F0006CD13 /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BD3732CC7792F0006CD13 /* CustomAlert.swift */; };
 		979D0FFD2CC2A80700CFE400 /* EllipsisCustomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D0FFC2CC2A80700CFE400 /* EllipsisCustomSheet.swift */; };
 		979DCE7F2CBED64E00FA5BFB /* (null) in Sources */ = {isa = PBXBuildFile; };
 		97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E73C2CBE21A800C98340 /* ProfileEditView.swift */; };
@@ -124,6 +125,7 @@
 		97594F532CC01D390001B6D2 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		979BD30B2CC725330006CD13 /* MyPageButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageButtonModifier.swift; sourceTree = "<group>"; };
 		979BD3712CC749480006CD13 /* NavigationAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationAppearance.swift; sourceTree = "<group>"; };
+		979BD3732CC7792F0006CD13 /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		979D0FFC2CC2A80700CFE400 /* EllipsisCustomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EllipsisCustomSheet.swift; sourceTree = "<group>"; };
 		97F5E73C2CBE21A800C98340 /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
 		97F5E73E2CBE2D4500C98340 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 				8B7122642CBE509D00734578 /* MasonryLayout.swift */,
 				979BD30B2CC725330006CD13 /* MyPageButtonModifier.swift */,
 				979BD3712CC749480006CD13 /* NavigationAppearance.swift */,
+				979BD3732CC7792F0006CD13 /* CustomAlert.swift */,
 			);
 			path = ViewBuilders;
 			sourceTree = "<group>";
@@ -480,6 +483,7 @@
 				8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */,
 				8B682BF52CC2370B0019617B /* MemoHeaderView.swift in Sources */,
 				97F5E73D2CBE21A800C98340 /* ProfileEditView.swift in Sources */,
+				979BD3742CC7792F0006CD13 /* CustomAlert.swift in Sources */,
 				8E52D9462CBD216C00E5D42A /* PostView.swift in Sources */,
 				97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */,
 				BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */,
