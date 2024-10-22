@@ -9,37 +9,31 @@ import SwiftUI
 
 struct PostView: View {
     @Environment(\.dismiss) var dismiss
-    @State var selectedSegment: String = "메모"
+    @State var selectedSegment: String = "메모" // 기본 세그먼트가 메모인 변수
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager:AuthManager
     @EnvironmentObject private var memoImageStore: MemoImageStore
     
-    @Binding var selectedTab: Int
+    @Binding var selectedTab: Int   // MainView에서 바인딩 받는 변수, 탭 선택시 탭으로 넘어가는 변수
     @Binding var isPostViewActive: Bool // PostView로 이동 여부
-
     
-    @State private var memoText: String = ""
-    @State private var columnText: String = ""
+    @State private var memoText: String = "" // 메모 텍스트
+    @State private var columnText: String = "" // 칼럼 텍스트
     @State private var selectedFont: String = "San Francisco"
     @State private var selectedBackgroundImageName: String = "texture6"
     
     @State private var title: String = ""   // Column 제목
     @State private var selectedMemoCategories: [String] = ["오늘의 주제"]
     @State private var selectedColumnCategories: [String] = ["오늘의 주제"]
-    @State private var lineCount: Int = 0
+    @State private var lineCount: Int = 0 // memoText에서 라인을 카운트하는 변수
     
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     
     
-    
-    //    @State private var navigateToHome: Bool = false // 홈 뷰로의 이동 상태
-    
-    
     var body: some View {
-        
         ZStack {
             Color(.background)
                 .ignoresSafeArea()
@@ -75,6 +69,7 @@ struct PostView: View {
                                 if let error = error {
                                     print("Error adding memo: \(error)")
                                 } else {
+                                    // 발핼버튼 클릭 시 HomeView로 이동하는 코드
                                     DispatchQueue.main.async {
                                         selectedTab = 0
                                     }
@@ -84,9 +79,6 @@ struct PostView: View {
                             if let image = UIImage(named: selectedBackgroundImageName) {
                                 memoImageStore.UploadImage(image: image, imageName: newMemo.id)
                             }
-                            
-                            
-                            
                         } else if selectedSegment == "칼럼" {
                             let newColumn = Column(
                                 title: title,
@@ -119,6 +111,7 @@ struct PostView: View {
                 
                 CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
                     .padding(.bottom, 5)
+                
                 ScrollView {
                     if selectedSegment == "메모" {
                         MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName,
@@ -128,7 +121,6 @@ struct PostView: View {
                     }
                 }
             }
-            
         }
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .tabBar)
@@ -149,6 +141,7 @@ struct PostView: View {
                 }
             }
         }
+        // 세그먼트 변경 시 버튼이 초기화 하는 코드
         .onChange(of: selectedSegment) { newSegment in
             
             selectedMemoCategories = ["오늘의 주제"]
@@ -160,7 +153,7 @@ struct PostView: View {
             }
         }
     }
-    
+    // 발핼버튼 클릭 시 적은 내용이 사라지고, 메모 글쓰기로 가면 버튼이 디폴트로되어있는 함수
     private func restFields() {
         title = ""
         memoText = ""

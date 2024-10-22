@@ -92,11 +92,8 @@ struct ColumnWritingView: View {
                     }
                 }
             }
-        
-        .padding(.leading, 16)
-        
-    }
-    
+            .padding(.leading, 16)
+        }
         .contentShape(Rectangle())
         .onTapGesture {
             isTextEditorFocused = false
@@ -112,23 +109,10 @@ struct ColumnWritingView: View {
                 }
             }
         }
-    //        .onAppear {
-    //            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
-    //                if let userInfo = notification.userInfo,
-    //                   let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-    //                    let keyboardHeight = keyboardFrame.cgRectValue.height
-    //                    withAnimation {
-    //                        self.keyboardHeight = keyboardHeight // 실제 키보드 높이를 사용
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        .onDisappear {
-    //            NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-    //        }
-}
+    }
 }
 
+// 카테고리 버튼의 크기와 이름을 보여주는 뷰
 struct CategoryColumnButton: View {
     var title: String
     var isSelected: Bool

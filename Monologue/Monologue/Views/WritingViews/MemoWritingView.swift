@@ -38,8 +38,6 @@ struct MemoWritingView: View {
     
     let lineHeight: CGFloat = 24
     
-    
-    
     var body: some View {
         VStack {
             VStack {
@@ -191,8 +189,7 @@ struct MemoWritingView: View {
             isTextEditorFocused = nil // 다른 곳을 클릭하면 포커스 해제
         }
     }
-    
-    
+    // TextEditor의 라인수를 계산하는 함수
     private func calculateLineCount(in width: CGFloat) {
         let size = CGSize(width: width, height: .infinity)
         let attributes: [NSAttributedString.Key: Any] = [
@@ -203,6 +200,7 @@ struct MemoWritingView: View {
     }
 }
 
+// 폰트 버튼의 크기와 이름을 보여주는 뷰
 struct FontButton: View {
     var title: String
     var isSelected: Bool
@@ -228,6 +226,7 @@ struct FontButton: View {
     }
 }
 
+// 백그라운드 이미지 버튼의 크기와 이름을 보여주는 뷰
 struct BackgroundButton: View {
     var imageName: String
     var action: () -> Void
@@ -247,6 +246,7 @@ struct BackgroundButton: View {
     }
 }
 
+// 카테고리 버튼의 크기와 이름을 보여주는 뷰
 struct CategoryMemoButton: View {
     var title: String
     var isSelected: Bool
