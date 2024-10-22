@@ -39,7 +39,7 @@ class FilteredMemoStore: ObservableObject {
                         memo.categories.contains { filters.contains($0) } && memo.email != userEmail
                     }
                     DispatchQueue.main.async {
-                        self.filteredMemos = memos
+                        self.filteredMemos = memos.sorted { $0.date > $1.date }
                         self.loadImagesForMemos()
                     }
                 } catch {
@@ -68,6 +68,13 @@ class FilteredMemoStore: ObservableObject {
             self.loadImagesForMemos()
         }
     }
+    
+    func setSearchMemos(searchMemos: [Memo]) {
+        DispatchQueue.main.async {
+            self.filteredMemos = searchMemos
+            self.loadImagesForMemos()
+        }
+    }
 }
 
 struct MemoView: View {
@@ -77,6 +84,7 @@ struct MemoView: View {
     @Binding var filters: [String]?
     @State var sortedMemos: [Memo] = []
     var userMemos: [Memo]?
+    var searchMemos: [Memo]?
     
     var body: some View {
         ScrollView {
@@ -115,6 +123,10 @@ struct MemoView: View {
             if let userMemos = userMemos {
                 filteredMemoStore.setUserMemos(userMemos: userMemos)
             }
+            
+//            if let searchMemos = searchMemos {
+//                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+//            }
         }
         .onChange(of: filters) {
             print("필터 : \(String(describing: filters))")
@@ -125,6 +137,11 @@ struct MemoView: View {
         .onChange(of: userMemos) {
             if let userMemos = userMemos {
                 filteredMemoStore.setUserMemos(userMemos: userMemos)
+            }
+        }
+        .onChange(of: searchMemos) {
+            if let searchMemos = searchMemos {
+                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
             }
         }
     }

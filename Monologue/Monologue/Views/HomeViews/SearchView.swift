@@ -21,7 +21,14 @@ struct SearchView: View {
     @Binding var searchText: String
     @Binding var isSearching: Bool
     @State var recentWatchView: [String] = []
+    @State var selectedSegment: String = "메모"
     @FocusState var focusField: field?
+    @FocusState private var isSearchFieldFocused: Bool
+    
+    // 검색 결과 게시물들
+    @State private var searchMemos: [Memo] = []
+    @State private var searchColumns: [Column] = []
+    @State private var selectedCategories: [String]? = ["전체"]
     
     // 더미데이터----------------------------------
     @State var recentSearchList: [String] = [
@@ -41,11 +48,12 @@ struct SearchView: View {
         // 자음 순으로 정렬하고 최대 10개의 결과만 반환
         return Array(matchingWords.sorted().prefix(10))
     }
+    
     //------------------------------------------
     
     var body: some View {
         GeometryReader { proxy in
-            NavigationStack {
+            NavigationView {
                 ZStack {
                     Color.background
                         .ignoresSafeArea()
@@ -73,7 +81,6 @@ struct SearchView: View {
                                                 isSearching = true
                                             }
                                         }
-                                    
                                     if !searchText.isEmpty {
                                         clearTextButton()
                                             .foregroundStyle(.accent)
@@ -81,22 +88,9 @@ struct SearchView: View {
                                 }
                                 .frame(width: isSearching ? proxy.size.width * 0.78 : proxy.size.width * 0.92)
                                 .frame(height: proxy.size.height * 0.05)
-                                
-                                
-                                if !isSearching {
-                                    Rectangle()
-                                        .foregroundStyle(.black.opacity(0.0001))
-                                        .frame(width: isSearching ? proxy.size.width * 0.76 : proxy.size.width * 0.92)
-                                        .frame(height: proxy.size.height * 0.05)
-                                        .onTapGesture {
-                                            isSearching = true
-                                            self.focusField = .search
-                                        }
-                                }
                             }
                             .animation(.easeInOut, value: isSearching)
-                            //                        .transition(.move(edge: .top))
-                            
+                            // 취소 버튼
                             if isSearching {
                                 Button {
                                     withAnimation(.easeInOut(duration: 0.3)) {
@@ -112,133 +106,106 @@ struct SearchView: View {
                         }
                         .frame(width: proxy.size.width)
                         
-                        
-                        if isSearching {
+                        //MARK: - 최근 검색어
+                        if searchText.isEmpty {
                             Divider()
-                        }
-                        
-                        if !isSearching {
-                            if !recentWatchView.isEmpty {
-                                ZStack {
-                                    publicHeader("최근 본 정보")
-                                    HStack {
-                                        Spacer()
-                                        Button {
-                                            recentWatchView.removeAll()
-                                        } label : {
-                                            Text("지우기")
-                                        }
+                            if !recentSearchList.isEmpty {
+                                HStack {
+                                    Text("최근 검색어")
+                                        .font(.subheadline)
+                                        .bold()
+                                    Spacer()
+                                    Button {
+                                        self.recentSearchList.removeAll()
+                                    } label : {
+                                        Text("지우기")
+                                            .font(.subheadline)
                                     }
-                                    .padding()
                                 }
-                            }
-                            
-                            //                        Section(header : publicHeader("검색 시도")) {
-                            //                            ForEach(recommandSearchList, id:\.self) { search in
-                            //                                recommandSearchButton(search)
-                            //                            }
-                            //                        }
-                        }
-                        
-                        else { // 검색중일때
-                            if searchText.isEmpty {
+                                .padding()
                                 Divider()
                                 
-                                if !recentSearchList.isEmpty {
-                                    HStack {
-                                        Text("최근 검색")
-                                            .font(.system(size: 24, weight: .bold))
-                                        Spacer()
-                                        Button {
-                                            self.recentSearchList.removeAll()
-                                        } label : {
-                                            Text("지우기")
-                                        }
-                                    }
-                                    .padding()
-                                    
-                                    Divider()
-                                    
-                                    // 최근 검색
-                                    ForEach(recentSearchList, id:\.self) { search in
-                                        Button {
-                                            searchText = search
-                                        } label : {
-                                            VStack {
-                                                HStack {
-                                                    Image(systemName: "magnifyingglass")
-                                                    Text(search)
-                                                    Spacer()
-                                                }
-                                                .font(.system(size: 22))
-                                                .foregroundStyle(.accent)
-                                                .padding(.horizontal)
-                                                .padding(.vertical, 5)
-                                                
-                                                Divider()
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                            } else {
-                                //
-                                ForEach(searchResult(self.searchText), id:\.self) { search in
+                                // 최근 검색
+                                ForEach(recentSearchList, id:\.self) { search in
                                     Button {
                                         searchText = search
+                                        // 엔터 시 검색어 관련 게시글로 넘어가게 하는 로직
+                                        
                                     } label : {
                                         VStack {
-                                            HStack{
+                                            HStack {
                                                 Image(systemName: "magnifyingglass")
-                                                HStack(spacing:0) {
-                                                    Text(search.prefix(self.searchText.count))
-                                                        .bold()
-                                                        .foregroundStyle(.black)
-                                                    Text(search.suffix(search.count - self.searchText.count))
-                                                        .foregroundStyle(.accent)
-                                                }
+                                                    .resizable()
+                                                    .frame(width: 30, height: 30)
+                                                Text(search)
+                                                    .font(.subheadline)
                                                 Spacer()
                                             }
-                                            .font(.system(size: 24))
+                                            .font(.system(size: 22))
+                                            .foregroundStyle(.accent)
                                             .padding(.horizontal)
                                             .padding(.vertical, 5)
                                             
                                             Divider()
                                         }
                                     }
-                                    
                                 }
+                            }
+                            //MARK: - view List
+                        } else {
+                            CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                            // 세그먼트 피커
+                            GeometryReader { geometry in
+                                HStack(spacing: 0) {
+                                    MemoView(filters: $selectedCategories, searchMemos: searchMemos)
+                                        .frame(width: geometry.size.width)
+                                        .clipped()
+                                    ColumnView(filteredColumns: $searchColumns)
+                                        .frame(width: geometry.size.width)
+                                        .clipped()
+                                }
+                                .frame(width: geometry.size.width * 2)
+                                .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                                .animation(.easeInOut, value: selectedSegment)
+                                .gesture(
+                                    DragGesture()
+                                        .onEnded { value in
+                                            if value.translation.width > 100 {
+                                                selectedSegment = "메모"
+                                            } else if value.translation.width < -100 {
+                                                selectedSegment = "칼럼"
+                                            }
+                                        }
+                                )
                             }
                         }
                     }
-                    //                .navigationTitle(isSearching ? "" : "검색")
-                    .toolbarTitleDisplayMode(.automatic)
+                }
+                .toolbarTitleDisplayMode(.automatic)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                        Button("완료") {
+                            isSearchFieldFocused = false // 키보드 숨기기
+                        }
+                    }
+                }
+                .onChange(of: searchText) { oldValue, newValue in
+                    Task {
+                        do {
+                            searchMemos = try await memoStore.loadMemosByContent(content: newValue)
+                            searchColumns = try await columnStore.loadColumnsByContent(content: newValue)
+                        } catch {
+                            print("Error: \(error.localizedDescription)")
+                        }
+                    }
                 }
             }
         }
     }
 }
-// 8 62 72
+
 extension SearchView {
-    
-    private func searchResult(_ search: String) -> [String] {
-        var len = search.count
-        let result: [String] = filteredSuggestions.filter { product in
-            return product.lowercased().prefix(len) == search.lowercased()
-        }
-        
-        return result;
-    }
-    
-    @ViewBuilder
-    private func publicHeader(_ title: String) -> some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 24, weight: .bold))
-            Spacer()
-        }
-        .padding()
-    }
     
     @ViewBuilder
     private func recommandSearchButton(_ text: String) -> some View {
@@ -267,7 +234,18 @@ extension SearchView {
             Image(systemName: "x.circle.fill")
         }
     }
+    
+    // 검색어 맞는 게시글 반환
+//    private func loadSearchContent() async {
+//        do {
+//            searchMemos = try await memoStore.loadMemosByContent(content: searchText)
+//            searchColumns = try await columnStore.loadColumnsByContent(content: searchText)
+//        } catch {
+//            print("Error: \(error.localizedDescription)")
+//        }
+//    }
 }
+
 //
 //#Preview {
 //    SearchView()
