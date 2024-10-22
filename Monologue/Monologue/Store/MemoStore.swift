@@ -327,6 +327,7 @@ class MemoStore: ObservableObject {
         }
     }
     
+    @MainActor
     func deleteMemo(memoId: String) async throws {
         let db = Firestore.firestore()
         
@@ -338,7 +339,6 @@ class MemoStore: ObservableObject {
             print("deleteMemo error: \(error.localizedDescription)")
             throw error
         }
-        
     }
     
     // MARK: - 좋아요 수정

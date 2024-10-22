@@ -84,7 +84,24 @@ class ColumnStore: ObservableObject {
             }
         }
     }
-    
+    //MARK: 업데이트
+    func updateColumn(column: Column) async {
+        let db = Firestore.firestore()
+        do {
+            try await db.collection("Column").document(column.id).setData([
+                "title": column.title,
+                "content": column.content,
+                "categories": column.categories,
+                "email": column.email,
+                "userNickname": column.userNickname,
+                "likes": column.likes,
+                "date": Timestamp(date: column.date)
+            ])
+            print("칼럼이 성공적으로 수정되었습니다.")
+        } catch {
+            print("칼럼 수정 중 오류 발생: \(error)")
+        }
+    }
     // MARK: - 칼럼 전체 로드
     func loadColumn(completion: @escaping ([Column]?, Error?) -> Void) {
         let db = Firestore.firestore()

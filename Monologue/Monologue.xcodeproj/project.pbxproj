@@ -60,6 +60,7 @@
 		97F5E74C2CBEACB700C98340 /* CustomSegmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5E74B2CBEACB700C98340 /* CustomSegmentView.swift */; };
 		BE0FD6652CBDFF670047251E /* MemoWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FD6642CBDFF670047251E /* MemoWritingView.swift */; };
 		BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */; };
+		EA3557862CC7485300B74C1E /* ColumnModifyingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3557852CC7485300B74C1E /* ColumnModifyingView.swift */; };
 		EA50F6172CC0105000D468C4 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50F6162CC0105000D468C4 /* AppleAuth.swift */; };
 		EA50F61B2CC014AB00D468C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */; };
 		EAC7D7A12CBD23E0008A8074 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A02CBD23E0008A8074 /* FirebaseAuth */; };
@@ -134,6 +135,7 @@
 		97F5E74B2CBEACB700C98340 /* CustomSegmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentView.swift; sourceTree = "<group>"; };
 		BE0FD6642CBDFF670047251E /* MemoWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoWritingView.swift; sourceTree = "<group>"; };
 		BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnWritingView.swift; sourceTree = "<group>"; };
+		EA3557852CC7485300B74C1E /* ColumnModifyingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnModifyingView.swift; sourceTree = "<group>"; };
 		EA50F6132CC00FFF00D468C4 /* Monologue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Monologue.entitlements; sourceTree = "<group>"; };
 		EA50F6162CC0105000D468C4 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
 		EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				BE0FD6642CBDFF670047251E /* MemoWritingView.swift */,
 				BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */,
 				8EEC41492CC761880073D5C8 /* ImageCrop */,
+				EA3557852CC7485300B74C1E /* ColumnModifyingView.swift */,
 			);
 			path = WritingViews;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 			files = (
 				EBA90F6A2CC02CC900710E54 /* ReportReasonSheetView.swift in Sources */,
 				8B71225F2CBE009B00734578 /* MemoView.swift in Sources */,
+				EA3557862CC7485300B74C1E /* ColumnModifyingView.swift in Sources */,
 				8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */,
 				8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */,
 				8E91AED42CBE3749009889D4 /* ColumnStore.swift in Sources */,
