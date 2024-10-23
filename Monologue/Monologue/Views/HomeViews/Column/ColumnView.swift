@@ -61,10 +61,12 @@ struct ColumnView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Binding var filters: [String]?
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedColumn: Column? = nil
+    @State private var selectedColumn: Column? = nil 
     
     var userColumns: [Column]?
     var searchColumns: [Column]?
+    
+    var searchText: String = ""
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -122,6 +124,11 @@ struct ColumnView: View {
         Task {
             if let tempFilters = filters {
                 filteredColumnStore.setFilteredColumns(filters: tempFilters, userEmail: authManager.email)
+            }
+            
+            if !searchText.isEmpty {
+                let searchColumns = try await columnStore.loadColumnsByContent(content: searchText)
+                filteredColumnStore.setUserColumns(userColumns: searchColumns)
             }
         }
     }
@@ -205,8 +212,12 @@ struct PostRow: View {
         .onAppear {
             Task{
                 // 이메일을 사용하여 유저 정보를 불러옴
-                if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [column.email]).first {
-                    self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                do {
+                    if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [column.email]).first {
+                        self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                    }
+                } catch {
+                    print("\(error.localizedDescription)")
                 }
             }
         }

@@ -15,7 +15,7 @@ class FilteredMemoStore: ObservableObject {
     @Published var filteredMemos: [Memo] = []
     @Published var images: [UIImage] = []
     @Published var isLoadingImages: Bool = false
-    
+        
     func setFilteredMemos(filters: [String], userEmail: String) {
         Task {
             if filters == ["전체"] {
@@ -49,22 +49,26 @@ class FilteredMemoStore: ObservableObject {
     }
     
     func loadImagesForMemos() {
-        DispatchQueue.main.async {
-            self.images = Array(repeating: UIImage(), count: self.filteredMemos.count)
-            let dispatchGroup = DispatchGroup()
-            for (index, memo) in self.filteredMemos.enumerated() {
-                dispatchGroup.enter()
-                self.memoImageStore.loadImage(imageName: memo.id) { image in
-                    if let image = image {
-                        self.images[index] = image
+        if self.filteredMemos.count != 0 {
+            DispatchQueue.main.async {
+                self.images = Array(repeating: UIImage(), count: self.filteredMemos.count)
+                let dispatchGroup = DispatchGroup()
+                for (index, memo) in self.filteredMemos.enumerated() {
+                    dispatchGroup.enter()
+                    self.memoImageStore.loadImage(imageName: memo.id) { image in
+                        if let image = image {
+                            self.images[index] = image
+                        }
+                        dispatchGroup.leave()
                     }
-                    dispatchGroup.leave()
+                }
+                
+                dispatchGroup.notify(queue: .main) {
+                    self.images = self.images.compactMap { $0 }
                 }
             }
-            
-            dispatchGroup.notify(queue: .main) {
-                self.images = self.images.compactMap { $0 }
-            }
+        } else {
+            images = []
         }
     }
     
@@ -90,11 +94,14 @@ struct MemoView: View {
     @StateObject private var filteredMemoStore: FilteredMemoStore = .init()
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var memoStore: MemoStore
     @Binding var filters: [String]?
     var userMemos: [Memo]?
     var searchMemos: [Memo]?
     
     var searchColumns: [Column]?
+    
+    var searchText: String = ""
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -178,6 +185,16 @@ struct MemoView: View {
             if let tempFilters = filters {
                 filteredMemoStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
             }
+            
+            if !searchText.isEmpty {                
+                do {
+                    let searchMemos = try await memoStore.loadMemosByContent(content: searchText)
+                    filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+                } catch {
+                    print("refreshMemos: \(error.localizedDescription)")
+                }
+            }
+            
         }
     }
 }

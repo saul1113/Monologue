@@ -83,11 +83,11 @@ struct HomeView: View {
                         }
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $selectedCategories, searchMemos: searchMemos)
+                            MemoView(filters: $selectedCategories, searchMemos: searchMemos, searchText: searchText)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                             
-                            ColumnView(filters: $selectedCategories, searchColumns: searchColumns)
+                            ColumnView(filters: $selectedCategories, searchColumns: searchColumns, searchText: searchText)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                         }
