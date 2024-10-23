@@ -144,7 +144,7 @@ struct MemoWritingView: View {
                                     isTextEditorFocused = nil
                                 }
                             }
-                            .padding(.horizontal, 2)
+                            .padding(.horizontal, 10)
                         }
                     }
                 }
@@ -201,7 +201,7 @@ struct MemoWritingView: View {
             isTextEditorFocused = nil // 다른 곳을 클릭하면 포커스 해제
         }
     }
-        
+    
     // TextEditor의 라인수를 계산하는 함수
     private func calculateLineCount(in width: CGFloat) {
         let size = CGSize(width: width, height: .infinity)
@@ -254,8 +254,12 @@ struct BackgroundButton: View {
             Image(imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 70, height: 30)
+                .frame(width: 30, height: 30)
                 .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.brown, lineWidth: 1) // 테두리 추가
+                )
         }
     }
 }
