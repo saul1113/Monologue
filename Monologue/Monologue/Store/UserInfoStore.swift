@@ -23,6 +23,7 @@ class UserInfoStore: ObservableObject {
     @Published var followings: [UserInfo] = []
     
     @Published var isFollowingStatus: [String: Bool] = [:] // 각 유저에 대한 팔로우 상태 추적
+    @Published var isFollowingMe: [String: Bool] = [:] // 각 유저가 나를 팔로우하는지 여부
 
     @Published var followersCount: Int = 0
     @Published var followingsCount: Int = 0
@@ -193,7 +194,7 @@ class UserInfoStore: ObservableObject {
                 
                 DispatchQueue.main.async {
                     Task {
-                        let userInfo = try await self.loadUsersInfoByEmail(emails: [targetUserEmail])
+                        _ = try await self.loadUsersInfoByEmail(emails: [targetUserEmail])
                         
                         self.isFollowingStatus[targetUserEmail] = true
                     }
@@ -244,7 +245,7 @@ class UserInfoStore: ObservableObject {
         }
     }
     
-    // 특정 유저를 팔로우하고 있는지 확인
+    // 내가 특정 유저를 팔로우하고 있는지 확인
     func checkIfFollowing(targetUserEmail: String) async -> Bool {
         let currentUserEmail = authManager.email
 
@@ -253,6 +254,20 @@ class UserInfoStore: ObservableObject {
         
         if let data = document?.data(), let followings = data["followings"] as? [String] {
             return followings.contains(targetUserEmail)
+        } else {
+            return false
+        }
+    }
+    
+    // 특정 유저가 나를 팔로우하고 있는지 확인
+    func checkIfFollowedBy(targetUserEmail: String) async -> Bool {
+        let currentUserEmail = authManager.email
+
+        let db = Firestore.firestore()
+        let document = try? await db.collection("User").document(targetUserEmail).getDocument()
+        
+        if let data = document?.data(), let followers = data["followings"] as? [String] {
+            return followers.contains(currentUserEmail)
         } else {
             return false
         }

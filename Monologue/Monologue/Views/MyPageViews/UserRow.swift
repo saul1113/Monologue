@@ -26,7 +26,7 @@ struct UserRow: View {
     
     var body: some View {
         HStack {
-            ProfileImageView(profileImageName: profileImageName, size: 77)
+            ProfileImageView(profileImageName: profileImageName, size: 60)
                 .padding(.trailing, 10)
             
             VStack(alignment: .leading, spacing: 6) {
