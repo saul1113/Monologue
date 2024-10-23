@@ -155,11 +155,12 @@ struct PostRow: View {
                 
                 Spacer()
                 Text(timeAgoSinceDate(column.date)) // 초단위 삭제
-                    .font(.subheadline)
-                    .foregroundColor(.black)
+                    .font(.caption2)
+                    .foregroundColor(.gray)
             }
             Text(column.title)
-                .font(.body)
+                .font(.headline)
+                .bold()
                 .foregroundStyle(.black)
                 .font(Font.headline.weight(.bold))
                 .padding(.bottom, 2)
@@ -193,8 +194,8 @@ struct PostRow: View {
                 ForEach(column.categories.prefix(3), id: \.self) { category in
                     if !category.isEmpty {
                         Text(category)
-                            .font(.footnote)
-                            .foregroundColor(.black)
+                            .font(.caption2)
+                            .foregroundColor(.accentColor)
                             .padding(8)
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(14)
@@ -207,7 +208,7 @@ struct PostRow: View {
         .background(Color.white)
         .cornerRadius(8)
         .overlay(RoundedRectangle(cornerRadius: 10)
-            .stroke(.gray, lineWidth: 0.5))
+            .stroke(Color.gray.opacity(0.3), lineWidth: 1))
         .padding(.vertical, 1)
         .onAppear {
             Task{

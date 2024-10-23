@@ -33,6 +33,7 @@ struct ColumnHeaderView: View {
                     
                     Text(column.userNickname)
                         .font(.subheadline)
+                        .foregroundColor(.black)
                 }
                 Spacer()
                 Text(dateFormatter(column.date))
@@ -43,8 +44,9 @@ struct ColumnHeaderView: View {
             
             VStack(alignment: .leading) {
                 Text(column.title)
-                    .font(.title3)
+                    .font(.body)
                     .bold()
+                    .padding(.bottom, 5)
                 Text(column.content)
                     .font(.body)
                     .foregroundColor(.black)
@@ -61,7 +63,7 @@ struct ColumnHeaderView: View {
                     if !category.isEmpty {
                         Text(category)
                             .font(.footnote)
-                            .foregroundColor(.black)
+                            .foregroundColor(.accentColor)
                             .padding(8)
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(14)

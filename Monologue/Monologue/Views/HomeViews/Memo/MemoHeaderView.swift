@@ -33,6 +33,7 @@ struct MemoHeaderView: View {
                         .padding(.trailing, 8)
                     Text(memo.userNickname)
                         .font(.subheadline)
+                        .foregroundStyle(.gray)
                 }
                 
                 Spacer()
