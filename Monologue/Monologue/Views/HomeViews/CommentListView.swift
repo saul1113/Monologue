@@ -20,10 +20,11 @@ struct CommentListView: View {
             ForEach(comments.sorted(by: { $0.date > $1.date}), id: \.self) { comment in
                 HStack(alignment: .top, spacing: 16) {
                     // 프로필 이미지
-                    Image(systemName: "person.circle")
+                    Image(systemName: "person.fill")
                         .resizable()
-                        .frame(width: 30, height: 30)
+                        .frame(width: 20, height: 20)
                         .clipShape(Circle())
+                        .foregroundStyle(.accent)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(comment.userNickname)

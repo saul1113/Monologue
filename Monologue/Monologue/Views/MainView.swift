@@ -55,8 +55,12 @@ struct MainView: View {
         .accentColor(.accent).ignoresSafeArea()
         .onAppear {
             Task {
-                await userInfoStore.loadUserInfo(email: authManager.email)
-                await userInfoStore.loadFollowersAndFollowings(for: userInfoStore.userInfo!)
+                print("여기야 여기 \(authManager.email)")
+                if authManager.email != "" {
+                    await userInfoStore.loadUserInfo(email: authManager.email)
+                    await userInfoStore.loadFollowersAndFollowings(for: userInfoStore.userInfo!)
+                }
+                
             }
             setupNavigationBarAppearance()
         }
