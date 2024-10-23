@@ -125,7 +125,6 @@ struct OtherUserPageView: View {
                                         await userInfoStore.followUser(targetUserEmail: userInfo.email)
                                         isFollowing = true
                                     }
-                                    await userInfoStore.loadFollowersAndFollowings(for: userInfo)
                                 }
                             } label: {
                                 if isFollowing {
