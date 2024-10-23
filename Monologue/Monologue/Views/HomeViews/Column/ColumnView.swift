@@ -26,8 +26,8 @@ struct ColumnView: View {
         ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
             
-            VStack {
-                List {
+            ScrollView {
+                VStack() {
                     ForEach(sortedFilteredColumns.indices, id: \.self) { index in
                         if index == 3 {  // 3번째 게시물 뒤에 광고 배너 삽입
                             AdBannerView()
@@ -38,13 +38,12 @@ struct ColumnView: View {
                                     EmptyView()
                                 }
                                 .opacity(0)
-                            PostRow(column: sortedFilteredColumns[index])
+                            PostRow(column: sortedFilteredColumns[index])                            
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
                     }
-                }
-                .listStyle(PlainListStyle())
+                }.padding([.leading, .trailing])
             }
         }
     }
