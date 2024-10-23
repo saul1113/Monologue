@@ -21,7 +21,6 @@ struct HomeView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Binding var selectedTab: Int
     
-    @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
