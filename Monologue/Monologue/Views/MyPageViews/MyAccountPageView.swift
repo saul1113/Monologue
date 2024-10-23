@@ -115,6 +115,7 @@ struct MyAccountPageView: View {
                     
                     // MARK: - 메모 및 칼럼 뷰
                     CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                        .padding(.horizontal, -16)
                     
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
@@ -160,10 +161,10 @@ struct MyAccountPageView: View {
             .toolbar {
                 // MARK: - Toolbar - (좌)로고, (우)알람, 설정
                 ToolbarItem(placement: .topBarLeading) {
-                    Text("MONOLOG")
+                    Text("모노로그")
+                        .font(.custom("Eulyoo1945-SemiBold", size: 23))
                         .foregroundStyle(.accent)
-                        .font(.title2)
-                        .bold()
+                        .padding(.leading, 10)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {

@@ -34,11 +34,11 @@ struct TopBarView: View {
             HStack {
                 // 로고 (좌측에 위치)
                 if !isSearching {
-                    Text("MONOLOG")
-                        .font(.title2)
-                        .bold()
+                    Text("모노로그")
+                        .font(.custom("Eulyoo1945-SemiBold", size: 23))
                         .foregroundStyle(Color.accentColor)
                         .transition(.move(edge: .leading))
+                        .padding(.leading, 10)
                 }
                 Spacer()
 
