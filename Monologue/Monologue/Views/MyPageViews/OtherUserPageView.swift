@@ -145,8 +145,8 @@ struct OtherUserPageView: View {
                                 .modifier(BorderedButtonStyle())
                         }
                     }
-                    .padding(.bottom, 30)
-                    
+                    .padding(.bottom, 25)
+
                     // MARK: - 메모 및 칼럼 뷰
                     if isBlockedByMe {
                         Text("차단한 유저의 게시물입니다.")
@@ -245,24 +245,24 @@ struct OtherUserPageView: View {
                     }
                 }
             }
+            .onAppear {
+                Task {
+                    await loadUserPosts()
+                    isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+                    isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                    isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                }
+                userInfoStore.observeUserFollowData(email: userInfo.email)
+                setupNavigationBarAppearance(backgroundColor: .background)
+            }
+            .onDisappear {
+                userInfoStore.removeListener()
+            }
             .customAlert(isPresented: $isShowingBlockAlert,
                          transition: .opacity,
                          title: isBlockedByMe ? "차단 해제하기" : "차단하기",
                          message: isBlockedByMe ? "해당 유저의 차단을 해제하면 게시물을 다시 볼 수 있게 됩니다." : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다.",
                          primaryButtonTitle: isBlockedByMe ? "차단 해제" : "차단") { isBlockedByMe ? unblockUser() : blockUser() }
-                .onAppear {
-                    Task {
-                        await loadUserPosts()
-                        isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
-                        isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
-                        isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
-                    }
-                    userInfoStore.observeUserFollowData(email: userInfo.email)
-                    setupNavigationBarAppearance(backgroundColor: .background)
-                }
-                .onDisappear {
-                    userInfoStore.removeListener()
-                }
         }
     }
     

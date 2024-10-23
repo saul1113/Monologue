@@ -111,7 +111,7 @@ struct MyAccountPageView: View {
                             }
                         }
                     }
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 25)
                     
                     // MARK: - 메모 및 칼럼 뷰
                     CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
