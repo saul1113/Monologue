@@ -25,7 +25,6 @@ class FilteredMemoStore: ObservableObject {
                     }
                     
                     DispatchQueue.main.async {
-                        
                         // 시간 순서대로 memo가 배열되게 함.
                         self.filteredMemos = memos.sorted { $0.date > $1.date }
                         self.loadImagesForMemos()
@@ -51,21 +50,31 @@ class FilteredMemoStore: ObservableObject {
     
     func loadImagesForMemos() {
         DispatchQueue.main.async {
-            self.images = []
-            for memo in self.filteredMemos {
+            self.images = Array(repeating: UIImage(), count: self.filteredMemos.count)
+            let dispatchGroup = DispatchGroup()
+            for (index, memo) in self.filteredMemos.enumerated() {
+                dispatchGroup.enter()
                 self.memoImageStore.loadImage(imageName: memo.id) { image in
                     if let image = image {
-                        self.images.append(image)
+                        self.images[index] = image
                     }
+                    dispatchGroup.leave()
                 }
+            }
+            
+            dispatchGroup.notify(queue: .main) {
+                self.images = self.images.compactMap { $0 }
             }
         }
     }
     
+    @MainActor
     func setUserMemos(userMemos: [Memo]) {
         DispatchQueue.main.async {
-            self.filteredMemos = userMemos
-            self.loadImagesForMemos()
+            Task {
+                try await self.filteredMemos = self.memoStore.loadMemosByUserEmail(email: userMemos[0].email)
+                self.loadImagesForMemos()
+            }
         }
     }
     
@@ -142,10 +151,6 @@ struct MemoView: View {
             if let userMemos = userMemos {
                 filteredMemoStore.setUserMemos(userMemos: userMemos)
             }
-            
-            //            if let searchMemos = searchMemos {
-            //                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
-            //            }
         }
         .onChange(of: filters) {
             print("필터 : \(String(describing: filters))")
