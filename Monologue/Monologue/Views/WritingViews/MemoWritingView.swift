@@ -156,7 +156,7 @@ struct MemoWritingView: View {
                 Image(systemName: "exclamationmark.circle") // 경고 아이콘
                     .foregroundColor(Color(.systemGray2))
                 Text("카테고리는 최대 3개만 선택 가능합니다.")
-                    .font(.system(size: 16, weight: .bold, design: .default)) // 크기와 굵기 조정
+                    .font(.caption) // 크기와 굵기 조정
                     .foregroundStyle(Color(.systemGray2))
                 Spacer()
             }
