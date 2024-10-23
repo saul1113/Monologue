@@ -9,18 +9,13 @@ import SwiftUI
 
 struct FollowListView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
+    @EnvironmentObject private var authManager: AuthManager
     
     @Environment(\.dismiss) private var dismiss
-    @State private var followers: [UserInfo] = []
-    @State private var followings: [UserInfo] = []
-    
-    @State private var memoCount: [String: Int] = [:] // 이메일별 메모 개수 저장
-    @State private var columnCount: [String: Int] = [:] // 이메일별 칼럼 개수 저장
-    
-    @State private var isActionActive = true // 팔로우 상태 관리
     
     @State var selectedSegment: String // 마이페이지뷰에서 받음
-    public var userInfo: UserInfo // 특정 유저의 정보를 받음(본인 or 타인)
+    
+    @Binding var userInfo: UserInfo // 특정 유저의 정보를 받음(본인 or 타인)
     
     var body: some View {
         ZStack {
@@ -37,20 +32,25 @@ struct FollowListView: View {
                 VStack {
                     if selectedSegment == "팔로워" {
                         // MARK: - 팔로워 뷰
-                        if followers.isEmpty {
+                        if userInfoStore.followers.isEmpty {
                             Text("팔로워가 없습니다.")
                         } else {
-                            ForEach(followers, id: \.self) { follower in
+                            ForEach(userInfoStore.followers, id: \.self) { follower in
                                 NavigationLink {
                                     MyPageView(userInfo: follower)
                                 } label: {
                                     UserRow(
                                         profileImageName: follower.profileImageName,
                                         nickname: follower.nickname,
-                                        memoCount: memoCount[follower.email] ?? 0,
-                                        columnCount: columnCount[follower.email] ?? 0,
-                                        activeButtonText: "팔로우",
-                                        inactiveButtonText: "팔로잉",
+                                        memoCount: userInfoStore.memoCount[follower.email] ?? 0,
+                                        columnCount: userInfoStore.columnCount[follower.email] ?? 0,
+                                        isActionActive: Binding(
+                                            get: { userInfoStore.isFollowingStatus[follower.email] ?? false },
+                                            set: { userInfoStore.isFollowingStatus[follower.email] = $0 }
+                                        ),
+                                        // 내 계정이면 버튼 안 보임
+                                        activeButtonText: follower.email == authManager.email ? nil : "팔로우",
+                                        inactiveButtonText: follower.email == authManager.email ? nil : "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
                                             Task {
@@ -70,20 +70,25 @@ struct FollowListView: View {
                         }
                     } else {
                         // MARK: - 팔로잉 뷰
-                        if followings.isEmpty {
+                        if userInfoStore.followings.isEmpty {
                             Text("팔로잉이 없습니다.")
                         } else {
-                            ForEach(followings, id: \.self) { following in
+                            ForEach(userInfoStore.followings, id: \.self) { following in
                                 NavigationLink {
                                     MyPageView(userInfo: following)
                                 } label: {
                                     UserRow(
                                         profileImageName: following.profileImageName,
                                         nickname: following.nickname,
-                                        memoCount: memoCount[following.email] ?? 0,
-                                        columnCount: columnCount[following.email] ?? 0,
-                                        activeButtonText: "팔로우",
-                                        inactiveButtonText: "팔로잉",
+                                        memoCount: userInfoStore.memoCount[following.email] ?? 0,
+                                        columnCount: userInfoStore.columnCount[following.email] ?? 0,
+                                        isActionActive: Binding(
+                                            get: { userInfoStore.isFollowingStatus[following.email] ?? false },
+                                            set: { userInfoStore.isFollowingStatus[following.email] = $0 }
+                                        ),
+                                        // 내 계정이면 버튼 안 보임
+                                        activeButtonText: following.email == authManager.email ? nil : "팔로우",
+                                        inactiveButtonText: following.email == authManager.email ? nil : "팔로잉",
                                         onActive: {
                                             // 팔로우 로직
                                             Task {
@@ -122,48 +127,9 @@ struct FollowListView: View {
         }
         .onAppear {
             Task {
-                await userInfoStore.loadUserInfo(email: userInfo.email)
-                await loadFollowersAndFollowings()
+                await userInfoStore.loadFollowersAndFollowings(for: userInfo)
+                await userInfoStore.loadFollowingStatus()
             }
         }
-    }
-    
-    // 팔로워, 팔로잉 목록 불러오고 각 메모 및 칼럼 개수 로드 함수
-    private func loadFollowersAndFollowings() async {
-        do {
-            // 팔로워
-            followers = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followers)
-            
-            for follower in followers {
-                memoCount[follower.email] = try await userInfoStore.getMemoCount(email: follower.email)
-                columnCount[follower.email] = try await userInfoStore.getColumnCount(email: follower.email)
-            }
-            
-            // 팔로잉
-            followings = try await userInfoStore.loadUsersInfoByEmail(emails: userInfo.followings)
-            
-            for following in followings {
-                memoCount[following.email] = try await userInfoStore.getMemoCount(email: following.email)
-                columnCount[following.email] = try await userInfoStore.getColumnCount(email: following.email)
-            }
-        } catch {
-            print("Error loading followers or followings: \(error.localizedDescription)")
-        }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        FollowListView(selectedSegment: "팔로워", userInfo:  UserInfo(uid: "test", email: "e.e@com", nickname: "피곤해",
-                                                                   registrationDate: Date(),
-                                                                   preferredCategories: [],
-                                                                   profileImageName: "profileImage2",
-                                                                   introduction: "자고 싶어요.",
-                                                                   followers: [],
-                                                                   followings: [],
-                                                                   blocked: [],
-                                                                   likesMemos: [],
-                                                                   likesColumns: []))
-        .environmentObject(UserInfoStore())
     }
 }

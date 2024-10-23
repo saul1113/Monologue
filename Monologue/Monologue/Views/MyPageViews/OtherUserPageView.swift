@@ -8,29 +8,25 @@
 import SwiftUI
 
 // 다른 유저들 프로필 뷰
-struct UserProfileView: View {
-    public let userInfo: UserInfo
+struct OtherUserPageView: View {
+    @Binding var userInfo: UserInfo
     
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject private var memoStore: MemoStore
     @EnvironmentObject private var columnStore: ColumnStore
     
     @Environment(\.dismiss) private var dismiss
+    
     @State var selectedSegment: String = "메모"
     @State private var userMemos: [Memo] = [] // 사용자가 작성한 메모들
     @State private var userColumns: [Column] = [] // 사용자가 작성한 칼럼들
     @State private var isShowingEllipsisSheet: Bool = false
     @State private var isShowingReportSheet: Bool = false
     @State private var isShowingBlockAlert: Bool = false
-    @State private var isFollowing: Bool = false // 팔로우 상태 확인
-    @State private var isBlocked: Bool = false // 차단 상태 확인
-
+    @State private var isFollowing: Bool = false
+    @State private var isBlockedByMe: Bool = false // 내가 타인을 블락한 상태
+    @State private var isBlockedByThem: Bool = false // 타인이 나를 블락한 상태
     @State var filters: [String]? = nil
-    
-    // 기본 이니셜라이저
-    init(userInfo: UserInfo) {
-        self.userInfo = userInfo
-    }
     
     var body: some View {
         NavigationStack {
@@ -39,11 +35,10 @@ struct UserProfileView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    // 프사, 닉, 상메
+                    // MARK: - 프로필 정보(프사, 닉네임, 자기소개)
                     HStack {
-                        ProfileImageView(profileImageName: userInfo.profileImageName,
-                                         size: 77)
-                        .padding(.trailing, 24)
+                        ProfileImageView(profileImageName: userInfo.profileImageName, size: 77)
+                            .padding(.trailing, 24)
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text(userInfo.nickname)
@@ -54,11 +49,11 @@ struct UserProfileView: View {
                                 .font(.system(size: 16))
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading) // 왼쪽 정렬
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 20)
                     .padding(.top, 15)
                     
-                    // 메모, 칼럼, 팔로워, 팔로잉 수
+                    // MARK: - 메모, 칼럼, 팔로워, 팔로잉 count
                     HStack(spacing: 20) {
                         HStack {
                             Text("메모")
@@ -78,9 +73,8 @@ struct UserProfileView: View {
                         
                         Divider()
                         
-                        // NavigationLink로 변경 예정
-                        Button {
-                            
+                        NavigationLink {
+                            FollowListView(selectedSegment: "팔로워", userInfo: $userInfo)
                         } label: {
                             HStack {
                                 Text("팔로워")
@@ -92,9 +86,8 @@ struct UserProfileView: View {
                         
                         Divider()
                         
-                        // NavigationLink로 변경 예정
-                        Button {
-                            
+                        NavigationLink {
+                            FollowListView(selectedSegment: "팔로잉", userInfo: $userInfo)
                         } label: {
                             HStack {
                                 Text("팔로잉")
@@ -108,106 +101,115 @@ struct UserProfileView: View {
                     .frame(height: 22)
                     .padding(.bottom, 30)
                     
-                    // 프로필 편집, 공유 버튼
+                    // MARK: - 팔로우(차단), 알림 설정
                     HStack {
-                        if isBlocked {
+                        if isBlockedByMe {
                             Button {
-                                Task {
-                                    try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
-                                    isBlocked = false
-                                }
+                                isShowingBlockAlert = true
                             } label: {
-                                Text("차단됨")
-                                    .font(.system(size: 15))
-                                    .frame(maxWidth: .infinity, minHeight: 30)
-                                    .background(RoundedRectangle(cornerRadius: 10)
-                                        .strokeBorder(.accent, lineWidth: 1)
-                                    )
+                                Text("차단 해제")
+                                    .modifier(FilledButtonStyle())
                             }
+                        } else if isBlockedByThem {
+                            Text("차단됨")
+                                .modifier(BorderedButtonStyle())
                         } else {
                             Button {
-                                if isFollowing {
-                                    Task {
+                                Task {
+                                    if isFollowing {
+                                        // 언팔로우 로직
                                         await userInfoStore.unfollowUser(targetUserEmail: userInfo.email)
                                         isFollowing = false
-                                    }
-                                } else {
-                                    Task {
+                                    } else {
+                                        // 팔로우 로직
                                         await userInfoStore.followUser(targetUserEmail: userInfo.email)
                                         isFollowing = true
                                     }
+                                    await userInfoStore.loadFollowersAndFollowings(for: userInfo)
                                 }
                             } label: {
                                 if isFollowing {
                                     Text("팔로잉")
-                                        .font(.system(size: 15))
-                                        .frame(maxWidth: .infinity, minHeight: 30)
-                                        .background(RoundedRectangle(cornerRadius: 10)
-                                            .strokeBorder(.accent, lineWidth: 1)
-                                        )
+                                        .modifier(BorderedButtonStyle())
                                 } else {
                                     Text("팔로우")
-                                        .font(.system(size: 15))
-                                        .frame(maxWidth: .infinity, minHeight: 30)
-                                        .foregroundStyle(.white)
-                                        .background(RoundedRectangle(cornerRadius: 10)
-                                            .fill(.accent))
+                                        .modifier(FilledButtonStyle())
                                 }
                             }
                         }
                         
+                        // 알림 설정
                         Button {
-                            
+                            // 알림 설정 어떻게 할지...
                         } label: {
                             Text("알림 설정")
-                                .font(.system(size: 15))
-                                .frame(maxWidth: .infinity, minHeight: 30)
-                                .background(RoundedRectangle(cornerRadius: 10)
-                                    .strokeBorder(.accent, lineWidth: 1)
-                                )
+                                .modifier(BorderedButtonStyle())
                         }
                     }
                     .padding(.bottom, 30)
                     
-                    CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
-                    
-                    // 버튼 & 스와이프 제스처 사용
-                    GeometryReader { geometry in
-                        HStack(spacing: 0) {
-                            if isBlocked {
-                                Text("차단한 유저의 메모입니다.")
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
-                                
-                                Text("차단한 유저의 칼럼입니다.")
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 1/3)
-                            } else {
-                                MemoView(filters: $filters, userMemos: userMemos)
-                                    .frame(width: geometry.size.width)
-                                
-                                ColumnView(filteredColumns: $userColumns)
-                                    .frame(width: geometry.size.width)
-                            }
+                    // MARK: - 메모 및 칼럼 뷰
+                    if isBlockedByMe {
+                        Text("차단한 유저의 게시물입니다.")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
+                    } else if isBlockedByThem {
+                        VStack(alignment: .center, spacing: 10) {
+                            Text("회원님이 나를 차단했습니다.")
+                                .font(.title3)
+                                .bold()
+                            
+                            Text("회원님을 팔로우하거나 게시물을 볼 수 없습니다.")
+                                .foregroundStyle(.secondary)
                         }
-                        .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
-                        .animation(.easeInOut, value: selectedSegment)
-                        .gesture(
-                            DragGesture(minimumDistance: 35)
-                                .onChanged { value in
-                                    if value.translation.width > 0 {
-                                        selectedSegment = "메모"
-                                    } else if value.translation.width < 0 {
-                                        selectedSegment = "칼럼"
-                                    }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        .padding(.top, 10)
+                        
+                    } else {
+                        CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                        
+                        GeometryReader { geometry in
+                            HStack(spacing: 0) {
+                                // 메모가 비어있을 경우
+                                if userMemos.isEmpty {
+                                    Text("작성된 메모가 없습니다.")
+                                        .frame(width: geometry.size.width, height: geometry.size.height)
+                                } else {
+                                    MemoView(filters: $filters, userMemos: userMemos)
+                                        .frame(width: geometry.size.width)
                                 }
-                        )
+                                
+                                // 칼럼이 비어있을 경우
+                                if userColumns.isEmpty {
+                                    Text("작성된 칼럼이 없습니다.")
+                                        .frame(width: geometry.size.width, height: geometry.size.height)
+                                } else {
+                                    ColumnView(filteredColumns: $userColumns)
+                                        .frame(width: geometry.size.width)
+                                }
+                            }
+                            .offset(x: selectedSegment == "메모" ? 0 : -geometry.size.width)
+                            .animation(.easeInOut, value: selectedSegment)
+                            .gesture(
+                                DragGesture(minimumDistance: 35)
+                                    .onChanged { value in
+                                        if value.translation.width > 0 {
+                                            selectedSegment = "메모"
+                                        } else if value.translation.width < 0 {
+                                            selectedSegment = "칼럼"
+                                        }
+                                    }
+                            )
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.horizontal, -16)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.horizontal, -16)
                 }
                 .padding(.horizontal, 16)
                 .foregroundStyle(.accent)
             }
-            .navigationBarBackButtonHidden(true) // 기본 백 버튼 숨기기
+            .navigationBarBackButtonHidden(true)
+            // MARK: - Toolbar (좌)Back, (우)...버튼
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -228,12 +230,7 @@ struct UserProfileView: View {
                         EllipsisCustomSheet(buttonOptions: [SheetButtonOption(type: .share,
                                                                               action: { }),
                                                             SheetButtonOption(type: .block,
-                                                                              action: {
-                                                                                if isBlocked {
-                                                                                    unblockUser()
-                                                                                } else {
-                                                                                    blockUser()
-                                                                                }}),
+                                                                              action: { }),
                                                             SheetButtonOption(type: .report,
                                                                               action: { }),
                                                             SheetButtonOption(type: .cancel,
@@ -244,27 +241,34 @@ struct UserProfileView: View {
                                             isShowingBlockAlert: $isShowingBlockAlert,
                                             isShowingEllipsisSheet: $isShowingEllipsisSheet,
                                             isShowingDeleteAlert: .constant(false),
-                                            isBlocked: isBlocked)
-                        .presentationDetents([.height(250)])
+                                            isBlocked: isBlockedByMe)
+                        .presentationDetents([.height(240)])
                     }
                 }
             }
-            .onAppear {
-                Task {
-                    await loadUserInfo()
-                    isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
-                    isBlocked = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+            .customAlert(isPresented: $isShowingBlockAlert,
+                         transition: .opacity,
+                         title: isBlockedByMe ? "차단 해제하기" : "차단하기",
+                         message: isBlockedByMe ? "해당 유저의 차단을 해제하면 게시물을 다시 볼 수 있게 됩니다." : "차단된 사람은 회원님을 팔로우할 수 없으며, 회원님의 게시물을 볼 수 없게 됩니다.",
+                         primaryButtonTitle: isBlockedByMe ? "차단 해제" : "차단") { isBlockedByMe ? unblockUser() : blockUser() }
+                .onAppear {
+                    Task {
+                        await loadUserPosts()
+                        isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
+                        isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                        isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                    }
+                    userInfoStore.observeUserFollowData(email: userInfo.email)
+                    setupNavigationBarAppearance(backgroundColor: .background)
                 }
-                userInfoStore.observeUserFollowData(email: userInfo.email)
-            }
-            .onDisappear {
-                userInfoStore.removeListener()
-            }
+                .onDisappear {
+                    userInfoStore.removeListener()
+                }
         }
     }
     
     // 유저 메모 및 칼럼 업데이트
-    private func loadUserInfo() async {
+    private func loadUserPosts() async {
         do {
             userMemos = try await memoStore.loadMemosByUserEmail(email: userInfo.email)
             userColumns = try await columnStore.loadColumnsByUserEmail(email: userInfo.email)
@@ -277,8 +281,7 @@ struct UserProfileView: View {
     private func blockUser() {
         Task {
             try await userInfoStore.blockUser(blockedEmail: userInfo.email)
-            isBlocked = true
-            print("유저 차단 완료")
+            isBlockedByMe = true
         }
     }
     
@@ -286,23 +289,7 @@ struct UserProfileView: View {
     private func unblockUser() {
         Task {
             try await userInfoStore.unblockUser(blockedEmail: userInfo.email)
-            isBlocked = false
-            print("유저 차단 해제")
+            isBlockedByMe = false
         }
     }
-}
-
-#Preview {
-    UserProfileView(userInfo: UserInfo(uid: "test", email: "e.e@com", nickname: "피곤해",
-                                       registrationDate: Date(),
-                                       preferredCategories: [],
-                                       profileImageName: "profileImage2",
-                                       introduction: "자고 싶어요.",
-                                       followers: [],
-                                       followings: [],
-                                       blocked: [],
-                                       likesMemos: [],
-                                       likesColumns: []))
-    .environmentObject(MemoStore())
-    .environmentObject(ColumnStore())
 }
