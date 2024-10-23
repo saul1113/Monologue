@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ProfileEditView: View {
+    @Binding var userInfo: UserInfo
+
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject private var authManager:AuthManager
     @Environment(\.dismiss) private var dismiss
     
-    @State private var nickname: String = ""
-    @State private var introduction: String = ""
     @State private var isShowingSheet: Bool = false
     @State private var selectedImageName: String = ""
     
@@ -32,7 +32,7 @@ struct ProfileEditView: View {
                 } label: {
                     ZStack {
                         ProfileImageView(
-                            profileImageName: !selectedImageName.isEmpty ? selectedImageName : (userInfoStore.userInfo?.profileImageName ?? ""),
+                            profileImageName: !userInfo.profileImageName.isEmpty ? userInfo.profileImageName : "",
                             size: 84
                         )
                         
@@ -46,7 +46,7 @@ struct ProfileEditView: View {
                 }
                 .padding(.vertical, 20)
                 .sheet(isPresented: $isShowingSheet) {
-                    ProfileImageEditView(selectedImageName: $selectedImageName)
+                    ProfileImageEditView(selectedImageName: $userInfo.profileImageName)
                         .presentationDetents([.height(250)])
                 }
                 
@@ -55,11 +55,11 @@ struct ProfileEditView: View {
                         .padding(.trailing, 30)
                         .bold()
                     
-                    TextField("닉네임 변경", text: $nickname)
+                    TextField("닉네임 변경", text: $userInfo.nickname)
                     // 14글자로 제한
-                        .onChange(of: nickname) { oldValue, newValue in
+                        .onChange(of: userInfo.nickname) { oldValue, newValue in
                             if newValue.count > 14 {
-                                nickname = String(newValue.prefix(14))
+                                userInfo.nickname = String(newValue.prefix(14))
                             }
                         }
                 }
@@ -68,7 +68,7 @@ struct ProfileEditView: View {
                     .padding(.bottom, (nicknameCheckWarning || nicknameDuplicateWarning) ? 0 : 18)
                 
                 // 닉네임 비어 있음 경고
-                if nicknameCheckWarning && nickname.isEmpty {
+                if nicknameCheckWarning && userInfo.nickname.isEmpty {
                     Text("닉네임을 입력해주세요.")
                         .foregroundStyle(.red)
                         .font(.caption)
@@ -90,11 +90,11 @@ struct ProfileEditView: View {
                         .padding(.trailing, 15)
                         .bold()
                     
-                    TextField("자기소개 추가", text: $introduction)
+                    TextField("자기소개 추가", text: $userInfo.introduction)
                     // 36글자로 제한
-                        .onChange(of: introduction) { oldValue, newValue in
+                        .onChange(of: userInfo.introduction) { oldValue, newValue in
                             if newValue.count > 36 {
-                                introduction = String(newValue.prefix(36))
+                                userInfo.introduction = String(newValue.prefix(36))
                             }
                         }
                 }
@@ -105,12 +105,6 @@ struct ProfileEditView: View {
             }
             .padding(.horizontal, 16)
             .foregroundStyle(.accent)
-        }
-        .onAppear {
-            // 기존 닉, 상메, 프사 불러옴
-            nickname = userInfoStore.userInfo?.nickname ?? ""
-            introduction = userInfoStore.userInfo?.introduction ?? ""
-            selectedImageName = userInfoStore.userInfo?.profileImageName ?? ""
         }
         .navigationTitle("프로필 편집")
         .toolbarTitleDisplayMode(.inline)
@@ -127,7 +121,6 @@ struct ProfileEditView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("완료") {
                     handleComplete()
-                    dismiss()
                 }
             }
         }
@@ -135,7 +128,7 @@ struct ProfileEditView: View {
     
     // 완료 버튼 핸들링
     private func handleComplete() {
-        if nickname.isEmpty {
+        if userInfo.nickname.isEmpty {
             nicknameCheckWarning = true
             nicknameDuplicateWarning = false
         } else {
@@ -143,8 +136,8 @@ struct ProfileEditView: View {
             
             Task {
                 // 닉네임이 변경된 경우에만 중복 검사
-                if nickname != userInfoStore.userInfo?.nickname {
-                    let nicknameExists = await authManager.NicknameDuplicate(nickname: nickname)
+                if userInfo.nickname != userInfoStore.userInfo?.nickname {
+                    let nicknameExists = await authManager.NicknameDuplicate(nickname: userInfo.nickname)
                     if nicknameExists {
                         nicknameDuplicateWarning = true
                         return
@@ -158,23 +151,19 @@ struct ProfileEditView: View {
     
     // 유저 정보 저장
     private func saveUserInfo() {
-        if var userInfo = userInfoStore.userInfo {
-            userInfo.nickname = nickname
-            userInfo.introduction = introduction
-            userInfo.profileImageName = selectedImageName
+        Task {
+            await userInfoStore.updateUserInfo(userInfo)
+            await userInfoStore.loadUserInfo(email: userInfo.email)
             
-            Task {
-                await userInfoStore.updateUserInfo(userInfo)
-                await userInfoStore.loadUserInfo(email: userInfo.email)
-            }
+            dismiss()
         }
     }
 }
 
-#Preview {
-    NavigationStack {
-        ProfileEditView()
-            .environmentObject(AuthManager())
-            .environmentObject(UserInfoStore())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        ProfileEditView()
+//            .environmentObject(AuthManager())
+//            .environmentObject(UserInfoStore())
+//    }
+//}

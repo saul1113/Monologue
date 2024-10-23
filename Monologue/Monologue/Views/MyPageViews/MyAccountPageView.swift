@@ -97,7 +97,7 @@ struct MyAccountPageView: View {
                     // MARK: - 프로필 편집, 프로필 공유
                     HStack {
                         NavigationLink {
-                            ProfileEditView()
+                            ProfileEditView(userInfo: $userInfo)
                         } label: {
                             Text("프로필 편집")
                                 .modifier(BorderedButtonStyle())
@@ -186,6 +186,9 @@ struct MyAccountPageView: View {
             .onAppear {
                 Task {
                     await loadUserPosts()
+                    if let updatedUserInfo = userInfoStore.userInfo {
+                        userInfo = updatedUserInfo
+                    }
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
             }
