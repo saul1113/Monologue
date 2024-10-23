@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SafariServices
 
 struct AdBannerView: View {
     
@@ -15,6 +16,8 @@ struct AdBannerView: View {
     @State private var selectedIndex = 0
     @State private var timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
+    @State private var isShowingSafariView = false
+    
     var body: some View {
         VStack(spacing: 16) {
             // 자동 슬라이드 배너
@@ -22,7 +25,7 @@ struct AdBannerView: View {
                 ForEach(0..<images.count, id: \.self) { index in
                     ZStack(alignment: .bottomTrailing) {
                         Button(action: {
-                            UIApplication.shared.open(adURL)
+                            isShowingSafariView = true
                         }) {
                             Image(images[index])
                                 .resizable()
@@ -56,6 +59,21 @@ struct AdBannerView: View {
         .overlay(RoundedRectangle(cornerRadius: 10)
             .stroke(.gray, lineWidth: 0.5))
         .padding(.vertical, 1)
+        .sheet(isPresented: $isShowingSafariView) {
+            SafariView(url: adURL)
+        }
+    }
+}
+
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+    
+    func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
+        return SFSafariViewController(url: url)
+    }
+    
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: UIViewControllerRepresentableContext<SafariView>) {
+        // 업데이트는 필요하지 않으므로 빈 메서드
     }
 }
 
