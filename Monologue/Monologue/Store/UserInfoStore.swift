@@ -17,6 +17,7 @@ class UserInfoStore: ObservableObject {
     private var memoStore: MemoStore = .init()
     private var columnStore: ColumnStore = .init()
     @Published var userInfo: UserInfo? = nil
+    @Published var elseUserInfo: UserInfo? = nil
     
     @Published var followers: [UserInfo] = []
     @Published var followings: [UserInfo] = []
@@ -193,7 +194,7 @@ class UserInfoStore: ObservableObject {
                 DispatchQueue.main.async {
                     Task {
                         let userInfo = try await self.loadUsersInfoByEmail(emails: [targetUserEmail])
-                        self.followings.append(userInfo.first!)
+                        
                         self.isFollowingStatus[targetUserEmail] = true
                     }
                 }
@@ -233,7 +234,6 @@ class UserInfoStore: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self.isFollowingStatus[targetUserEmail] = false
-                    self.followings.removeAll(where: { $0.email == targetUserEmail })
                 }
                 return nil
             }

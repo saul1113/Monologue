@@ -127,6 +127,8 @@ struct FollowListView: View {
         }
         .onAppear {
             Task {
+                userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [userInfo.email]).first!
+               
                 await userInfoStore.loadFollowersAndFollowings(for: userInfo)
                 await userInfoStore.loadFollowingStatus()
             }

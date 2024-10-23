@@ -287,6 +287,8 @@
 			children = (
 				8E52D9402CBD216C00E5D42A /* MyPageView.swift */,
 				979BD3792CC847400006CD13 /* MyAccountPageView.swift */,
+				97594F532CC01D390001B6D2 /* OtherUserPageView.swift */,
+				97F5E7442CBE3CDC00C98340 /* FollowListView.swift */,
 				97F5E73C2CBE21A800C98340 /* ProfileEditView.swift */,
 				97594F4B2CBFB9B20001B6D2 /* ProfileImageEditView.swift */,
 				97594F4D2CBFE6360001B6D2 /* ProfileImageView.swift */,
@@ -294,9 +296,7 @@
 				97F5E7402CBE3AD200C98340 /* BlockedUsersListView.swift */,
 				97F5E7462CBE4C6100C98340 /* UserRow.swift */,
 				97F5E7422CBE3B1F00C98340 /* LikeListView.swift */,
-				97F5E7442CBE3CDC00C98340 /* FollowListView.swift */,
 				97594F512CC017F00001B6D2 /* NotificationView.swift */,
-				97594F532CC01D390001B6D2 /* OtherUserPageView.swift */,
 				979D0FFC2CC2A80700CFE400 /* EllipsisCustomSheet.swift */,
 			);
 			path = MyPageViews;

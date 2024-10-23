@@ -56,6 +56,7 @@ struct MainView: View {
         .onAppear {
             Task {
                 await userInfoStore.loadUserInfo(email: authManager.email)
+                await userInfoStore.loadFollowersAndFollowings(for: userInfoStore.userInfo!)
             }
             setupNavigationBarAppearance()
         }
