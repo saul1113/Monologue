@@ -87,6 +87,10 @@ struct ColumnView: View {
                 .padding([.leading, .trailing])
             }
             .padding(.bottom)
+            
+            .refreshable {
+                await refreshColums()
+            }
         }
         .onAppear {
             if let tempFilters = filters {
@@ -106,6 +110,14 @@ struct ColumnView: View {
         .onChange(of: userColumns) {
             if let userColumns = userColumns {
                 filteredColumnStore.setUserColumns(userColumns: userColumns)
+            }
+        }
+    }
+    
+    func refreshColums() async {
+        Task {
+            if let tempFilters = filters {
+                filteredColumnStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
             }
         }
     }
