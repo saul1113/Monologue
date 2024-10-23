@@ -162,7 +162,7 @@ struct MyAccountPageView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("MONOLOG")
                         .foregroundStyle(.accent)
-                        .font(.title3)
+                        .font(.title2)
                         .bold()
                 }
                 
