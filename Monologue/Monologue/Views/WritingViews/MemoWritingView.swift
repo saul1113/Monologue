@@ -62,6 +62,10 @@ struct MemoWritingView: View {
                                     }
                             }
                         }
+                        .overlay (
+                            Rectangle()
+                                .stroke(Color.gray, lineWidth: 3)
+                        )
                     
                     //                            GeometryReader { geometry in
                     //                                TextEditor(text: $memoText)
