@@ -62,6 +62,8 @@ struct ProfileEditView: View {
                         .onChange(of: userInfo.nickname) { oldValue, newValue in
                             if newValue.count > 14 {
                                 userInfo.nickname = String(newValue.prefix(14))
+                            } else {
+                                userInfo.nickname = newValue
                             }
                         }
                 }
