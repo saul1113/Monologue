@@ -109,8 +109,9 @@ struct PostView: View {
                         }
                     }) {
                         Text("발행")
-                            .foregroundColor(.accent)
+                            
                     }
+                    .disabled(memoText.isEmpty && selectedSegment == "메모" || columnText.isEmpty && selectedSegment == "칼럼")
                 }
                 .padding(.bottom, 5)
                 .padding(.horizontal, 16)
