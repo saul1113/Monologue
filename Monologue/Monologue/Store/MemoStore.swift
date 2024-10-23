@@ -88,6 +88,17 @@ class MemoStore: ObservableObject {
             }
         }
     }
+    // MARK: - 닉네임 변경 시 해당 닉네임의 메모에 보관되어있는 닉네임 변경
+    @MainActor
+    func changeMemosNickname(email: String, newNickname: String) async throws {
+        var tempMemos = try await loadMemosByUserEmail(email: email)
+        
+        for index in 0..<tempMemos.count {
+            tempMemos[index].userNickname = newNickname
+            
+            try await addMemo(memo: tempMemos[index])
+        }
+    }    
     
     // MARK: - 메모 전체 로드
     func loadMemos(completion: @escaping ([Memo]?, Error?) -> Void) {

@@ -35,7 +35,7 @@ struct ColumnHeaderView: View {
                         .font(.subheadline)
                 }
                 Spacer()
-                Text(column.date, style: .date)
+                Text(dateFormatter(column.date))
                     .font(.footnote)
                     .foregroundColor(.gray)
             }
@@ -94,5 +94,13 @@ struct ColumnHeaderView: View {
                 }
             }
         )
+    }
+    
+    private func dateFormatter(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 M월 d일"
+        let formattedDate = formatter.string(from: date)
+        return formattedDate
     }
 }
