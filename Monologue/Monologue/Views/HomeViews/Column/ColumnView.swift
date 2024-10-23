@@ -87,6 +87,7 @@ struct PostRow: View {
                         .foregroundColor(.gray)
                     Text("\(String(describing: column.comments?.count ?? 0))")  // 댓글 수 표시
                         .font(.subheadline)
+                        .foregroundStyle(.gray)
                 }
                 
                 HStack {
@@ -94,6 +95,7 @@ struct PostRow: View {
                         .foregroundColor(.gray)
                     Text("\(column.likes.count)")  // 좋아요 수 표시
                         .font(.subheadline)
+                        .foregroundStyle(.gray)
                 }
                 
                 Spacer()

@@ -107,9 +107,23 @@ struct MemoView: View {
                                         .clipped()
                                         .cornerRadius(12)
                                         .scaledToFit()
-                                    Text("\(filteredMemoStore.filteredMemos[index].userNickname)")
-                                        .font(.caption2)
-                                        .padding(.trailing, 8)
+                                    HStack {
+                                        Image(systemName: "bubble.right")
+                                            .resizable()
+                                            .frame(width: 10, height: 10)
+                                            .padding(.leading, 8)
+                                        Text("\(filteredMemoStore.filteredMemos[index].comments?.count ?? 0)")
+                                            .font(.caption2)
+                                        Image(systemName: "heart")
+                                            .resizable()
+                                            .frame(width: 10, height: 10)
+                                        Text("\(filteredMemoStore.filteredMemos[index].likes.count)")
+                                            .font(.caption2)
+                                        Spacer()
+                                        Text("\(filteredMemoStore.filteredMemos[index].userNickname)")
+                                            .font(.caption2)
+                                            .padding(.trailing, 8)
+                                    }
                                 }
                             }
                             
