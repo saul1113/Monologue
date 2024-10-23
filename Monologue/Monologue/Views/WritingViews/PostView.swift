@@ -212,7 +212,6 @@ struct PostView: View {
             text.draw(in: textRect, withAttributes: attributes)
         }
     }
-
 }
 
 //#Preview {

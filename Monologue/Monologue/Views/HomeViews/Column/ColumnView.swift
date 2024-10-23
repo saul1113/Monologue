@@ -25,25 +25,21 @@ struct ColumnView: View {
     var body: some View {
         ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
-            
             ScrollView {
-                VStack() {
+                VStack {
                     ForEach(sortedFilteredColumns.indices, id: \.self) { index in
-                        if index == 3 {  // 3번째 게시물 뒤에 광고 배너 삽입
+                        if index % 3 == 0 {
                             AdBannerView()
                         }
-                        ZStack {
-                            NavigationLink(
-                                destination: ColumnDetail(column: sortedFilteredColumns[index].wrappedValue)) {
-                                    EmptyView()
-                                }
-                                .opacity(0)
-                            PostRow(column: sortedFilteredColumns[index])                            
+                        
+                        NavigationLink(destination: ColumnDetail(column: sortedFilteredColumns[index].wrappedValue)) {
+                            PostRow(column: sortedFilteredColumns[index])
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
                     }
-                }.padding([.leading, .trailing])
+                }
+                .padding([.leading, .trailing])
             }
         }
     }
