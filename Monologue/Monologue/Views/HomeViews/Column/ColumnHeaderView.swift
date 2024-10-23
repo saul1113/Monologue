@@ -25,7 +25,7 @@ struct ColumnHeaderView: View {
                     MyPageView(userInfo: selectedUserInfo)
                         .navigationBarBackButtonHidden(true)
                 } label: {
-                    Image(systemName: "person.circle")
+                    Image(selectedUserInfo.profileImageName)
                         .resizable()
                         .frame(width: 30, height: 30)
                         .clipShape(Circle())

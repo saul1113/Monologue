@@ -26,6 +26,8 @@ struct MemoDetailView: View {
     @State var isColumnModifyingView: Bool = false
     @State var itemSheet: Bool = false // 글자에때라 쉬트 크기
     
+    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {

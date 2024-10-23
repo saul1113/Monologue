@@ -21,8 +21,7 @@ struct ColumnDetail: View {
     
     @State var isColumnModifyingView: Bool = false
     @State var itemSheet: Bool = false // 글자에때라 쉬트 크기
-    
-    
+        
     @State var column: Column
     
     var body: some View {

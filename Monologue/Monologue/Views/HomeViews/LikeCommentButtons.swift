@@ -33,7 +33,6 @@ struct LikeCommentButtons: View {
                         Text("\(memo?.comments?.count ?? 0)") // 댓글 개수 사용
                             .font(.subheadline)
                     }
-                    
                 }
                 .foregroundColor(.gray)
             }
