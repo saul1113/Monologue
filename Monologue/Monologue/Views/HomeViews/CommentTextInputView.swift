@@ -17,7 +17,16 @@ struct CommentTextInputView: View {
         HStack {
             ZStack(alignment: .trailing) {
                 TextField("댓글을 입력하세요", text: $newComment)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.vertical, 10)
+                    .padding(.leading, 10)  // 좌우 패딩 추가
+                    .padding(.trailing, 30)
+                    .background(.white)
+                    .cornerRadius(25)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                    )
+//                    .padding(.horizontal)  // 좌우 여유 공간 추가
                     .focused(isCommentFieldFocused) // 포커스 상태 바인딩
                     .onSubmit {
                         addComment()
@@ -38,6 +47,11 @@ struct CommentTextInputView: View {
                             .resizable()
                             .foregroundColor(Color.accentColor)
                             .frame(width: 20, height: 20)
+//                            .background {
+//                                Circle()
+//                                    .frame(width: 20, height: 20)
+//                                    .foregroundStyle(.white)
+//                            }
                     }
                     .padding(.trailing, 8)
                     //                    .transition(.move(edge: .trailing))  // 애니메이션 적용
