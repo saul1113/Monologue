@@ -88,7 +88,7 @@ struct HomeView: View {
                                 .frame(width: geometry.size.width)
                                 .clipped()
                             
-                            ColumnView(filters: $selectedCategories, userColumns: searchColumns)
+                            ColumnView(filters: $selectedCategories, searchColumns: searchColumns)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                         }
@@ -126,8 +126,13 @@ struct HomeView: View {
         .onChange(of: searchText) {oldvalue, newvalue in
             Task {
                 do {
-                    searchMemos = try await memoStore.loadMemosByContent(content: newvalue)
-                    searchColumns = try await columnStore.loadColumnsByContent(content: newvalue)
+                    if newvalue.isEmpty {
+                        searchMemos = try await memoStore.loadMemos()
+                        searchColumns = try await columnStore.loadColumn()
+                    } else {
+                        searchMemos = try await memoStore.loadMemosByContent(content: newvalue)
+                        searchColumns = try await columnStore.loadColumnsByContent(content: newvalue)
+                    }
                 } catch {
                     print("Error: \(error.localizedDescription)")
                 }
