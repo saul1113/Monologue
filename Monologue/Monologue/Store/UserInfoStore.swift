@@ -161,6 +161,17 @@ class UserInfoStore: ObservableObject {
         return columns.count
     }
     
+    // MARK: - UserInfo 제거
+    func deleteUserInfo(email: String) async throws {
+        let db = Firestore.firestore()
+        
+        do {
+            try await db.collection("User").document(email).delete()
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: - Follow 관련 로직
     // 팔로우 로직
     func followUser(targetUserEmail: String) async {
