@@ -149,6 +149,19 @@ class MemoStore: ObservableObject {
         
         return memos
     }
+    // MARK: - memoView refresh 시 리로드
+    @MainActor
+    func reloadMemos() async {
+        do {
+            // Firestore에서 메모를 비동기적으로 다시 로드
+            let newMemos = try await loadMemos()  // 비동기 호출
+            // 최신 메모 데이터를 memos 배열에 저장
+            self.memos = newMemos
+        } catch {
+            print("Error reloading memos: \(error.localizedDescription)")
+        }
+    }
+    
     // MARK: - 메모 아이디들로 로드 // 좋아요 관련 로직
     @MainActor
     func loadMemosByIds(ids: [String]) async throws -> [Memo] {

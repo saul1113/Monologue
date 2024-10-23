@@ -117,9 +117,11 @@ struct LikeCommentButtons: View {
                     if memo == nil {
                         Text("\(column?.likes.count ?? 0)")
                             .font(.subheadline)
+                            .foregroundColor(.gray)
                     } else {
                         Text("\(memo?.likes.count ?? 0)")
                             .font(.subheadline)
+                            .foregroundColor(.gray)
                     }
                 }
             }

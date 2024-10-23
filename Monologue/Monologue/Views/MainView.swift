@@ -16,7 +16,7 @@ struct MainView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             Group {
-                HomeView()
+                HomeView(selectedTab: $selectedTab)
                     .tabItem {
                         VStack {
                             Image(systemName: "book.pages")
