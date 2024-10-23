@@ -161,7 +161,7 @@ struct SearchView: View {
                                     MemoView(filters: $selectedCategories, searchMemos: searchMemos)
                                         .frame(width: geometry.size.width)
                                         .clipped()
-                                    ColumnView(filteredColumns: $searchColumns)
+                                    ColumnView(filters:$selectedCategories, userColumns: searchColumns)
                                         .frame(width: geometry.size.width)
                                         .clipped()
                                 }

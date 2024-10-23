@@ -91,7 +91,7 @@ struct HomeView: View {
                                     }
                                 }
                             
-                            ColumnView(filteredColumns: $filteredColumns)
+                            ColumnView(filters: $selectedCategories)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                                 .refreshable {

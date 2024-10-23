@@ -6,34 +6,79 @@
 //
 import SwiftUI
 
+class FilteredColumnStore: ObservableObject {
+    var columnStore: ColumnStore = .init()
+    @Published var filteredColumns: [Column] = []
+    
+    func setFilteredMemos(filters: [String], userEmail: String) {
+        Task {
+            if filters == ["전체"] {
+                do {
+                    let columns = try await columnStore.loadColumn().filter { column in
+                        column.email != userEmail
+                    }
+                    
+                    DispatchQueue.main.async {
+                        
+                        // 시간 순서대로 memo가 배열되게 함.
+                        self.filteredColumns = columns.sorted { $0.date > $1.date }
+                    }
+                } catch {
+                    print("loadMemos error: \(error)")
+                }
+            } else {
+                do {
+                    let columns = try await columnStore.loadColumn().filter { column in
+                        column.categories.contains { filters.contains($0) } && column.email != userEmail
+                    }
+                    DispatchQueue.main.async {
+                        self.filteredColumns = columns.sorted { $0.date > $1.date }
+                    }
+                } catch {
+                    print("loadMemos error: \(error)")
+                }
+            }
+        }
+    }
+    
+    func setUserColumns(userColumns: [Column]) {
+        DispatchQueue.main.async {
+            self.filteredColumns = userColumns
+        }
+    }
+}
+
 struct ColumnView: View {
+    @StateObject private var filteredColumnStore: FilteredColumnStore = .init()
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject private var userInfoStore: UserInfoStore
+    @Binding var filters: [String]?
     @Environment(\.dismiss) private var dismiss
-    @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     @State private var selectedColumn: Column? = nil
     @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
     
-    var sortedFilteredColumns: [Binding<Column>] {
-        let columns = filteredColumns.indices.map { index in
-            $filteredColumns[index]
-        }
-        return columns.sorted { $0.wrappedValue.date > $1.wrappedValue.date }
-    }
+    var userColumns: [Column]?
+//    
+//    var sortedFilteredColumns: [Binding<Column>] {
+//        let columns = filteredColumns.indices.map { index in
+//            $filteredColumns[index]
+//        }
+//        return columns.sorted { $0.wrappedValue.date > $1.wrappedValue.date }
+//    }
     
     var body: some View {
         ZStack(alignment: .leading) {
             Color.background.ignoresSafeArea()
             ScrollView {
                 VStack {
-                    ForEach(sortedFilteredColumns.indices, id: \.self) { index in
+                    ForEach(filteredColumnStore.filteredColumns.indices, id: \.self) { index in
                         if index % 3 == 2 {
                             AdBannerView()
                         }
                         
-                        NavigationLink(destination: ColumnDetail(column: sortedFilteredColumns[index].wrappedValue)) {
-                            PostRow(column: sortedFilteredColumns[index])
+                        NavigationLink(destination: ColumnDetail(column: $filteredColumnStore.filteredColumns[index].wrappedValue)) {
+                            PostRow(column: $filteredColumnStore.filteredColumns[index])
                         }
                         .buttonStyle(PlainButtonStyle())
                         .listRowBackground(Color.background)
@@ -44,7 +89,24 @@ struct ColumnView: View {
             .padding(.bottom)
         }
         .onAppear {
+            if let tempFilters = filters {
+                filteredColumnStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
+            }
             
+            if let userColumns = userColumns {
+                filteredColumnStore.setUserColumns(userColumns: userColumns)
+            }
+        }
+        .onChange(of: filters) {
+            print("필터 : \(String(describing: filters))")
+            if let tempFilters = filters {
+                filteredColumnStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
+            }
+        }
+        .onChange(of: userColumns) {
+            if let userColumns = userColumns {
+                filteredColumnStore.setUserColumns(userColumns: userColumns)
+            }
         }
     }
 }
