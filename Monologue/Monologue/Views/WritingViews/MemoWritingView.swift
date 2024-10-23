@@ -9,10 +9,7 @@ import SwiftUI
 
 
 struct MemoWritingView: View {
-    
-    enum MemoField: Hashable {
-        case text
-    }
+
     
     @Binding var memoText: String
     @Binding var selectedFont: String
@@ -22,7 +19,7 @@ struct MemoWritingView: View {
     @State private var textLimit: Int = 500
     
     // FocusState 변수를 선언하여 TextEditor의 포커스 상태를 추적
-    @FocusState private var isTextEditorFocused: MemoField?
+    @FocusState private var isTextEditorFocused: Bool
     
     @StateObject private var memoStore = MemoStore()
     @EnvironmentObject var userInfoStore: UserInfoStore
@@ -55,6 +52,7 @@ struct MemoWritingView: View {
                         .overlay(alignment: .topLeading) {
                             GeometryReader { geometry in
                                 CropBox(rect: $cropArea, text: $memoText, selectedFont: $selectedFont, placeholder: placeholder)
+                                    .focused($isTextEditorFocused)
                                     .onReceive(memoText.publisher.collect()) { newValue in
                                         if newValue.count > textLimit {
                                             memoText = String(newValue.prefix(textLimit))
@@ -120,7 +118,7 @@ struct MemoWritingView: View {
                                 FontButton(title: font, isSelected: selectedFont == fontFileNames[index], selectedFont: fontFileNames[index]) {
                                     selectedFont = fontFileNames[index] // 해당 폰트 파일로 변경
                                 } onFocusChange: {
-                                    isTextEditorFocused = nil // 포커스를 해제하여 키보드를 내리기
+                                    isTextEditorFocused = false // 포커스를 해제하여 키보드를 내리기
                                 }
                             }
                             .padding(.horizontal, 2)
@@ -147,7 +145,7 @@ struct MemoWritingView: View {
                                 BackgroundButton(imageName: imageName) {
                                     selectedBackgroundImageName = imageName
                                 } onFocusChange: {
-                                    isTextEditorFocused = nil
+                                    isTextEditorFocused = false
                                 }
                             }
                             .padding(.horizontal, 10)
@@ -192,7 +190,7 @@ struct MemoWritingView: View {
                                         selectedMemoCategories.append(category)
                                     }
                                 } onFocusChange: {
-                                    isTextEditorFocused = nil
+                                    isTextEditorFocused = false
                                 }
                                 .padding(.horizontal, 2)
                             }
@@ -202,9 +200,20 @@ struct MemoWritingView: View {
             }
             .padding(.leading, 16)
         }
+        .toolbar {
+            // 키보드 위에 '완료' 버튼 추가
+            ToolbarItemGroup(placement: .keyboard) {
+                HStack {
+                    Spacer() // 왼쪽 공간을 확보하여 버튼을 오른쪽으로 이동
+                    Button("완료") {
+                        isTextEditorFocused = false // 키보드 숨기기
+                    }
+                }
+            }
+        }
         .contentShape(Rectangle()) // 전체 뷰가 터치 가능하도록 설정
         .onTapGesture {
-            isTextEditorFocused = nil // 다른 곳을 클릭하면 포커스 해제
+            isTextEditorFocused = false // 다른 곳을 클릭하면 포커스 해제
         }
     }
     
