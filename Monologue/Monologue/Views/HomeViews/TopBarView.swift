@@ -49,9 +49,10 @@ struct TopBarView: View {
                 }) {
                     Image(systemName: isSearching ? "xmark" : "magnifyingglass")
                         .font(.title2)
+                        .fontWeight(.light)
                         .foregroundStyle(Color.accentColor)
                 }
-                .padding(.trailing, 8)
+                .padding(.trailing, 17)
 //                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 
                 // 알림 버튼 (우측에 위치)
@@ -61,14 +62,15 @@ struct TopBarView: View {
                     }) {
                         Image(systemName: "bell")
                             .font(.title2)
+                            .fontWeight(.light)
                             .foregroundStyle(Color.accentColor)
                     }
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 8)
             .animation(.easeInOut(duration: 0.2), value: isSearching) // 스프링 애니메이션 적용
-            .frame(height: 70)
+            .frame(height: 34)
+            .padding(.bottom, 17)
 
             CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
 
