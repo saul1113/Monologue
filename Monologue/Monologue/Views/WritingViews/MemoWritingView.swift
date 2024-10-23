@@ -111,7 +111,7 @@ struct MemoWritingView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHGrid(rows: rows, spacing: 10) {
                             ForEach(Array(zip(fontOptions.indices, fontOptions)), id: \.0) { index, font in
-                                FontButton(title: font, isSelected: selectedFont == fontFileNames[index]) {
+                                FontButton(title: font, isSelected: selectedFont == fontFileNames[index], selectedFont: fontFileNames[index]) {
                                     selectedFont = fontFileNames[index] // 해당 폰트 파일로 변경
                                 } onFocusChange: {
                                     isTextEditorFocused = nil // 포커스를 해제하여 키보드를 내리기
@@ -217,6 +217,7 @@ struct MemoWritingView: View {
 struct FontButton: View {
     var title: String
     var isSelected: Bool
+    var selectedFont: String
     var action: () -> Void
     var onFocusChange: () -> Void // 포커스 상태 변경을 위한 클로저 추가
     
@@ -226,7 +227,7 @@ struct FontButton: View {
             action() // 기존의 action 실행
         }) {
             Text(title)
-                .font(.system(size: 13, weight: .bold))
+                .font(.custom(selectedFont, size: 13))
                 .foregroundColor(isSelected ? .white : .brown)
                 .frame(width: 70, height: 30)
                 .background(isSelected ? Color.accentColor : Color.clear)
