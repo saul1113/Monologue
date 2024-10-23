@@ -32,8 +32,18 @@ struct ColumnWritingView: View {
                     TextField("제목을 입력해주세요", text: $title)
                         .frame(maxWidth: .infinity, maxHeight: 30)
                         .focused($isTextEditorFocused)
-                        .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(.plain)
+                        .padding(.vertical, 10)
+                        .padding(.leading, 5)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.brown ,lineWidth: 1)
+                        )
                         .padding(.bottom, 10)
+                        .padding(.top, 5)
+                        
                     
                     TextEditor(text: $columnText)
                         .font(.system(.title3, design: .default, weight: .regular))
