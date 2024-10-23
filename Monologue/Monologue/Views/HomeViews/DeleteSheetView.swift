@@ -12,22 +12,31 @@ struct DeleteSheetView: View {
     @State private var showReportSheet = false
     var onDelete: (() -> Void)?
     
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    @Binding var selectedComment: Comment?
+    @Binding var itemSheet: Bool
+    
     var body: some View {
         VStack(spacing: 0) {
             Spacer().frame(height: 16) // 상단에 고정된 여백 추가
             
-            Button(action: {
-                onDelete?()
-                isPresented = false
-            }) {
-                Text("삭제하기")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.red)
+            if selectedComment?.userNickname == userInfoStore.userInfo?.nickname {
+                Button(action: {
+                    onDelete?()
+                    isPresented = false
+                }) {
+                    Text("삭제하기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.white)
+                        .foregroundColor(.red)
+                }
+                .onAppear {
+                    itemSheet = true
+                }
+                Divider()
             }
             
-            Divider()
             
             Button(action: {
                 showReportSheet = true
@@ -53,7 +62,6 @@ struct DeleteSheetView: View {
             
             Spacer().frame(height: 16) // 하단 여백 추가
         }
-        .background(Color(UIColor.systemGray6))
         .cornerRadius(16, corners: [.topLeft, .topRight])
         .padding(.horizontal)
         .padding(.top, 16) // 추가적으로 상단 여백 설정
@@ -67,6 +75,9 @@ struct DeleteSheetView: View {
             }
             .presentationDetents([.fraction(0.5), .large])
             .presentationDragIndicator(.visible)
+        }
+        .onAppear {
+            itemSheet = false
         }
     }
 }
