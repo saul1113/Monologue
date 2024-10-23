@@ -13,7 +13,7 @@ struct UserRow: View {
     let memoCount: Int
     let columnCount: Int
     
-    @State var isActionActive = true
+    @Binding var isActionActive: Bool
         
     // 버튼 텍스트
     let activeButtonText: String?
@@ -40,29 +40,31 @@ struct UserRow: View {
             
             Spacer()
             
-            Button {
-                if isActionActive {
-                    // 차단 해제, 언팔로우 로직
-                    onInactive()
-                } else {
-                    // 차단, 팔로우 로직
-                    onActive()
+            if let activeText = activeButtonText, let inactiveText = inactiveButtonText {
+                Button {
+                    if isActionActive {
+                        // 차단 해제, 언팔로우 로직
+                        onInactive()
+                    } else {
+                        // 차단, 팔로우 로직
+                        onActive()
+                    }
+                    
+                    isActionActive.toggle() // 상태 토글
+                } label: {
+                    Text((isActionActive ? inactiveButtonText : activeButtonText)!)
+                        .font(.system(size: 15))
+                        .frame(width: 90, height: 30)
+                        .foregroundStyle(isFollowAction ? (isActionActive ? .accent : .white) : (isActionActive ? .white : .accent))
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(isFollowAction ? (isActionActive ? .clear : .accent) : (isActionActive ? .accent : .clear))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .strokeBorder(isFollowAction ? (isActionActive ? .accent.opacity(0.5) : .clear) : (isActionActive ? .clear : .accent.opacity(0.5)), lineWidth: 1)
+                        )
                 }
-                
-                isActionActive.toggle() // 상태 토글
-            } label: {
-                Text((isActionActive ? inactiveButtonText : activeButtonText)!)
-                    .font(.system(size: 15))
-                    .frame(width: 90, height: 30)
-                    .foregroundStyle(isFollowAction ? (isActionActive ? .accent : .white) : (isActionActive ? .white : .accent))
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(isFollowAction ? (isActionActive ? .clear : .accent) : (isActionActive ? .accent : .clear))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(isFollowAction ? (isActionActive ? .accent.opacity(0.5) : .clear) : (isActionActive ? .clear : .accent.opacity(0.5)), lineWidth: 1)
-                    )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading) // 왼쪽 정렬

@@ -87,11 +87,14 @@ struct MemoView: View {
     var searchMemos: [Memo]?
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             MasonryLayout(columns: 2, spacing: 16) {
                 if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
                     
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
+                        if index == 3 {  // 3번째 메모 뒤에 광고 배너 삽입
+                            AdBannerView()
+                        }
                         NavigationLink(destination: MemoDetailView(memo: $filteredMemoStore.filteredMemos[index], image: $filteredMemoStore.images[index])) {
                             ZStack {
                                 VStack(alignment: .trailing) {
@@ -109,6 +112,7 @@ struct MemoView: View {
                                         .padding(.trailing, 8)
                                 }
                             }
+                            
                         }
                     }
                 }
