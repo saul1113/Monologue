@@ -109,8 +109,9 @@ struct PostView: View {
                         }
                     }) {
                         Text("발행")
-                            .foregroundColor(.accent)
+                            
                     }
+                    .disabled(memoText.isEmpty && selectedSegment == "메모" || columnText.isEmpty && selectedSegment == "칼럼")
                 }
                 .padding(.bottom, 5)
                 .padding(.horizontal, 16)
@@ -121,6 +122,7 @@ struct PostView: View {
                 ScrollView {
                     if selectedSegment == "메모" {
                         MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName, lineCount: $lineCount, cropArea: $cropArea, imageViewSize: $imageViewSize)
+                            .padding(.top, 10)
                     } else if selectedSegment == "칼럼" {
                         ColumnWritingView(title: $title, columnText: $columnText, selectedColumnCategories: $selectedColumnCategories)
                     }

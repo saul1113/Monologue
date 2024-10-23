@@ -62,6 +62,10 @@ struct MemoWritingView: View {
                                     }
                             }
                         }
+                        .overlay (
+                            Rectangle()
+                                .stroke(Color.gray, lineWidth: 3)
+                        )
                     
                     //                            GeometryReader { geometry in
                     //                                TextEditor(text: $memoText)
@@ -107,7 +111,7 @@ struct MemoWritingView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHGrid(rows: rows, spacing: 10) {
                             ForEach(Array(zip(fontOptions.indices, fontOptions)), id: \.0) { index, font in
-                                FontButton(title: font, isSelected: selectedFont == fontFileNames[index]) {
+                                FontButton(title: font, isSelected: selectedFont == fontFileNames[index], selectedFont: fontFileNames[index]) {
                                     selectedFont = fontFileNames[index] // 해당 폰트 파일로 변경
                                 } onFocusChange: {
                                     isTextEditorFocused = nil // 포커스를 해제하여 키보드를 내리기
@@ -140,7 +144,7 @@ struct MemoWritingView: View {
                                     isTextEditorFocused = nil
                                 }
                             }
-                            .padding(.horizontal, 2)
+                            .padding(.horizontal, 10)
                         }
                     }
                 }
@@ -148,6 +152,17 @@ struct MemoWritingView: View {
             .padding(.leading, 16)
             
             Divider()
+            HStack {
+                Image(systemName: "exclamationmark.circle") // 경고 아이콘
+                    .foregroundColor(Color(.systemGray2))
+                Text("카테고리는 최대 3개만 선택 가능합니다.")
+                    .font(.system(size: 16, weight: .bold, design: .default)) // 크기와 굵기 조정
+                    .foregroundStyle(Color(.systemGray2))
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 5)
+            .padding(.bottom, -2)
             
             HStack {
                 HStack(spacing: 10) {
@@ -186,7 +201,7 @@ struct MemoWritingView: View {
             isTextEditorFocused = nil // 다른 곳을 클릭하면 포커스 해제
         }
     }
-        
+    
     // TextEditor의 라인수를 계산하는 함수
     private func calculateLineCount(in width: CGFloat) {
         let size = CGSize(width: width, height: .infinity)
@@ -202,6 +217,7 @@ struct MemoWritingView: View {
 struct FontButton: View {
     var title: String
     var isSelected: Bool
+    var selectedFont: String
     var action: () -> Void
     var onFocusChange: () -> Void // 포커스 상태 변경을 위한 클로저 추가
     
@@ -211,7 +227,7 @@ struct FontButton: View {
             action() // 기존의 action 실행
         }) {
             Text(title)
-                .font(.system(size: 13, weight: .bold))
+                .font(.custom(selectedFont, size: 13))
                 .foregroundColor(isSelected ? .white : .brown)
                 .frame(width: 70, height: 30)
                 .background(isSelected ? Color.accentColor : Color.clear)
@@ -238,8 +254,12 @@ struct BackgroundButton: View {
             Image(imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 70, height: 30)
+                .frame(width: 30, height: 30)
                 .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.brown, lineWidth: 1) // 테두리 추가
+                )
         }
     }
 }
