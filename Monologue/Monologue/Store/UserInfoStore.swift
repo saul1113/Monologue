@@ -20,6 +20,7 @@ class UserInfoStore: ObservableObject {
     
     @Published var followers: [UserInfo] = []
     @Published var followings: [UserInfo] = []
+    
     @Published var isFollowingStatus: [String: Bool] = [:] // 각 유저에 대한 팔로우 상태 추적
 
     @Published var followersCount: Int = 0
@@ -190,7 +191,11 @@ class UserInfoStore: ObservableObject {
                 ], forDocument: targetUserRef)
                 
                 DispatchQueue.main.async {
-                    self.isFollowingStatus[targetUserEmail] = true
+                    Task {
+                        let userInfo = try await self.loadUsersInfoByEmail(emails: [targetUserEmail])
+                        self.followings.append(userInfo.first!)
+                        self.isFollowingStatus[targetUserEmail] = true
+                    }
                 }
                 return nil
             }
@@ -228,6 +233,7 @@ class UserInfoStore: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self.isFollowingStatus[targetUserEmail] = false
+                    self.followings.removeAll(where: { $0.email == targetUserEmail })
                 }
                 return nil
             }

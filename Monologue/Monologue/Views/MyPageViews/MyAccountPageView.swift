@@ -192,6 +192,13 @@ struct MyAccountPageView: View {
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
             }
+            .onChange(of: userInfo) {
+                Task {
+                    if let updatedUserInfo = userInfoStore.userInfo {
+                        userInfo = updatedUserInfo
+                    }
+                }
+            }
             .onDisappear {
                 userInfoStore.removeListener()
             }
