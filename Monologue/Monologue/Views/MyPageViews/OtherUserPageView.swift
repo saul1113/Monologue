@@ -27,7 +27,8 @@ struct OtherUserPageView: View {
     @State private var isBlockedByMe: Bool = false // 내가 타인을 블락한 상태
     @State private var isBlockedByThem: Bool = false // 타인이 나를 블락한 상태
     @State var filters: [String]? = nil
-    
+    @State var isFollowingMe: Bool = false
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -40,13 +41,28 @@ struct OtherUserPageView: View {
                         ProfileImageView(profileImageName: userInfo.profileImageName, size: 77)
                             .padding(.trailing, 24)
                         
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text(userInfo.nickname)
-                                .font(.system(size: 18))
-                                .bold()
+                        VStack(alignment: .leading, spacing: 8) {
+                     
+                                Text(userInfo.nickname)
+                                    .font(.system(size: 18))
+                                    .bold()
+ 
                             
                             Text(userInfo.introduction.isEmpty ? "자기소개가 없습니다." : userInfo.introduction)
                                 .font(.system(size: 16))
+                            
+                            if isFollowingMe {
+                                Text("나를 팔로우 중")
+                                    .font(.caption)
+                                    .foregroundStyle(.accent)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 3)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(.accent.opacity(0.1))
+                                    )
+                                    .padding(.trailing, 4)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -251,6 +267,7 @@ struct OtherUserPageView: View {
                     isFollowing = await userInfoStore.checkIfFollowing(targetUserEmail: userInfo.email)
                     isBlockedByMe = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                     isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
+                    isFollowingMe = await userInfoStore.checkIfFollowedBy(targetUserEmail: userInfo.email)
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
                 setupNavigationBarAppearance(backgroundColor: .background)

@@ -52,8 +52,10 @@ struct PostView: View {
                             .font(.title2)
                     }
                     Spacer()
-                    Text("Post")
-                        .font(.title2)
+                    Text("POST")
+                        .font(.title3)
+                        .bold()
+                        .foregroundStyle(.accent)
                     Spacer()
                     Button(action: {
                         if selectedSegment == "메모" {

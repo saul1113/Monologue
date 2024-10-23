@@ -68,6 +68,7 @@ struct ColumnDetail: View {
                                 .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                         }
                         .padding(.horizontal, 16)
+                        .padding(.top, 5)
                     }
                     
                     // 하단에 고정된 댓글 입력 필드

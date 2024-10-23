@@ -10,34 +10,40 @@ class FilteredColumnStore: ObservableObject {
     var columnStore: ColumnStore = .init()
     @Published var filteredColumns: [Column] = []
     
-    func setFilteredMemos(filters: [String], userEmail: String) {
+    func setFilteredColumns(filters: [String], userEmail: String) {
         Task {
             if filters == ["전체"] {
                 do {
                     let columns = try await columnStore.loadColumn().filter { column in
-                        column.email != userEmail
+                        column.email != userEmail  // 자기 글 제외
                     }
                     
                     DispatchQueue.main.async {
-                        
-                        // 시간 순서대로 memo가 배열되게 함.
+                        // 시간 순서대로 정렬
                         self.filteredColumns = columns.sorted { $0.date > $1.date }
                     }
                 } catch {
-                    print("loadMemos error: \(error)")
+                    print("loadColumns error: \(error)")
                 }
             } else {
                 do {
                     let columns = try await columnStore.loadColumn().filter { column in
-                        column.categories.contains { filters.contains($0) } && column.email != userEmail
+                        column.categories.contains { filters.contains($0) } && column.email != userEmail  // 필터에 따른 자기 글 제외
                     }
                     DispatchQueue.main.async {
                         self.filteredColumns = columns.sorted { $0.date > $1.date }
                     }
                 } catch {
-                    print("loadMemos error: \(error)")
+                    print("loadColumns error: \(error)")
                 }
             }
+        }
+    }
+    
+    // 검색된 칼럼을 설정할 때도 자기 글 제외
+    func setSearchColumns(searchColumns: [Column], userEmail: String) {
+        DispatchQueue.main.async {
+            self.filteredColumns = searchColumns.filter { $0.email != userEmail }  // 자기 글 제외
         }
     }
     
@@ -55,17 +61,12 @@ struct ColumnView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @Binding var filters: [String]?
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedColumn: Column? = nil
-    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
+    @State private var selectedColumn: Column? = nil 
     
     var userColumns: [Column]?
-//    
-//    var sortedFilteredColumns: [Binding<Column>] {
-//        let columns = filteredColumns.indices.map { index in
-//            $filteredColumns[index]
-//        }
-//        return columns.sorted { $0.wrappedValue.date > $1.wrappedValue.date }
-//    }
+    var searchColumns: [Column]?
+    
+    var searchText: String = ""
     
     var body: some View {
         ZStack(alignment: .leading) {
@@ -94,7 +95,7 @@ struct ColumnView: View {
         }
         .onAppear {
             if let tempFilters = filters {
-                filteredColumnStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
+                filteredColumnStore.setFilteredColumns(filters: tempFilters, userEmail: authManager.email)
             }
             
             if let userColumns = userColumns {
@@ -104,7 +105,7 @@ struct ColumnView: View {
         .onChange(of: filters) {
             print("필터 : \(String(describing: filters))")
             if let tempFilters = filters {
-                filteredColumnStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
+                filteredColumnStore.setFilteredColumns(filters: tempFilters, userEmail: authManager.email)
             }
         }
         .onChange(of: userColumns) {
@@ -112,12 +113,22 @@ struct ColumnView: View {
                 filteredColumnStore.setUserColumns(userColumns: userColumns)
             }
         }
+        .onChange(of: searchColumns) {
+            if let searchColumns = searchColumns {
+                filteredColumnStore.setSearchColumns(searchColumns: searchColumns, userEmail: authManager.email)
+            }
+        }
     }
     
     func refreshColums() async {
         Task {
             if let tempFilters = filters {
-                filteredColumnStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
+                filteredColumnStore.setFilteredColumns(filters: tempFilters, userEmail: authManager.email)
+            }
+            
+            if !searchText.isEmpty {
+                let searchColumns = try await columnStore.loadColumnsByContent(content: searchText)
+                filteredColumnStore.setUserColumns(userColumns: searchColumns)
             }
         }
     }
@@ -144,11 +155,12 @@ struct PostRow: View {
                 
                 Spacer()
                 Text(timeAgoSinceDate(column.date)) // 초단위 삭제
-                    .font(.subheadline)
-                    .foregroundColor(.black)
+                    .font(.caption2)
+                    .foregroundColor(.gray)
             }
             Text(column.title)
-                .font(.body)
+                .font(.headline)
+                .bold()
                 .foregroundStyle(.black)
                 .font(Font.headline.weight(.bold))
                 .padding(.bottom, 2)
@@ -182,8 +194,8 @@ struct PostRow: View {
                 ForEach(column.categories.prefix(3), id: \.self) { category in
                     if !category.isEmpty {
                         Text(category)
-                            .font(.footnote)
-                            .foregroundColor(.black)
+                            .font(.caption2)
+                            .foregroundColor(.accentColor)
                             .padding(8)
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(14)
@@ -196,13 +208,17 @@ struct PostRow: View {
         .background(Color.white)
         .cornerRadius(8)
         .overlay(RoundedRectangle(cornerRadius: 10)
-            .stroke(.gray, lineWidth: 0.5))
-        .padding(.vertical, 1)        
+            .stroke(Color.gray.opacity(0.3), lineWidth: 1))
+        .padding(.vertical, 1)
         .onAppear {
             Task{
                 // 이메일을 사용하여 유저 정보를 불러옴
-                if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [column.email]).first {
-                    self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                do {
+                    if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [column.email]).first {
+                        self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                    }
+                } catch {
+                    print("\(error.localizedDescription)")
                 }
             }
         }
@@ -244,5 +260,3 @@ struct PostRow: View {
 //        }
 //    }
 //}
-
-

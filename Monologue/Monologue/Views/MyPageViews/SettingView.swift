@@ -11,6 +11,7 @@ struct SettingView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isShowingAlert = false
     @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var userInfoStore: UserInfoStore
     
     // 앱 버전과 빌드 번호
     private var appVersion: String {
@@ -36,6 +37,7 @@ struct SettingView: View {
                         }
                         
                         Button("로그아웃") {
+                            userInfoStore.userInfo = nil
                             authManager.signOut()
                             
                             print(authManager.email)
@@ -49,7 +51,10 @@ struct SettingView: View {
                         .foregroundStyle(.red)
                         .alert("계정을 탈퇴합니다", isPresented: $isShowingAlert) {
                             Button("탈퇴", role: .destructive) {
-                                // 파베 계정 탈퇴 로직
+//                                Task {
+//                                    try await userInfoStore.deleteUserInfo(email: authManager.email)
+//                                    await authManager.deleteAccount()
+//                                }
                             }
                         } message: {
                             Text("탈퇴 후 삭제되는 모든 정보는 복구할 수 없습니다.")

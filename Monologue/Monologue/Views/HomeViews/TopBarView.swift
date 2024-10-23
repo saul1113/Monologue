@@ -47,7 +47,7 @@ struct TopBarView: View {
                         isSearching.toggle()
                     }
                 }) {
-                    Image(systemName: isSearching ? "xmark" : "magnifyingglass")
+                    Image(systemName: isSearching ? "" : "magnifyingglass")
                         .font(.title2)
                         .fontWeight(.light)
                         .foregroundStyle(Color.accentColor)
