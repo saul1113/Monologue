@@ -43,7 +43,7 @@ struct LikeListView: View {
                             Text("좋아요한 칼럼이 없습니다.")
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                         } else {
-                            ColumnView(filteredColumns: $likedColumns)
+                            ColumnView(filters: $filters, userColumns: likedColumns)
                                 .frame(width: geometry.size.width)
                         }
                     }

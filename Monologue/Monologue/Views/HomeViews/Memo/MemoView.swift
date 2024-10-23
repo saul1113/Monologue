@@ -82,9 +82,10 @@ struct MemoView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
     @EnvironmentObject var authManager: AuthManager
     @Binding var filters: [String]?
-    @State var sortedMemos: [Memo] = []
     var userMemos: [Memo]?
     var searchMemos: [Memo]?
+    
+    var searchColumns: [Column]?
     
     var body: some View {
         ScrollView(showsIndicators: false) {

@@ -9,7 +9,7 @@ import Foundation
 import FirebaseCore
 import FirebaseFirestore
 
-struct Column: Codable, Identifiable {
+struct Column: Codable, Equatable, Identifiable {
     var id: String = UUID().uuidString
     var title: String
     var content: String // 칼럼 내용

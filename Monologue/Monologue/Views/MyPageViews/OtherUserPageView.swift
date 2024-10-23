@@ -183,7 +183,7 @@ struct OtherUserPageView: View {
                                     Text("작성된 칼럼이 없습니다.")
                                         .frame(width: geometry.size.width, height: geometry.size.height)
                                 } else {
-                                    ColumnView(filteredColumns: $userColumns)
+                                    ColumnView(filters: $filters, userColumns: userColumns)
                                         .frame(width: geometry.size.width)
                                 }
                             }
