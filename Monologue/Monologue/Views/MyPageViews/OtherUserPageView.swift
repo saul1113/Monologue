@@ -259,7 +259,7 @@ struct OtherUserPageView: View {
                         isBlockedByThem = await userInfoStore.checkIfBlocked(targetUserEmail: userInfo.email)
                     }
                     userInfoStore.observeUserFollowData(email: userInfo.email)
-                    setupNavigationBarAppearance(backgroundColor: .clear)
+                    setupNavigationBarAppearance(backgroundColor: .background)
                 }
                 .onDisappear {
                     userInfoStore.removeListener()
