@@ -13,6 +13,7 @@ struct ColumnView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     @State private var selectedColumn: Column? = nil
+    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
     
     var sortedFilteredColumns: [Binding<Column>] {
         let columns = filteredColumns.indices.map { index in
@@ -42,17 +43,22 @@ struct ColumnView: View {
             }
             .padding(.bottom)
         }
+        .onAppear {
+            
+        }
     }
 }
 
 // 게시물 리스트에서 각 항목을 표시하는 뷰
 struct PostRow: View {
     @Binding var column: Column
+    @EnvironmentObject private var userInfoStore: UserInfoStore
+    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
     
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                Image(systemName: "person.circle.fill")
+                Image(selectedUserInfo.profileImageName)
                     .resizable()
                     .frame(width: 15, height: 15)
                     .clipShape(Circle())
@@ -115,7 +121,15 @@ struct PostRow: View {
         .cornerRadius(8)
         .overlay(RoundedRectangle(cornerRadius: 10)
             .stroke(.gray, lineWidth: 0.5))
-        .padding(.vertical, 1)
+        .padding(.vertical, 1)        
+        .onAppear {
+            Task{
+                // 이메일을 사용하여 유저 정보를 불러옴
+                if let userInfo = try await userInfoStore.loadUsersInfoByEmail(emails: [column.email]).first {
+                    self.selectedUserInfo = userInfo // 불러온 유저 정보 저장
+                }
+            }
+        }
     }
     func timeAgoSinceDate(_ date: Date) -> String {
         let calendar = Calendar.current
