@@ -24,6 +24,9 @@ struct HomeView: View {
     @State private var isScrollingDown = false
     @State private var searchText: String = ""
     @State private var isSearching: Bool = false
+    @State private var searchMemos: [Memo] = []
+    @State private var searchColumns: [Column] = []
+    
     @State var selectedSegment: String = "메모"
     @State private var selectedCategories: [String]? = ["전체"]
     @State var filteredColumns: [Column] = []
@@ -80,11 +83,11 @@ struct HomeView: View {
                         }
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
-                            MemoView(filters: $selectedCategories)
+                            MemoView(filters: $selectedCategories, searchMemos: searchMemos)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                             
-                            ColumnView(filters: $selectedCategories)
+                            ColumnView(filters: $selectedCategories, searchColumns: searchColumns)
                                 .frame(width: geometry.size.width)
                                 .clipped()
                         }
@@ -117,6 +120,21 @@ struct HomeView: View {
             Task {
                 self.filteredColumns = try await columnStore.loadColumn()
                 self.filteredColumns = self.filteredColumns.filter { $0.email != userInfoStore.userInfo?.email }
+            }
+        }
+        .onChange(of: searchText) {oldvalue, newvalue in
+            Task {
+                do {
+                    if newvalue.isEmpty {
+                        searchMemos = try await memoStore.loadMemos()
+                        searchColumns = try await columnStore.loadColumn()
+                    } else {
+                        searchMemos = try await memoStore.loadMemosByContent(content: newvalue)
+                        searchColumns = try await columnStore.loadColumnsByContent(content: newvalue)
+                    }
+                } catch {
+                    print("Error: \(error.localizedDescription)")
+                }
             }
         }
     }
