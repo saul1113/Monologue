@@ -143,9 +143,9 @@ struct MemoView: View {
                 filteredMemoStore.setUserMemos(userMemos: userMemos)
             }
             
-//            if let searchMemos = searchMemos {
-//                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
-//            }
+            //            if let searchMemos = searchMemos {
+            //                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+            //            }
         }
         .onChange(of: filters) {
             print("필터 : \(String(describing: filters))")
@@ -161,6 +161,17 @@ struct MemoView: View {
         .onChange(of: searchMemos) {
             if let searchMemos = searchMemos {
                 filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+            }
+        }
+        .refreshable {
+            await refreshMemos()
+        }
+    }
+    
+    func refreshMemos() async {
+        Task {
+            if let tempFilters = filters {
+                filteredMemoStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
             }
         }
     }
