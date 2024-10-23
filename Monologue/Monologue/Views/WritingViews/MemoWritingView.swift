@@ -19,6 +19,7 @@ struct MemoWritingView: View {
     @Binding var selectedMemoCategories: [String]
     @Binding var selectedBackgroundImageName: String
     @Binding var lineCount: Int
+    @State private var textLimit: Int = 500
     
     // FocusState 변수를 선언하여 TextEditor의 포커스 상태를 추적
     @FocusState private var isTextEditorFocused: MemoField?
@@ -54,6 +55,11 @@ struct MemoWritingView: View {
                         .overlay(alignment: .topLeading) {
                             GeometryReader { geometry in
                                 CropBox(rect: $cropArea, text: $memoText, selectedFont: $selectedFont, placeholder: placeholder)
+                                    .onReceive(memoText.publisher.collect()) { newValue in
+                                        if newValue.count > textLimit {
+                                            memoText = String(newValue.prefix(textLimit))
+                                        }
+                                    }
                                     .onAppear {
                                         self.imageViewSize = geometry.size
                                     }
