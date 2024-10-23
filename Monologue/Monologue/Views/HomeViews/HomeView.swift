@@ -19,6 +19,7 @@ struct HomeView: View {
     @EnvironmentObject private var columnStore: ColumnStore
     @EnvironmentObject private var memoImageStore: MemoImageStore
     @EnvironmentObject private var userInfoStore: UserInfoStore
+    @Binding var selectedTab: Int
     
     @State private var memos: [Memo] = []
     @State private var isScrollingDown = false
@@ -84,7 +85,10 @@ struct HomeView: View {
                                 .frame(width: geometry.size.width)
                                 .clipped()
                                 .refreshable {
-                                    await reloadMemos()
+                                    await memoStore.reloadMemos()
+                                    DispatchQueue.main.async {
+                                        selectedTab = 0
+                                    }
                                 }
                             
                             ColumnView(filteredColumns: $filteredColumns)
@@ -92,6 +96,9 @@ struct HomeView: View {
                                 .clipped()
                                 .refreshable {
                                     await reloadColumns()
+                                    DispatchQueue.main.async {
+                                        selectedTab = 0
+                                    }
                                 }
                         }
                         .frame(width: geometry.size.width * 2)
