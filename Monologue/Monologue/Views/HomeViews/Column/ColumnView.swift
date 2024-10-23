@@ -13,7 +13,6 @@ struct ColumnView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var filteredColumns: [Column]  // 필터링된 칼럼을 외부에서 전달받음
     @State private var selectedColumn: Column? = nil
-    @State private var index: Int = 0
     
     var sortedFilteredColumns: [Binding<Column>] {
         let columns = filteredColumns.indices.map { index in
@@ -28,7 +27,7 @@ struct ColumnView: View {
             ScrollView {
                 VStack {
                     ForEach(sortedFilteredColumns.indices, id: \.self) { index in
-                        if index % 3 == 0 {
+                        if index % 3 == 2 {
                             AdBannerView()
                         }
                         
@@ -41,6 +40,7 @@ struct ColumnView: View {
                 }
                 .padding([.leading, .trailing])
             }
+            .padding(.bottom)
         }
     }
 }

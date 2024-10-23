@@ -198,8 +198,8 @@ struct PostView: View {
             
             let fontSize: CGFloat = 20
             let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont(name: selectedFont, size: fontSize)!,
-                .foregroundColor: UIColor.white
+                .font: UIFont(name: selectedFont, size: fontSize) ?? UIFont.systemFont(ofSize: fontSize),
+                .foregroundColor: UIColor.black
             ]
             
             let textRect = CGRect(

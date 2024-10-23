@@ -102,6 +102,19 @@ class ColumnStore: ObservableObject {
             print("칼럼 수정 중 오류 발생: \(error)")
         }
     }
+    
+    // MARK: - 닉네임 변경 시 해당 닉네임의 메모에 보관되어있는 닉네임 변경
+    @MainActor
+    func changeColumnsNickname(email: String, newNickname: String) async throws {
+        var tempColumns = try await loadColumnsByUserEmail(email: email)
+        
+        for index in 0..<tempColumns.count {
+            tempColumns[index].userNickname = newNickname
+            
+            try await addColumn(column: tempColumns[index])
+        }
+    }    
+    
     // MARK: - 칼럼 전체 로드
     func loadColumn(completion: @escaping ([Column]?, Error?) -> Void) {
         let db = Firestore.firestore()

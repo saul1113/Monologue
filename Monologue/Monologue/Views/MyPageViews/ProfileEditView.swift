@@ -9,7 +9,9 @@ import SwiftUI
 
 struct ProfileEditView: View {
     @EnvironmentObject private var userInfoStore: UserInfoStore
-    @EnvironmentObject private var authManager:AuthManager
+    @EnvironmentObject private var authManager: AuthManager
+    @EnvironmentObject private var memoStore: MemoStore
+    @EnvironmentObject private var columnStore: ColumnStore
     @Environment(\.dismiss) private var dismiss
     
     @State private var nickname: String = ""
@@ -151,6 +153,8 @@ struct ProfileEditView: View {
                     }
                 }
                 nicknameDuplicateWarning = false
+                try await memoStore.changeMemosNickname(email: userInfoStore.userInfo?.email ?? "", newNickname: nickname)
+                try await columnStore.changeColumnsNickname(email: userInfoStore.userInfo?.email ?? "", newNickname: nickname)
                 saveUserInfo()
             }
         }
