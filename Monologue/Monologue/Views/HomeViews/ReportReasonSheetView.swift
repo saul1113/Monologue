@@ -17,9 +17,13 @@ struct ReportReasonSheetView: View {
             
             Text("신고하기")
                 .font(.headline)
-                .padding(.top, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
             
-            Text("이 칼럼을 신고하는 이유를 선택해 주세요. 회원님의 신고는 익명으로 처리됩니다.")
+            VStack {
+                Text("이 칼럼을 신고하는 이유를 선택해 주세요.")
+                Text("회원님의 신고는 익명으로 처리됩니다.")
+            }
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
@@ -41,6 +45,7 @@ struct ReportReasonSheetView: View {
                 }
                 Divider()
             }
+            Divider()
             
             Button(action: {
                 isPresented = false
@@ -51,10 +56,7 @@ struct ReportReasonSheetView: View {
                     .background(Color.white)
                     .foregroundColor(.black)
             }
-            
-            Spacer().frame(height: 16) // 하단 여백
         }
-        .background(Color(UIColor.systemGray6))
         .cornerRadius(16, corners: [.topLeft, .topRight])
         .padding(.horizontal)
         .padding(.top, 16) // 상단 패딩 추가

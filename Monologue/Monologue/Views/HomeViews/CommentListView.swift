@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CommentListView: View {
+    @EnvironmentObject var userInfoStore: UserInfoStore
+    
     @Binding var displayedComments: [Comment]?
     @Binding var selectedComment: Comment?
     @Binding var showDeleteSheet: Bool
@@ -52,21 +54,21 @@ struct CommentListView: View {
     
     // 댓글 작성 날짜/시간 표시 함수
     func displayTimeSince(postDate: Date) -> String {
-            let calendar = Calendar.current
-            let currentDate = Date()
-            
-            if let daysDifference = calendar.dateComponents([.day], from: postDate, to: currentDate).day {
-                if daysDifference >= 7 {
-                    let formatter = DateFormatter()
-                    formatter.dateStyle = .medium
-                    formatter.locale = Locale(identifier: "ko_KR") // 한국어 날짜 형식
-                    return formatter.string(from: postDate)
-                } else {
-                    let relativeFormatter = RelativeDateTimeFormatter()
-                    relativeFormatter.locale = Locale(identifier: "ko_KR") // 한국어로 설정
-                    return relativeFormatter.localizedString(for: postDate, relativeTo: currentDate)
-                }
+        let calendar = Calendar.current
+        let currentDate = Date()
+        
+        if let daysDifference = calendar.dateComponents([.day], from: postDate, to: currentDate).day {
+            if daysDifference >= 7 {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .medium
+                formatter.locale = Locale(identifier: "ko_KR") // 한국어 날짜 형식
+                return formatter.string(from: postDate)
+            } else {
+                let relativeFormatter = RelativeDateTimeFormatter()
+                relativeFormatter.locale = Locale(identifier: "ko_KR") // 한국어로 설정
+                return relativeFormatter.localizedString(for: postDate, relativeTo: currentDate)
             }
-            return ""
         }
+        return ""
+    }
 }

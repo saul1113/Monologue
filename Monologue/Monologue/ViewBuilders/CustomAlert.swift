@@ -30,7 +30,7 @@ extension View {
 }
 
 private struct CustomAlertViewModifier: ViewModifier {
-
+    
     @Binding var isPresented: Bool
     let transition: AnyTransition
     let title: String

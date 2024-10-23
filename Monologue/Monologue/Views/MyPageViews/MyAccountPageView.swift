@@ -97,7 +97,7 @@ struct MyAccountPageView: View {
                     // MARK: - 프로필 편집, 프로필 공유
                     HStack {
                         NavigationLink {
-                            ProfileEditView()
+                            ProfileEditView(userInfo: $userInfo)
                         } label: {
                             Text("프로필 편집")
                                 .modifier(BorderedButtonStyle())
@@ -111,7 +111,7 @@ struct MyAccountPageView: View {
                             }
                         }
                     }
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 25)
                     
                     // MARK: - 메모 및 칼럼 뷰
                     CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
@@ -162,7 +162,7 @@ struct MyAccountPageView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("MONOLOG")
                         .foregroundStyle(.accent)
-                        .font(.title3)
+                        .font(.title2)
                         .bold()
                 }
                 
@@ -186,6 +186,9 @@ struct MyAccountPageView: View {
             .onAppear {
                 Task {
                     await loadUserPosts()
+                    if let updatedUserInfo = userInfoStore.userInfo {
+                        userInfo = updatedUserInfo
+                    }
                 }
                 userInfoStore.observeUserFollowData(email: userInfo.email)
             }

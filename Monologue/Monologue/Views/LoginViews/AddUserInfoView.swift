@@ -10,7 +10,7 @@ import OrderedCollections
 
 struct AddUserInfoView: View {
     @State var dict: OrderedDictionary = [
-        "전체": false,
+        "전체": true,
         "오늘의 주제": false,
         "수필": false,
         "소설": false,

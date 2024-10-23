@@ -21,8 +21,7 @@ struct ColumnDetail: View {
     
     @State var isColumnModifyingView: Bool = false
     @State var itemSheet: Bool = false // 글자에때라 쉬트 크기
-    
-    
+        
     @State var column: Column
     
     var body: some View {
@@ -102,8 +101,8 @@ struct ColumnDetail: View {
                 .presentationDragIndicator(.hidden)
             }
             .sheet(isPresented: $showDeleteSheet) {
-                DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment)
-                    .presentationDetents([.height(150)])
+                DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment, selectedComment: $selectedComment, itemSheet: $itemSheet)
+                    .presentationDetents([itemSheet ? .height(150) : .height(100)])
                     .presentationDragIndicator(.hidden)
             }
             .navigationBarBackButtonHidden(true)

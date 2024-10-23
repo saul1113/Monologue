@@ -40,7 +40,7 @@ struct UserRow: View {
             
             Spacer()
             
-            if let activeText = activeButtonText, let inactiveText = inactiveButtonText {
+            if let activeText = activeButtonText {
                 Button {
                     if isActionActive {
                         // 차단 해제, 언팔로우 로직

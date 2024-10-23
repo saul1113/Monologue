@@ -13,7 +13,7 @@ struct MemoDetailView: View {
     @EnvironmentObject var commentStore: CommentStore
     @State private var showAllComments = false
     @State private var newComment = ""
-    @State private var displayedComments: [Comment ] = []
+    @State private var displayedComments: [Comment] = []
     @State private var showShareSheet: Bool = false
     @State private var showDeleteSheet: Bool = false
     @State private var selectedComment: Comment?
@@ -25,6 +25,8 @@ struct MemoDetailView: View {
     
     @State var isColumnModifyingView: Bool = false
     @State var itemSheet: Bool = false // 글자에때라 쉬트 크기
+    
+    @State private var selectedUserInfo: UserInfo = UserInfo(uid: "", email: "", nickname: "", registrationDate: Date(), preferredCategories: [""], profileImageName: "", introduction: "", followers: [""], followings: [""], blocked: [""], likesMemos: [""], likesColumns: [""])
     
     var body: some View {
         GeometryReader { geometry in
@@ -87,8 +89,8 @@ struct MemoDetailView: View {
                     .presentationDragIndicator(.hidden)
             }
             .sheet(isPresented: $showDeleteSheet) {
-                DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment)
-                    .presentationDetents([.height(150)])
+                DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment, selectedComment: $selectedComment, itemSheet: $itemSheet)
+                    .presentationDetents([itemSheet ? .height(150) : .height(100)])
                     .presentationDragIndicator(.hidden)
             }
             .navigationBarBackButtonHidden(true)
