@@ -182,6 +182,7 @@ struct OtherUserPageView: View {
                         
                     } else {
                         CustomSegmentView(segment1: "메모", segment2: "칼럼", selectedSegment: $selectedSegment)
+                            .padding(.horizontal, -16)
                         
                         GeometryReader { geometry in
                             HStack(spacing: 0) {

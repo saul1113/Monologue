@@ -19,6 +19,8 @@
 		8B71225F2CBE009B00734578 /* MemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B71225E2CBE009600734578 /* MemoView.swift */; };
 		8B7122612CBE00D400734578 /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122602CBE00CE00734578 /* MemoDetailView.swift */; };
 		8B7122652CBE50A500734578 /* MasonryLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7122642CBE509D00734578 /* MasonryLayout.swift */; };
+		8E4C042D2CC9682A00EA00C8 /* Eulyoo1945-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E4C042C2CC9682A00EA00C8 /* Eulyoo1945-SemiBold.otf */; };
+		8E4C042E2CC9682A00EA00C8 /* Eulyoo1945-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E4C042B2CC9682A00EA00C8 /* Eulyoo1945-Regular.otf */; };
 		8E52D93C2CBD215600E5D42A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E52D92F2CBD215600E5D42A /* Assets.xcassets */; };
 		8E52D9442CBD216C00E5D42A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D93F2CBD216C00E5D42A /* MainView.swift */; };
 		8E52D9452CBD216C00E5D42A /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52D9402CBD216C00E5D42A /* MyPageView.swift */; };
@@ -98,6 +100,8 @@
 		8B71225E2CBE009600734578 /* MemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoView.swift; sourceTree = "<group>"; };
 		8B7122602CBE00CE00734578 /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
 		8B7122642CBE509D00734578 /* MasonryLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasonryLayout.swift; sourceTree = "<group>"; };
+		8E4C042B2CC9682A00EA00C8 /* Eulyoo1945-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eulyoo1945-Regular.otf"; sourceTree = "<group>"; };
+		8E4C042C2CC9682A00EA00C8 /* Eulyoo1945-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Eulyoo1945-SemiBold.otf"; sourceTree = "<group>"; };
 		8E52D9162CBD100A00E5D42A /* Monologue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Monologue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E52D92F2CBD215600E5D42A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E52D93E2CBD216C00E5D42A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -229,6 +233,8 @@
 		8E78FE9D2CC236C700565C15 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				8E4C042B2CC9682A00EA00C8 /* Eulyoo1945-Regular.otf */,
+				8E4C042C2CC9682A00EA00C8 /* Eulyoo1945-SemiBold.otf */,
 				8E78FEA42CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf */,
 				8E78FEA22CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf */,
 				8E78FEA02CC2373400565C15 /* NanumSquareR.otf */,
@@ -449,6 +455,8 @@
 			files = (
 				8E78FEA52CC237C000565C15 /* NotoSerifKR-VariableFont_wght.ttf in Resources */,
 				8E78FE9F2CC236DD00565C15 /* NanumBarunpenR.otf in Resources */,
+				8E4C042D2CC9682A00EA00C8 /* Eulyoo1945-SemiBold.otf in Resources */,
+				8E4C042E2CC9682A00EA00C8 /* Eulyoo1945-Regular.otf in Resources */,
 				8E78FEA32CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf in Resources */,
 				8E78FEA12CC2373400565C15 /* NanumSquareR.otf in Resources */,
 				8E52D93C2CBD215600E5D42A /* Assets.xcassets in Resources */,
