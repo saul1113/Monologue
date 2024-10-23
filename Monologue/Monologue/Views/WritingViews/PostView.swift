@@ -122,6 +122,7 @@ struct PostView: View {
                 ScrollView {
                     if selectedSegment == "메모" {
                         MemoWritingView(memoText: $memoText, selectedFont: $selectedFont, selectedMemoCategories: $selectedMemoCategories, selectedBackgroundImageName: $selectedBackgroundImageName, lineCount: $lineCount, cropArea: $cropArea, imageViewSize: $imageViewSize)
+                            .padding(.top, 10)
                     } else if selectedSegment == "칼럼" {
                         ColumnWritingView(title: $title, columnText: $columnText, selectedColumnCategories: $selectedColumnCategories)
                     }
