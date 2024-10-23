@@ -68,10 +68,13 @@ class FilteredMemoStore: ObservableObject {
         }
     }
     
+    @MainActor
     func setUserMemos(userMemos: [Memo]) {
         DispatchQueue.main.async {
-            self.filteredMemos = userMemos
-            self.loadImagesForMemos()
+            Task {
+                try await self.filteredMemos = self.memoStore.loadMemosByUserEmail(email: userMemos[0].email)
+                self.loadImagesForMemos()
+            }
         }
     }
     
