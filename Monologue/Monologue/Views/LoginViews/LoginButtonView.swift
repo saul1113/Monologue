@@ -43,7 +43,7 @@ struct GoogleButtonView: View {
                         .frame(width: 19, height: 19)
                 }
                 
-                Text(loadingGoogleLogin ? "Logging in..." : "Sign Up with Google")
+                Text(loadingGoogleLogin ? "Logging in..." : "Sign in with Google")
                     .fontWeight(.medium)
                     .font(.system(size: 21))
                     .foregroundColor(.black)
@@ -74,6 +74,7 @@ struct AppleButtonView: View {
                 .fontWeight(.medium)
                 .font(.system(size: 21))
                 .foregroundColor(.white)
+                .padding(.trailing, 9)
         }
         .frame(width: 300)
         .padding()
