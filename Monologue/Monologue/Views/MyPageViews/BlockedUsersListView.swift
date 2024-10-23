@@ -25,6 +25,7 @@ struct BlockedUsersListView: View {
                 if blockedUsers.isEmpty {
                     VStack {
                         Text("차단한 사용자가 없습니다.")
+                            .padding(.top, 250)
                     }
                 } else {
                     VStack {
@@ -37,6 +38,7 @@ struct BlockedUsersListView: View {
                                     nickname: blockedUser.nickname,
                                     memoCount: memoCount[blockedUser.email] ?? 0,
                                     columnCount: columnCount[blockedUser.email] ?? 0,
+                                    isActionActive: $isActionActive,
                                     activeButtonText: "차단",
                                     inactiveButtonText: "차단 해제",
                                     onActive: {

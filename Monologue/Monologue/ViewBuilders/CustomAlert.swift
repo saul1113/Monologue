@@ -83,51 +83,53 @@ private struct CustomAlert: View {
     let primaryAction: () -> Void
 
     var body: some View {
-        VStack(alignment: .center, spacing: 25) {
+        VStack(alignment: .center) {
+            Spacer()
+                .frame(height: 20)
+            
             Text(title)
-                .bold()
+                .font(.system(size: 18, weight: .bold))
 
+            Spacer()
+            
             Text(message)
-                .font(.system(size: 16))
+                .font(.system(size: 14))
                 .multilineTextAlignment(.center)
+                .padding(.horizontal, 16)
                 .lineSpacing(6)
+                .frame(width: 280, height: 46)
+            
+            Spacer()
+            
+            Divider()
+                .offset(y: 7)
             
             HStack {
                 Button {
                     isPresented = false // Alert dismiss
                 } label: {
                     Text("취소")
-                        .font(.headline)
-                        .foregroundStyle(.accent)
-                        .bold()
-                        .padding(.vertical, 3)
-                        .frame(maxWidth: .infinity)
+                        .font(.system(size: 16))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .tint(.white)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.accent, lineWidth: 1)
-                }
+                                
+                Divider()
                 
                 Button {
                     isPresented = false // Alert dismiss
                     primaryAction() // 클로저 실행
                 } label: {
                     Text(primaryButtonTitle)
-                        .font(.headline)
-                        .bold()
-                        .padding(.vertical, 3)
-                        .frame(maxWidth: .infinity)
+                        .font(.system(size: 16))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .foregroundStyle(.red)
                 }
-                .tint(.accent)
             }
-            .buttonStyle(.borderedProminent)
+            .frame(height: 45)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 20)
-        .frame(width: 270)
+        .frame(width: 280, height: 180)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 20)
                 .fill(.white)
 //                .strokeBorder(.accent, lineWidth: 1)
         )

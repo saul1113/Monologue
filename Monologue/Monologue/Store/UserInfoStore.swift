@@ -20,7 +20,8 @@ class UserInfoStore: ObservableObject {
     
     @Published var followers: [UserInfo] = []
     @Published var followings: [UserInfo] = []
-    
+    @Published var isFollowingStatus: [String: Bool] = [:] // 각 유저에 대한 팔로우 상태 추적
+
     @Published var followersCount: Int = 0
     @Published var followingsCount: Int = 0
     
@@ -160,13 +161,9 @@ class UserInfoStore: ObservableObject {
     // MARK: - Follow 관련 로직
     // 팔로우 로직
     func followUser(targetUserEmail: String) async {
+        let db = Firestore.firestore()
         let currentUserEmail = authManager.email
         
-        guard !targetUserEmail.isEmpty else {
-            print("Target user email is empty.")
-            return
-        }
-
         guard !targetUserEmail.isEmpty else {
             print("Target user email is empty.")
             return
@@ -177,7 +174,6 @@ class UserInfoStore: ObservableObject {
             return
         }
         
-        let db = Firestore.firestore()
         let currentUserRef = db.collection("User").document(currentUserEmail)
         let targetUserRef = db.collection("User").document(targetUserEmail)
         
@@ -193,6 +189,9 @@ class UserInfoStore: ObservableObject {
                     "followers": FieldValue.arrayUnion([currentUserEmail])
                 ], forDocument: targetUserRef)
                 
+                DispatchQueue.main.async {
+                    self.isFollowingStatus[targetUserEmail] = true
+                }
                 return nil
             }
             
@@ -204,13 +203,14 @@ class UserInfoStore: ObservableObject {
     
     // 언팔로우 로직
     func unfollowUser(targetUserEmail: String) async {
+        let db = Firestore.firestore()
+
         let currentUserEmail = authManager.email
         guard !targetUserEmail.isEmpty else {
             print("Target user email is empty.")
             return
         }
         
-        let db = Firestore.firestore()
         let currentUserRef = db.collection("User").document(currentUserEmail)
         let targetUserRef = db.collection("User").document(targetUserEmail)
         
@@ -226,6 +226,9 @@ class UserInfoStore: ObservableObject {
                     "followers": FieldValue.arrayRemove([currentUserEmail])
                 ], forDocument: targetUserRef)
                 
+                DispatchQueue.main.async {
+                    self.isFollowingStatus[targetUserEmail] = false
+                }
                 return nil
             }
             
@@ -237,10 +240,8 @@ class UserInfoStore: ObservableObject {
     
     // 특정 유저를 팔로우하고 있는지 확인
     func checkIfFollowing(targetUserEmail: String) async -> Bool {
-        guard let currentUserEmail = userInfo?.email else {
-            return false
-        }
-        
+        let currentUserEmail = authManager.email
+
         let db = Firestore.firestore()
         let document = try? await db.collection("User").document(currentUserEmail).getDocument()
         
@@ -256,7 +257,7 @@ class UserInfoStore: ObservableObject {
         let db = Firestore.firestore()
         let userDocRef = db.collection("User").document(email)
         
-        listener = userDocRef.addSnapshotListener { snapshot, error in
+        listener = userDocRef.addSnapshotListener { [weak self] snapshot, error in
             guard let document = snapshot, document.exists else {
                 print("User document does not exist")
                 return
@@ -268,11 +269,11 @@ class UserInfoStore: ObservableObject {
             }
             
             if let followings = docData["followings"] as? [String] {
-                self.followingsCount = followings.count
+                self?.followingsCount = followings.count
             }
             
             if let followers = docData["followers"] as? [String] {
-                self.followersCount = followers.count
+                self?.followersCount = followers.count
             }
         }
     }
@@ -280,6 +281,42 @@ class UserInfoStore: ObservableObject {
     func removeListener() {
         listener?.remove()
         listener = nil
+    }
+    
+    // 팔로워, 팔로잉 목록 불러오고 각 메모 및 칼럼 개수 로드 함수
+    func loadFollowersAndFollowings(for userInfo: UserInfo) async {
+        do {
+            // 팔로워
+            followers = try await loadUsersInfoByEmail(emails: userInfo.followers)
+            for follower in followers {
+                memoCount[follower.email] = try await getMemoCount(email: follower.email)
+                columnCount[follower.email] = try await getColumnCount(email: follower.email)
+            }
+            
+            // 팔로잉
+            followings = try await loadUsersInfoByEmail(emails: userInfo.followings)
+            for following in followings {
+                memoCount[following.email] = try await getMemoCount(email: following.email)
+                columnCount[following.email] = try await getColumnCount(email: following.email)
+            }
+            
+            // 로드 후 로그 출력
+            print("Updated followers: \(followers)")
+            print("Updated followings: \(followings)")
+        } catch {
+            print("Error loading followers or followings: \(error.localizedDescription)")
+        }
+    }
+    
+    // 로그인된 유저가 각 유저를 팔로우하고 있는지 여부를 확인하는 함수
+    func loadFollowingStatus() async {
+        for follower in followers {
+            isFollowingStatus[follower.email] = await checkIfFollowing(targetUserEmail: follower.email)
+        }
+        
+        for following in followings {
+            isFollowingStatus[following.email] = await checkIfFollowing(targetUserEmail: following.email)
+        }
     }
     
     // MARK: - Block 관련 로직

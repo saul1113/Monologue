@@ -50,7 +50,12 @@ struct AdBannerView: View {
                 }
             }
         }
-        .padding(.horizontal, 16)
+        .padding()
+        .background(Color.white)
+        .cornerRadius(8)
+        .overlay(RoundedRectangle(cornerRadius: 10)
+            .stroke(.gray, lineWidth: 0.5))
+        .padding(.vertical, 1)
     }
 }
 
