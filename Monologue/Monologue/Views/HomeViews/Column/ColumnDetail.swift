@@ -101,8 +101,8 @@ struct ColumnDetail: View {
                 .presentationDragIndicator(.hidden)
             }
             .sheet(isPresented: $showDeleteSheet) {
-                DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment)
-                    .presentationDetents([.height(150)])
+                DeleteSheetView(isPresented: $showDeleteSheet, onDelete: deleteComment, selectedComment: $selectedComment, itemSheet: $itemSheet)
+                    .presentationDetents([itemSheet ? .height(150) : .height(100)])
                     .presentationDragIndicator(.hidden)
             }
             .navigationBarBackButtonHidden(true)
