@@ -146,8 +146,8 @@ struct ProfileEditView: View {
                     }
                 }
                 nicknameDuplicateWarning = false
-                try await memoStore.changeMemosNickname(email: userInfoStore.userInfo?.email ?? "", newNickname: nickname)
-                try await columnStore.changeColumnsNickname(email: userInfoStore.userInfo?.email ?? "", newNickname: nickname)
+                try await memoStore.changeMemosNickname(email: userInfoStore.userInfo?.email ?? "", newNickname: userInfo.nickname)
+                try await columnStore.changeColumnsNickname(email: userInfoStore.userInfo?.email ?? "", newNickname: userInfo.nickname)
                 saveUserInfo()
             }
         }
