@@ -82,9 +82,9 @@ class FilteredMemoStore: ObservableObject {
         }
     }
     
-    func setSearchMemos(searchMemos: [Memo]) {
+    func setSearchMemos(searchMemos: [Memo], email: String) {
         DispatchQueue.main.async {
-            self.filteredMemos = searchMemos
+            self.filteredMemos = searchMemos.filter { $0.email != email }
             self.loadImagesForMemos()
         }
     }
@@ -106,7 +106,7 @@ struct MemoView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             MasonryLayout(columns: 2, spacing: 16) {
-                if (filteredMemoStore.images.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
+                if (filteredMemoStore.images.count != 0 && filteredMemoStore.filteredMemos.count != 0) && (filteredMemoStore.images.count == filteredMemoStore.filteredMemos.count) {
                     
                     ForEach(filteredMemoStore.filteredMemos.indices, id: \.self) { index in
                         if index == 3 {  // 3번째 메모 뒤에 광고 배너 삽입
@@ -151,12 +151,19 @@ struct MemoView: View {
         }
         .padding(.horizontal, 16)
         .onAppear {
-            if let tempFilters = filters {
-                filteredMemoStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
-            }
-            
-            if let userMemos = userMemos {
-                filteredMemoStore.setUserMemos(userMemos: userMemos)
+            if !searchText.isEmpty {
+                Task {
+                    let searchMemos = try await memoStore.loadMemosByContent(content: searchText)
+                    filteredMemoStore.setSearchMemos(searchMemos: searchMemos, email: authManager.email)
+                }
+            } else {
+                if let tempFilters = filters {
+                    filteredMemoStore.setFilteredMemos(filters: tempFilters, userEmail: authManager.email)
+                }
+                
+                if let userMemos = userMemos {
+                    filteredMemoStore.setUserMemos(userMemos: userMemos)
+                }
             }
         }
         .onChange(of: filters) {
@@ -172,7 +179,7 @@ struct MemoView: View {
         }
         .onChange(of: searchMemos) {
             if let searchMemos = searchMemos {
-                filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+                filteredMemoStore.setSearchMemos(searchMemos: searchMemos, email: authManager.email)
             }
         }
         .refreshable {
@@ -189,7 +196,7 @@ struct MemoView: View {
             if !searchText.isEmpty {                
                 do {
                     let searchMemos = try await memoStore.loadMemosByContent(content: searchText)
-                    filteredMemoStore.setSearchMemos(searchMemos: searchMemos)
+                    filteredMemoStore.setSearchMemos(searchMemos: searchMemos, email: authManager.email)
                 } catch {
                     print("refreshMemos: \(error.localizedDescription)")
                 }

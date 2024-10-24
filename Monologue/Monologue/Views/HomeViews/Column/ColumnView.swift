@@ -73,16 +73,18 @@ struct ColumnView: View {
             Color.background.ignoresSafeArea()
             ScrollView {
                 VStack {
-                    ForEach(filteredColumnStore.filteredColumns.indices, id: \.self) { index in
-                        if index % 3 == 2 {
-                            AdBannerView()
+                    if filteredColumnStore.filteredColumns.count != 0 {
+                        ForEach(filteredColumnStore.filteredColumns.indices, id: \.self) { index in
+                            if index % 3 == 2 {
+                                AdBannerView()
+                            }
+                            
+                            NavigationLink(destination: ColumnDetail(column: $filteredColumnStore.filteredColumns[index].wrappedValue)) {
+                                PostRow(column: $filteredColumnStore.filteredColumns[index])
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .listRowBackground(Color.background)
                         }
-                        
-                        NavigationLink(destination: ColumnDetail(column: $filteredColumnStore.filteredColumns[index].wrappedValue)) {
-                            PostRow(column: $filteredColumnStore.filteredColumns[index])
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .listRowBackground(Color.background)
                     }
                 }
                 .padding([.leading, .trailing])
@@ -94,12 +96,19 @@ struct ColumnView: View {
             }
         }
         .onAppear {
-            if let tempFilters = filters {
-                filteredColumnStore.setFilteredColumns(filters: tempFilters, userEmail: authManager.email)
-            }
-            
-            if let userColumns = userColumns {
-                filteredColumnStore.setUserColumns(userColumns: userColumns)
+            if !searchText.isEmpty {
+                Task {
+                    let searchColumns = try await columnStore.loadColumnsByContent(content: searchText)
+                    filteredColumnStore.setUserColumns(userColumns: searchColumns)
+                }
+            } else {
+                if let tempFilters = filters {
+                    filteredColumnStore.setFilteredColumns(filters: tempFilters, userEmail: authManager.email)
+                }
+                
+                if let userColumns = userColumns {
+                    filteredColumnStore.setUserColumns(userColumns: userColumns)
+                }
             }
         }
         .onChange(of: filters) {

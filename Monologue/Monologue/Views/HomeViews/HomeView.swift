@@ -27,6 +27,8 @@ struct HomeView: View {
     @State private var searchMemos: [Memo] = []
     @State private var searchColumns: [Column] = []
     
+    @State var searchDebounceTimer: Timer?
+    
     @State var selectedSegment: String = "메모"
     @State private var selectedCategories: [String]? = ["전체"]
     @State var filteredColumns: [Column] = []
@@ -123,17 +125,29 @@ struct HomeView: View {
             }
         }
         .onChange(of: searchText) {oldvalue, newvalue in
-            Task {
-                do {
-                    if newvalue.isEmpty {
-                        searchMemos = try await memoStore.loadMemos()
-                        searchColumns = try await columnStore.loadColumn()
-                    } else {
-                        searchMemos = try await memoStore.loadMemosByContent(content: newvalue)
-                        searchColumns = try await columnStore.loadColumnsByContent(content: newvalue)
+            searchDebounceTimer?.invalidate()
+            
+            // 새로운 타이머 설정
+            searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
+                // 비동기 작업 수행
+                Task {
+                    do {
+                        if newvalue.isEmpty {
+                            searchMemos = try await memoStore.loadMemos()
+                            searchColumns = try await columnStore.loadColumn()
+                        } else {
+                            searchMemos = try await memoStore.loadMemosByContent(content: newvalue)
+                            searchColumns = try await columnStore.loadColumnsByContent(content: newvalue)
+                        }
+                        
+                        // UI 업데이트는 메인 스레드에서 수행
+                        DispatchQueue.main.async {
+                            // UI 업데이트 코드 (예: 테이블 뷰 리로드)
+                        }
+                    } catch {
+                        print("Error: \(error.localizedDescription)")
+                        // 사용자에게 에러 메시지 표시 (예: Alert)
                     }
-                } catch {
-                    print("Error: \(error.localizedDescription)")
                 }
             }
         }

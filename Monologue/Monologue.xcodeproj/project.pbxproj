@@ -66,7 +66,6 @@
 		BEDC7CDE2CBE208800654B89 /* ColumnWritingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDC7CDD2CBE208800654B89 /* ColumnWritingView.swift */; };
 		EA3557862CC7485300B74C1E /* ColumnModifyingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA3557852CC7485300B74C1E /* ColumnModifyingView.swift */; };
 		EA50F6172CC0105000D468C4 /* AppleAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50F6162CC0105000D468C4 /* AppleAuth.swift */; };
-		EA50F61B2CC014AB00D468C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */; };
 		EAC7D7A12CBD23E0008A8074 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A02CBD23E0008A8074 /* FirebaseAuth */; };
 		EAC7D7A32CBD23E0008A8074 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A22CBD23E0008A8074 /* FirebaseDatabase */; };
 		EAC7D7A52CBD23E0008A8074 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EAC7D7A42CBD23E0008A8074 /* FirebaseFirestore */; };
@@ -149,7 +148,6 @@
 		EA3557852CC7485300B74C1E /* ColumnModifyingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnModifyingView.swift; sourceTree = "<group>"; };
 		EA50F6132CC00FFF00D468C4 /* Monologue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Monologue.entitlements; sourceTree = "<group>"; };
 		EA50F6162CC0105000D468C4 /* AppleAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuth.swift; sourceTree = "<group>"; };
-		EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EAC7D85E2CBE0919008A8074 /* LoginButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginButtonView.swift; sourceTree = "<group>"; };
 		EAC7D86B2CBE2EC1008A8074 /* UserInfoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoStore.swift; sourceTree = "<group>"; };
 		EAC7D8A12CBEDF52008A8074 /* MemoImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoImageStore.swift; sourceTree = "<group>"; };
@@ -197,7 +195,6 @@
 			children = (
 				8E78FE9D2CC236C700565C15 /* Fonts */,
 				EA50F6132CC00FFF00D468C4 /* Monologue.entitlements */,
-				EA50F61A2CC014AB00D468C4 /* GoogleService-Info.plist */,
 				8EF50D5C2CBDFD01000CABAA /* Info.plist */,
 				8E52D92F2CBD215600E5D42A /* Assets.xcassets */,
 				8EF50D5D2CBDFD01000CABAA /* MonologueApp.swift */,
@@ -460,7 +457,6 @@
 				8E78FEA32CC237B400565C15 /* KoPubWorld Batang_Pro Medium.otf in Resources */,
 				8E78FEA12CC2373400565C15 /* NanumSquareR.otf in Resources */,
 				8E52D93C2CBD215600E5D42A /* Assets.xcassets in Resources */,
-				EA50F61B2CC014AB00D468C4 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,7 +662,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Monologue/Monologue.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 6R3M7VGRP2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -701,7 +697,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Monologue/Monologue.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 6R3M7VGRP2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
