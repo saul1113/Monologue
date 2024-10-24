@@ -40,6 +40,10 @@
 - Xcode 16.0
 - iOS 17.0
 
+# 📑 실행 화면
+![Simulator Screen Recording - iPhone 16 Pro - 2024-10-24 at 16 42 34](https://github.com/user-attachments/assets/827ed862-da2c-47ff-91a0-93acdf9152cd)
+![Simulator Screen Recording - iPhone 16 Pro - 2024-10-24 at 16 43 33](https://github.com/user-attachments/assets/c01cd110-a851-43fb-a34b-7e663cf8619a)
+
 <br>
 
 # 📑 개발자
