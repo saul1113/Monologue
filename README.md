@@ -82,5 +82,21 @@
 <br>
 <br>
 
+# 📑 Package Dependencies
+- abseli - Apache License, Version 2.0
+- AppAuth - Apache License, Version 2.0
+- AppCheck - Apache License, Version 2.0
+- Firebase - Apache License, Version 2.0
+- GoogleAppMeasurement - Apache License, Version 2.0
+- GoogleDataTransport - Apache License, Version 2.0
+- GoogleSignIn - Apache License, Version 2.0
+- GoogleUtilities - Apache License, Version 2.0
+- gRPC - Apache License, Version 2.0
+- GTMAppAuth - Apache License, Version 2.0
+- InteropForGoogle - Apache License, Version 2.0
+- Promises - Apache License, Version 2.0
+- swift-collection - Apache License, Version 2.0
+- SwiftProtobuf - Apache License, Version 2.0
+
 # 📑 라이선스
 Licensed under the [MIT](LICENSE) license.
