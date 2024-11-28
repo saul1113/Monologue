@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>NotoSerifKR-VariableFont_wght.ttf</string>
+		<string>KoPubWorld Batang_Pro Medium.otf</string>
+		<string>NanumSquareR.otf</string>
+		<string>NanumBarunpenR.otf</string>
+		<string>Eulyoo1945-Regular.otf</string>
+		<string>Eulyoo1945-SemiBold.otf</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.912217437457-q13eqpmq9s5f0ueqt06vt4na4hsnuoho</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
